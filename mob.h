@@ -1,0 +1,41 @@
+/*
+ * mob.h
+ *
+ *  Created on: 2016/11/15
+ *      Author: c501506022
+ */
+
+#ifndef MOB_H_
+#define MOB_H_
+#include "glm.h"
+
+#include "player.h"
+#include "bullet.h"
+
+class mob {
+private:
+	bullet mobbullet;
+	float radi;
+public:
+	vec3 position;
+	vec3 angles;
+	vec3 lookat;
+	vec3 mob_collider;
+
+	float dx;
+	int dir;
+	int hp;
+	int movecount;
+	int flag;
+
+	mob();
+	virtual ~mob();
+	void Initialize(vec3 pos,float ra);
+	void DrawInitialize();
+	void Update();
+	void move();
+	void Draw();
+	void launchBullet();
+};
+
+#endif /* MOB_H_ */
