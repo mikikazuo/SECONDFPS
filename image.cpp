@@ -197,7 +197,7 @@ void img_Ori_Rota(int no,GLfloat CenterX,GLfloat CenterY,double rota){
 //原寸大拡大縮小
 void image_DrawExRota(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp){
 	glPushMatrix();
-	glTranslated(CenterX,CenterY,0);
+	//glTranslated(CenterX,CenterY,0);
 	glTranslated(CenterX,CenterY,0.000001*no);//1115 変更：レイヤー的表現用に仮変更
 	glRotated(rota,0,0,1);
 	img_zoomDraw_C(no, 0,0, exp);
