@@ -1,10 +1,10 @@
 #include "image.h"
-
+#include "math.h"
 
 #define IMG_MAX 100
 static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord);
 
-
+#define PI 3.141592
 
 struct img sa[IMG_MAX];
 
@@ -198,6 +198,7 @@ void img_Ori_Rota(int no,GLfloat CenterX,GLfloat CenterY,double rota){
 void image_DrawExRota(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp){
 	glPushMatrix();
 	glTranslated(CenterX,CenterY,0);
+	glTranslated(CenterX,CenterY,0.000001*no);//1115 変更：レイヤー的表現用に仮変更
 	glRotated(rota,0,0,1);
 	img_zoomDraw_C(no, 0,0, exp);
 	glPopMatrix();
@@ -320,5 +321,49 @@ void image_Draw_C(int no,GLfloat x,GLfloat y){
 }
 void image_Drawrota_C(int no,GLfloat CenterX,GLfloat CenterY,int rota){
 	img_Ori_Rota(no,CenterX,CenterY,rota);
+}
+
+
+
+
+void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
+	if(!enableNo(no))return;
+	//glColor3d(1.0,0.2,0.2);
+
+    //glPushMatrix();
+	//glTranslated((x+w)/2,(y+w)/2,0.000001*no);//1115 変更：レイヤー的表現用に仮変更
+	//glPopMatrix();
+
+	glBegin(GL_POLYGON);
+	//glTexCoord2d(0,0);
+	glVertex2d(x, y);
+	//glTexCoord2d(0,sa[no].color[3]);
+	glVertex2d(x,y+h);
+	//glTexCoord2d(sa[no].color[2],sa[no].color[3]);
+	glVertex2d(x+w, y+h);
+	//glTexCoord2d(sa[no].color[2],0);
+	glVertex2d(x+w, y);
+	glEnd();
+}
+
+void Circle2DFill(float radius,int x,int y)
+{
+ for (float th1 = 0.0;  th1 <= 360.0;  th1 = th1 + 1.0)
+ {
+  float th2 = th1 + 10.0;
+  float th1_rad = th1 / 180.0 * PI;
+  float th2_rad = th2 / 180.0 * PI;
+
+  float x1 = radius * cos(th1_rad);
+  float y1 = radius * sin(th1_rad);
+  float x2 = radius * cos(th2_rad);
+  float y2 = radius * sin(th2_rad);
+
+  glBegin(GL_TRIANGLES);
+   glVertex2f( x, y );
+   glVertex2f( x1+x, y1+y );
+   glVertex2f( x2+x, y2+y );
+  glEnd();
+ }
 }
 
