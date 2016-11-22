@@ -9,26 +9,16 @@
 #include "mouse.h"
 #include "GL/glut.h"
 #include "main.h"
-#include "checkObjectHit.h"
-#include <stdio.h>
-#include "Game.h"
-#include "player.h"
-
-checkObjectHit bulletmovechecker;
 
 bullet::bullet() {
 	// TODO 自動生成されたコンストラクター・スタブ
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 }
-void bullet::bullet_Initialize(){
-	for(int i=0;i<MAXBULLET;i++)
-		bullet_info[i].count=0;
 
-}
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
-
+	if(get_mousebutton_count(LEFT_BUTTON)%10==1)
 		for(int i=0;i<MAXBULLET;i++)
 			if(bullet_info[i].count==0){
 				bullet_info[i].position=playerposition;
@@ -38,58 +28,8 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 				break;
 			}
 }
-
-void bullet::HitObj(){
-	object *mapobject=get_mapobj()->get_obj();
-	int mapn=get_mapobj()->get_objnum();
-	Wall *playerwall=get_allplayerwall()[0];
-
-	for(int i=0;i<mapn;i++){
-		for(int j=0;j<MAXBULLET;j++)
-			if(bullet_info[j].count)
-				if(bulletmovechecker.LenOBBToPoint( mapobject[i],  bullet_info[j].position)==0    ){
-					bullet_info[j].count=0;
-					break;
-				}
-	}
-
-	for(int i=0;i<WALLMAX;i++){
-		for(int j=0;j<MAXBULLET;j++)
-			if(playerwall[i].count)
-				if(bullet_info[j].count)
-				if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
-					bullet_info[j].count=0;
-					break;
-				}
-
-
-	}
-}
-void bullet::PlayerToMob(){
-	for(int i=0;i<get_mobernum();i++){
-		for(int j=0;j<MAXBULLET;j++)
-			if(bullet_info[j].count)
-				if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
-					get_mober()[i].hp-=get_player()->atk;
-					bullet_info[j].count=0;
-					break;
-				}
-	}
-}
-
-void bullet::MobToPlayer(int atk){
-		for(int j=0;j<MAXBULLET;j++)
-			if(bullet_info[j].count)
-				if(	bulletmovechecker.pointVsPoint(get_player()->position,  bullet_info[j].position,1)){
-					get_player()->hp-=atk;
-					bullet_info[j].count=0;
-					break;
-				}
-
-}
-
 void bullet::Update(){
-	const float movespeed=30;
+	const float movespeed=10;
 	for(int i=0;i<MAXBULLET;i++)
 		if(bullet_info[i].count){
 			vec3 move_delta;
@@ -122,9 +62,9 @@ void bullet::Draw(){
 			glPopMatrix();
 
 		}
+
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHTING);
-
 }
 bullet::~bullet() {
 	// TODO Auto-generated destructor stub

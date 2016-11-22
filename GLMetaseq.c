@@ -1849,10 +1849,6 @@ MQO_SEQUENCE mqoCreateSequence(const char *format, int n_file, double scale)
 void mqoCallModel(MQO_MODEL model)
 {
 	mqoCallListObject(model, 0);
-
-	glColor3f(1.0, 1.0, 1.0);
-	GLfloat material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, material);
 }
 
 
