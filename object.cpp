@@ -23,10 +23,7 @@ double const texture_repos=0;
 
 object::object() {
 
-	this->imgno=-1;
 }
-
-//注）壁用　imgnoを変更しないため
 void object::setobject(vec3 position,vec3 size,vec3 rota,vec4 color){
 	this->m_Pos.x=position.x;
 	this->m_Pos.y=position.y;
@@ -48,6 +45,7 @@ void object::setobject(vec3 position,vec3 size,vec3 rota,vec4 color){
 	this->color[3]=color.w;
 
 
+	this->imgno=-1;
 }
 object::object(vec3 position,vec3 size,vec3 rota,vec4 color) {
 	// TODO 自動生成されたコンストラクター・スタブ

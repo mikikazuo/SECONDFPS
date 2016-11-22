@@ -18,53 +18,17 @@ checkObjectHit::~checkObjectHit() {
 	// TODO Auto-generated destructor stub
 }
 
-//１：壁やマップオブジェクトの数　２：壁やオブジェクトそのもの　３：点座標  4：点座標から広がる半径
-bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
-	bool hit=false;
-
-	for(int i=0;i<num;i++)
-		if(	LenOBBToPoint( obb[i],  pointpos)<=radi ){
-			hit=true;
-			break;
-		}
-	return hit;
-}
-
-bool checkObjectHit::sethitcheck(int num,Wall *obb,vec3 pointpos,float radi){
-	bool hit=false;
-
-	for(int i=0;i<num;i++)
-		if(	LenOBBToPoint( obb[i].wall,  pointpos)<=radi ){
-			hit=true;
-			break;
-		}
-	return hit;
-}
-
-
-bool checkObjectHit::pointVsPoint(vec3 pointpos1,vec3 pointpos2,float radi){
-
-	float xd=pow(pointpos1.x-pointpos2.x,2);
-	float yd=pow(pointpos1.y-pointpos2.y,2);
-	float zd=pow(pointpos1.z-pointpos2.z,2);
-	float rd=pow(radi,2);
-
-	return rd>=xd+yd+zd?true:false;
-}
-
-
-
 bool checkObjectHit::alphaOBBs( OBB &obb1,object &obb2 )
 {
 	// 各方向ベクトルの確保
 	// （N***:標準化方向ベクトル）
-	vec3 NAe1 = obb1.GetDirect(0), Ae1 = NAe1 * obb1.GetLen_W(0);
-	vec3 NAe2 = obb1.GetDirect(1), Ae2 = NAe2 * obb1.GetLen_W(1);
-	vec3 NAe3 = obb1.GetDirect(2), Ae3 = NAe3 * obb1.GetLen_W(2);
-	vec3 NBe1 = obb2.GetDirect(0), Be1 = NBe1 * obb2.GetLen_W(0);
-	vec3 NBe2 = obb2.GetDirect(1), Be2 = NBe2 * obb2.GetLen_W(1);
-	vec3 NBe3 = obb2.GetDirect(2), Be3 = NBe3 * obb2.GetLen_W(2);
-	vec3 Interval = obb1.GetPos_W() - obb2.GetPos_W();
+	 vec3 NAe1 = obb1.GetDirect(0), Ae1 = NAe1 * obb1.GetLen_W(0);
+	 vec3 NAe2 = obb1.GetDirect(1), Ae2 = NAe2 * obb1.GetLen_W(1);
+	 vec3 NAe3 = obb1.GetDirect(2), Ae3 = NAe3 * obb1.GetLen_W(2);
+	 vec3 NBe1 = obb2.GetDirect(0), Be1 = NBe1 * obb2.GetLen_W(0);
+	 vec3 NBe2 = obb2.GetDirect(1), Be2 = NBe2 * obb2.GetLen_W(1);
+	 vec3 NBe3 = obb2.GetDirect(2), Be3 = NBe3 * obb2.GetLen_W(2);
+	 vec3 Interval = obb1.GetPos_W() - obb2.GetPos_W();
 
 	// 分離軸 : Ae1
 	float rA = Vec3Length( &Ae1 );
@@ -109,7 +73,7 @@ bool checkObjectHit::alphaOBBs( OBB &obb1,object &obb2 )
 		return false;
 
 	// 分離軸 : C11
-	vec3 cross;
+	 vec3 cross;
 	crossFunc( &cross, &NAe1, &NBe1 );
 	rA = LenSegOnSeparateAxis( &cross, &Ae2, &Ae3 );
 	rB = LenSegOnSeparateAxis( &cross, &Be2, &Be3 );
@@ -189,13 +153,13 @@ bool checkObjectHit::ColOBBs( object &obb1,object &obb2 )
 {
 	// 各方向ベクトルの確保
 	// （N***:標準化方向ベクトル）
-	vec3 NAe1 = obb1.GetDirect(0), Ae1 = NAe1 * obb1.GetLen_W(0);
-	vec3 NAe2 = obb1.GetDirect(1), Ae2 = NAe2 * obb1.GetLen_W(1);
-	vec3 NAe3 = obb1.GetDirect(2), Ae3 = NAe3 * obb1.GetLen_W(2);
-	vec3 NBe1 = obb2.GetDirect(0), Be1 = NBe1 * obb2.GetLen_W(0);
-	vec3 NBe2 = obb2.GetDirect(1), Be2 = NBe2 * obb2.GetLen_W(1);
-	vec3 NBe3 = obb2.GetDirect(2), Be3 = NBe3 * obb2.GetLen_W(2);
-	vec3 Interval = obb1.GetPos_W() - obb2.GetPos_W();
+	 vec3 NAe1 = obb1.GetDirect(0), Ae1 = NAe1 * obb1.GetLen_W(0);
+	 vec3 NAe2 = obb1.GetDirect(1), Ae2 = NAe2 * obb1.GetLen_W(1);
+	 vec3 NAe3 = obb1.GetDirect(2), Ae3 = NAe3 * obb1.GetLen_W(2);
+	 vec3 NBe1 = obb2.GetDirect(0), Be1 = NBe1 * obb2.GetLen_W(0);
+	 vec3 NBe2 = obb2.GetDirect(1), Be2 = NBe2 * obb2.GetLen_W(1);
+	 vec3 NBe3 = obb2.GetDirect(2), Be3 = NBe3 * obb2.GetLen_W(2);
+	 vec3 Interval = obb1.GetPos_W() - obb2.GetPos_W();
 
 	// 分離軸 : Ae1
 	float rA = Vec3Length( &Ae1 );
@@ -240,7 +204,7 @@ bool checkObjectHit::ColOBBs( object &obb1,object &obb2 )
 		return false;
 
 	// 分離軸 : C11
-	vec3 cross;
+	 vec3 cross;
 	crossFunc( &cross, &NAe1, &NBe1 );
 	rA = LenSegOnSeparateAxis( &cross, &Ae2, &Ae3 );
 	rB = LenSegOnSeparateAxis( &cross, &Be2, &Be3 );
@@ -317,26 +281,26 @@ bool checkObjectHit::ColOBBs( object &obb1,object &obb2 )
 }
 
 float checkObjectHit::LenOBBToPoint( object &obb, vec3 pointpos)
-{
-	vec3 samp;   // 最終的に長さを求めるベクトル
+ {
+    vec3 samp;   // 最終的に長さを求めるベクトル
 
-	// 各軸についてはみ出た部分のベクトルを算出
-	for(int i=0; i<3; i++)
-	{
-		float L = obb.GetLen_W(i);
-		if( L <= 0 ) continue;  // L=0は計算できない
-		vec3 sa=pointpos-obb.GetPos_W();
-		vec3 dir=obb.GetDirect(i);
-		float s = Dot( &sa, &dir) / L;
+   // 各軸についてはみ出た部分のベクトルを算出
+   for(int i=0; i<3; i++)
+    {
+       float L = obb.GetLen_W(i);
+       if( L <= 0 ) continue;  // L=0は計算できない
+       vec3 sa=pointpos-obb.GetPos_W();
+       vec3 dir=obb.GetDirect(i);
+     float s = Dot( &sa, &dir) / L;
 
-		// sの値から、はみ出した部分があればそのベクトルを加算
-		s = fabs(s);
-		if( s > 1)
-			samp += obb.GetDirect(i)*(1-s)*L;   // はみ出した部分のベクトル算出
-	}
+       // sの値から、はみ出した部分があればそのベクトルを加算
+      s = fabs(s);
+       if( s > 1)
+    	   samp += obb.GetDirect(i)*(1-s)*L;   // はみ出した部分のベクトル算出
+   }
 
-	return Vec3Length(&samp);
-}
+    return Vec3Length(&samp);
+ }
 
 
 

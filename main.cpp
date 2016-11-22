@@ -13,6 +13,7 @@
 #include <GL/glut.h>
 
 #include <X11/Xlib.h>
+//#include <GL/gl.h>
 
 #include <stdlib.h>
 
@@ -39,8 +40,6 @@ SceneMgr sceneMgr;
 static SDL_Thread *update;  //ゲーム書利用スレッド
 fps mainfps;
 
-static int *argci;
-static char** argvi;
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
@@ -119,7 +118,7 @@ void timer(int no){
 }
 
 int thread_Update(void *arg){
-
+	XInitThreads();
 	sceneMgr.Initialize();
 	while(1){
 		mainfps.UpdateUpDatefps();
@@ -137,10 +136,7 @@ int thread_Update(void *arg){
 
 int main (int argc, char** argv)
 {
-	argci=&argc;
-	argvi=argv;
 	XInitThreads();
-
 	glutInit(&argc,argv);
 
 
@@ -160,15 +156,6 @@ int main (int argc, char** argv)
 fps get_mainfps(){
 	return mainfps;
 }
-
-int *get_argc(){
-	return argci;
-}
-char** get_argv(){
-	return argvi;
-};
-
-
 
 
 
