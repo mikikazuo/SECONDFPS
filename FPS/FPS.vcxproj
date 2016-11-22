@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AA023E30-CC31-486B-921A-6E20BCC630EC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>FPS</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Ryo0812\Desktop\SDL-1.2.13\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Ryo0812\Desktop\SDL-1.2.13\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Ryo0812\Desktop\SDL2-2.0.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Ryo0812\Desktop\glut-3.7.6-bin;C:\Users\Ryo0812\Desktop\SDL2-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;%(AdditionalDependencies);*lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\.cproject" />
+    <None Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\.project" />
+    <None Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\core" />
+    <None Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\second" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\BaseScene.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\bullet.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\CanvasUI.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Ryo0812\Desktop\SDL2-2.0.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\checkObjectHit.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\fps.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\Game.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\glm.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\GLMetaseq.c" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\image.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\ISceneChanger.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\key.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\main.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\map.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\mouse.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\OBB.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\object.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\player.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\SceneMgr.cpp" />
+    <ClCompile Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\smooth.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\BaseScene.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\bullet.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\CanvasUI.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\checkObjectHit.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\fps.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\Game.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\glm.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\GLMetaseq.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\image.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\ISceneChanger.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\key.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\main.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\map.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\mouse.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\OBB.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\object.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\player.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\SceneMgr.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\workspace\secondFPS\source\second\Task.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
