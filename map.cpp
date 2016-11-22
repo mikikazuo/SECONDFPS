@@ -197,7 +197,15 @@ void map::Update(){
 	obj[20].move(0,3.5*dirs[1],0);
 
 	//天空足場へのエレベーター
-	obj[34].move(0,2.0*dirs[1],0);
+	obj[34].move(0,2.0*dirs[0],0);
+
+	vec3 temp;
+
+	if(obj[34].get_m_Pos().y >= 20){
+		temp = obj[34].get_m_Pos();
+		temp.y = 14;
+		obj[34].set_m_Pos(temp);
+	}
 }
 void map::Draw(){
 	for(int i=0;get_objnum()>i;i++)
