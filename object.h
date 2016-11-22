@@ -29,7 +29,8 @@ public:
 	virtual ~object();
 	void Line3D(float x1,float y1,float z1,float x2,float y2,float z2);
 	void set_imgno(int no,int imgsize);
-
+	vec3 get_m_Pos();
+	void set_m_Pos(vec3 Pos);
 
 
 };

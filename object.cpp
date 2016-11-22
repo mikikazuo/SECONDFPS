@@ -13,7 +13,6 @@
 
 
 //ライトの位置
-
 static GLfloat lightpos[] = { 10.0, 10.0, 50,0 }; /* 光源の位置 */
 static GLfloat lightDiffuse[3]  = { 1.0,   1.0, 1.0  }; //拡散光
 static GLfloat lightAmbient[3]  = {  1.0,   1.0, 1.0  }; //環境光
@@ -326,5 +325,15 @@ void object::Line3D(float x1,float y1,float z1,float x2,float y2,float z2){
 	glVertex3f(x2,y2,z2);
 	glEnd();
 	glLineWidth(1.0);
+}
+
+vec3 object::get_m_Pos(){
+	return this->m_Pos;
+}
+
+void object::set_m_Pos(vec3 Pos){
+	this->m_Pos.x = Pos.x;
+	this->m_Pos.y = Pos.y;
+	this->m_Pos.z = Pos.z;
 }
 
