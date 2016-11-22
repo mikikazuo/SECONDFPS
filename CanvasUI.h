@@ -11,11 +11,6 @@
 class CanvasUI {
 private:
 	int handle[50];
-	int time;
-	int a;
-	int shakeX;
-	int shakeY;
-	int dam;
 public:
 	CanvasUI();
 	virtual ~CanvasUI();

@@ -13,14 +13,14 @@
 
 
 typedef struct{
-	int FrameCount; 		//経過フレーム数
-	int FPS; 				//設定fps
-	unsigned int fpsStart;	//測定開始時刻
-	unsigned int fpsCounter; //カウンター
-	int N;					//平均を取るサンプル数
-	int waitTime; 			//待機時間のサンプリングフレーム間での合計
-	double waitTime_Ave;  //待機時間の平均
-	double fps_Ave;  		//平均fps
+	int FrameCount; 			//経過フレーム数
+	int FPS; 					//設定fps
+	unsigned int fpsStart;		//測定開始時刻
+	unsigned int fpsCounter; 	//カウンター
+	int N;						//平均を取るサンプル数
+	int waitTime; 				//待機時間のサンプリングフレーム間での合計
+	double waitTime_Ave;  		//待機時間の平均
+	double fps_Ave;  			//平均fps
 }samp;
 
 

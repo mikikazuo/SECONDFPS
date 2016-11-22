@@ -10,28 +10,28 @@
 
 
 void fps::fps_Initialize(){
-	Fps_Update.fpsStart=0;	//測定開始時刻
-	Fps_Update.fpsCounter=0; //カウンター
-	Fps_Update.N=60;					//平均を取るサンプル数
-	Fps_Update.waitTime=0; 			//待機時間のサンプリングフレーム間での合計
-	Fps_Update.waitTime_Ave=0;  //待機時間の平均
-	Fps_Update.fps_Ave=0;  		//平均fps
-	Fps_Update.FrameCount=0;
-	Fps_Update.FPS=UPDATEFPS;
+	Fps_Update.fpsStart 		= 0;			//測定開始時刻
+	Fps_Update.fpsCounter 		= 0; 			//カウンター
+	Fps_Update.N 				= 60;			//平均を取るサンプル数
+	Fps_Update.waitTime 		= 0; 			//待機時間のサンプリングフレーム間での合計
+	Fps_Update.waitTime_Ave 	= 0;  			//待機時間の平均
+	Fps_Update.fps_Ave 			= 0;  			//平均fps
+	Fps_Update.FrameCount 		= 0;
+	Fps_Update.FPS 				= UPDATEFPS;
 }
 
 int fps::UpdateUpDatefps(){
 	Fps_Update.FrameCount++;
 
-	if(Fps_Update.fpsCounter==0)
-		Fps_Update.fpsStart=SDL_GetTicks();
-	if(Fps_Update.fpsCounter==(unsigned int)Fps_Update.N){
-		unsigned int N=SDL_GetTicks();
-		Fps_Update.fps_Ave=1000./((N-Fps_Update.fpsStart)/(double)Fps_Update.N);
-		Fps_Update.waitTime_Ave=Fps_Update.waitTime/(double)Fps_Update.N;
-		Fps_Update.fpsCounter=0;
-		Fps_Update.waitTime=0;
-		Fps_Update.fpsStart=N;
+	if(Fps_Update.fpsCounter == 0)
+		Fps_Update.fpsStart = SDL_GetTicks();
+	if(Fps_Update.fpsCounter == (unsigned int)Fps_Update.N){
+		unsigned int N = SDL_GetTicks();
+		Fps_Update.fps_Ave 		= 1000./((N-Fps_Update.fpsStart)/(double)Fps_Update.N);
+		Fps_Update.waitTime_Ave = Fps_Update.waitTime/(double)Fps_Update.N;
+		Fps_Update.fpsCounter 	= 0;
+		Fps_Update.waitTime 	= 0;
+		Fps_Update.fpsStart 	= N;
 	}
 	Fps_Update.fpsCounter++;
 	return 0;

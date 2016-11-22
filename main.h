@@ -10,12 +10,7 @@
 
 #include "fps.h"
 
-
-
-
  fps get_mainfps();
-int *get_argc();
-char** get_argv();
 
 
 #endif /* MAIN_H_ */

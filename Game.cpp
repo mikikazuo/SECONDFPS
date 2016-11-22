@@ -2,8 +2,8 @@
 
 
 #include "Game.h"
+#include "player.h"
 
-#include "bullet.h"
 #include "OBB.h"
 
 #include "checkObjectHit.h"
@@ -17,23 +17,16 @@
 #include "mouse.h"
 #include "GLMetaseq.h"
 #include "CanvasUI.h"
-#include "sound.h"
+#include "map.h"
 
-
-
-#define PLAYERNUM 5
 
 
 MQO_MODEL mqomodel;
 
 player player1;
-mob mober[10];
 
 CanvasUI gamecanvas;
 map mapobj;
-
-
-Wall *allplayerwall [PLAYERNUM];
 
 bool che=false;
 checkObjectHit hitChecker;
@@ -47,43 +40,25 @@ GLfloat specular[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat shininess = 65.0;
 
 
-void Game::setInfoPlayerWall(){
-	allplayerwall[0]=player1.get_mywall();
-	for(int i=1;i<PLAYERNUM;i++)
-		for(int j=0;j<WALLMAX;j++){
-
-		}
-}
-
 //初期化
 void Game::Initialize(){
-	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize(vec3(20,10,-10),1,100,100);
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,1,-5),1,100,10,20);
+
 }
 
 void Game::DrawInitialize(){
-	//mqoInitは1回だけでいい模様
-	mqoInit();
-
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize();
 
-
-	char *flname=(char*)"Data/a/char4.mqo";
+	mqoInit();
+	char *flname=(char*)"Data/a/a.mqo";
 	mqomodel=mqoCreateModel(flname,0.0035);
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].DrawInitialize();
 }
 
 void Game::DrawFinalize(){
 	gamecanvas.DrawFinalize();
 	mapobj.DrawFinalize();
-	player1.DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {
@@ -92,16 +67,13 @@ Game::Game(ISceneChanger* changer) : BaseScene(changer) {
 
 //更新
 void Game::Update(){
-	setInfoPlayerWall();
-
-
-	player1.Update();
+	player1.Update(mapobj);
 	gamecanvas.Update();
 	mapobj.Update();
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
-		mober[i].Update();
-		setMobSound(i,mober[i].position);
-	}
+
+	//追加??
+	//キャラクターの座標表示
+	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
 
 
 
@@ -127,8 +99,7 @@ void Game::Draw(){
 
 	mapobj.Draw();
 
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Draw();
+
 
 
 
@@ -171,19 +142,3 @@ void Game::Draw(){
 
 }
 
-map *get_mapobj(){
-	return &mapobj;
-}
-
-Wall **get_allplayerwall(){
-	return allplayerwall;
-}
-player *get_player(){
-	return &player1;
-}
-mob *get_mober(){
-	return mober;
-}
-int get_mobernum(){
-	return (int)(sizeof(mober)/sizeof(mober[0]));
-}

@@ -13,75 +13,73 @@
 
 
 //ライトの位置
+static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0}; 	//光源の位置
+static GLfloat lightDiffuse[3]  = {1.0,	 1.0, 1.0}; 	//拡散光
+static GLfloat lightAmbient[3]  = {1.0, 1.0, 1.0}; 		//環境光
+static GLfloat lightSpecular[3] = {1.0, 1.0, 1.0}; 		//鏡面光
 
-static GLfloat lightpos[] = { 10.0, 10.0, 50,0 }; /* 光源の位置 */
-static GLfloat lightDiffuse[3]  = { 1.0,   1.0, 1.0  }; //拡散光
-static GLfloat lightAmbient[3]  = {  1.0,   1.0, 1.0  }; //環境光
-static GLfloat lightSpecular[3] = { 1.0,   1.0, 1.0  }; //鏡面光
-
-double const texture_repos=0;
+double const texture_repos = 0;
 
 object::object() {
 
-	this->imgno=-1;
 }
-
-//注）壁用　imgnoを変更しないため
 void object::setobject(vec3 position,vec3 size,vec3 rota,vec4 color){
-	this->m_Pos.x=position.x;
-	this->m_Pos.y=position.y;
-	this->m_Pos.z=position.z;
+	this->m_Pos.x = position.x;
+	this->m_Pos.y = position.y;
+	this->m_Pos.z = position.z;
 
-	m_Rota.x=rota.x;
-	m_Rota.y=rota.y;
-	m_Rota.z=rota.z;
+	m_Rota.x = rota.x;
+	m_Rota.y = rota.y;
+	m_Rota.z = rota.z;
 
 	UpdateAxisAll();
 
-	this->Radius.x=size.x;
-	this->Radius.y=size.y;
-	this->Radius.z=size.z;
+	this->Radius.x = size.x;
+	this->Radius.y = size.y;
+	this->Radius.z = size.z;
 
-	this->color[0]=color.x;
-	this->color[1]=color.y;
-	this->color[2]=color.z;
-	this->color[3]=color.w;
+	this->color[0] = color.x;
+	this->color[1] = color.y;
+	this->color[2] = color.z;
+	this->color[3] = color.w;
 
 
+	this->imgno = -1;
 }
 object::object(vec3 position,vec3 size,vec3 rota,vec4 color) {
 	// TODO 自動生成されたコンストラクター・スタブ
+	//座標，大きさ，回転，色
 
-	this->m_Pos.x=position.x;
-	this->m_Pos.y=position.y;
-	this->m_Pos.z=position.z;
+	this->m_Pos.x = position.x;
+	this->m_Pos.y = position.y;
+	this->m_Pos.z = position.z;
 
-	m_Rota.x=rota.x;
-	m_Rota.y=rota.y;
-	m_Rota.z=rota.z;
+	m_Rota.x = rota.x;
+	m_Rota.y = rota.y;
+	m_Rota.z = rota.z;
 
 	UpdateAxisAll();
 
-	this->Radius.x=size.x;
-	this->Radius.y=size.y;
-	this->Radius.z=size.z;
+	this->Radius.x = size.x;
+	this->Radius.y = size.y;
+	this->Radius.z = size.z;
 
-	this->color[0]=color.x;
-	this->color[1]=color.y;
-	this->color[2]=color.z;
-	this->color[3]=color.w;
+	this->color[0] = color.x;
+	this->color[1] = color.y;
+	this->color[2] = color.z;
+	this->color[3] = color.w;
 
 
-	this->imgno=-1;
+	this->imgno = -1;
 
 }
 
 void object::set_imgno(int no,int imgsize){
-	this->imgno=no;
-	this->imgresize=imgsize;
+	this->imgno = no;
+	this->imgresize = imgsize;
 }
 
-//直方体
+//直方体生成
 void object::make_cuboid(float width,float height,float depth)
 {
 
@@ -135,7 +133,6 @@ void object::make_cuboid(float width,float height,float depth)
 		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
 		glVertex3f(-width/2,-height/2,-depth/2- texture_repos);
 
-
 		//上
 		glNormal3f(0,1,0);
 		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
@@ -146,7 +143,6 @@ void object::make_cuboid(float width,float height,float depth)
 		glVertex3f(-width/2,height/2+ texture_repos,depth/2);
 		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
 		glVertex3f(width/2,height/2+ texture_repos,depth/2);
-
 
 		//下
 		glNormal3f(0,-1,0);
@@ -181,18 +177,12 @@ void object::make_cuboid(float width,float height,float depth)
 		glVertex3f(width/2,-height/2,depth/2);
 		glVertex3f(width/2,-height/2,-depth/2);
 
-
-
-
 		//左
 		glNormal3f(-1,0,0);
 		glVertex3f(-width/2,height/2,depth/2);
 		glVertex3f(-width/2,height/2,-depth/2);
 		glVertex3f(-width/2,-height/2,-depth/2);
 		glVertex3f(-width/2,-height/2,depth/2);
-
-
-
 
 		//後
 		glNormal3f(0,0,-1);
@@ -201,18 +191,12 @@ void object::make_cuboid(float width,float height,float depth)
 		glVertex3f(width/2,-height/2,-depth/2);
 		glVertex3f(-width/2,-height/2,-depth/2);
 
-
-
-
 		//上
 		glNormal3f(0,1,0);
 		glVertex3f(width/2,height/2,-depth/2);
 		glVertex3f(-width/2,height/2,-depth/2);
 		glVertex3f(-width/2,height/2,depth/2);
 		glVertex3f(width/2,height/2,depth/2);
-
-
-
 
 		//下
 		glNormal3f(0,-1,0);
@@ -221,9 +205,7 @@ void object::make_cuboid(float width,float height,float depth)
 		glVertex3f(-width/2,-height/2,-depth/2);
 		glVertex3f(width/2,-height/2,-depth/2);
 		glEnd();
-
 	}
-
 }
 
 void object::Draw(){
@@ -231,10 +213,6 @@ void object::Draw(){
 
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
-
-
-
-
 
 	glPushMatrix();
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
@@ -293,19 +271,19 @@ void object::Draw(){
 void object::move(float x,float y,float z){
 	static int flag;
 	if(flag){
-		this->m_Pos.x+=x*get_mainfps().fps_getDeltaTime();
-		this->m_Pos.y+=y*get_mainfps().fps_getDeltaTime();
-		this->m_Pos.z+=z*get_mainfps().fps_getDeltaTime();
+		this->m_Pos.x += x*get_mainfps().fps_getDeltaTime();
+		this->m_Pos.y += y*get_mainfps().fps_getDeltaTime();
+		this->m_Pos.z += z*get_mainfps().fps_getDeltaTime();
 	}else
-		flag=1;
+		flag = 1;
 }
 
 //回転
 void object::rotate(float x,float y,float z){
 
-	this->m_Rota.x+=x*get_mainfps().fps_getDeltaTime();
-	this->m_Rota.y+=y*get_mainfps().fps_getDeltaTime();
-	this->m_Rota.z+=z*get_mainfps().fps_getDeltaTime();
+	this->m_Rota.x += x*get_mainfps().fps_getDeltaTime();
+	this->m_Rota.y += y*get_mainfps().fps_getDeltaTime();
+	this->m_Rota.z += z*get_mainfps().fps_getDeltaTime();
 
 	UpdateAxisAll();
 

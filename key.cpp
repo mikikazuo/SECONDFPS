@@ -6,12 +6,13 @@
 
 static int move = 0;
 static int keycount[none];
+
 void key_Update(){
 	for(int i=0;i<none;i++)
 		if(keycount[i])
 			keycount[i]++;
-
 }
+
 void normal(unsigned char key , int x, int y){
 	if(key =='a')
 		keycount[Left]++;
@@ -36,19 +37,19 @@ void normal(unsigned char key , int x, int y){
 
 void normalup(unsigned char key , int x, int y){
 	if(key =='a')
-		keycount[Left]=0;
+		keycount[Left] = 0;
 	if(key =='d')
-		keycount[Right]=0;
+		keycount[Right] = 0;
 	if(key =='w')
-		keycount[Forward]=0;
+		keycount[Forward] = 0;
 	if(key == 's')
-		keycount[Backward]=0;
+		keycount[Backward] = 0;
 	if(key == ' ')
-		keycount[Jump]=0;
+		keycount[Jump] = 0;
 	if(key == 'e')
-		keycount[Setwall]=0;
+		keycount[Setwall] = 0;
 	if(key == 'q')
-		keycount[Removewall]=0;
+		keycount[Removewall] = 0;
 
 }
 

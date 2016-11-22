@@ -22,15 +22,18 @@ void motion(int x, int y) {
 }
 
 void reset_Scroll(){
-	counter[MIDDLE_BUTTON_SCROLL].mousebutton_count=0;
+	counter[MIDDLE_BUTTON_SCROLL].mousebutton_count = 0;
 }
+
 void mouse(int button , int state , int x , int y) {
 	switch(button){
 	case LEFT_BUTTON:
 	case MIDDLE_BUTTON:
 	case RIGHT_BUTTON:
-		if(state==GLUT_DOWN)
+		//押された時
+		if(state == GLUT_DOWN)
 			counter[button].mousebutton_flag++;
+		//離された時
 		else
 			counter[button].mousebutton_flag=0;
 		break;
@@ -42,20 +45,20 @@ void mouse(int button , int state , int x , int y) {
 		break;
 	}
 
-
-
-	counta=button;
+	counta = button;
 }
+
 void mouseCounter(){
 	for(int i=0;i<=RIGHT_BUTTON;i++){
 		if(counter[i].mousebutton_flag)
 			counter[i].mousebutton_count++;
 		else
-			counter[i].mousebutton_count=0;
+			counter[i].mousebutton_count = 0;
 	}
 }
 
 
+//マウスの状態を得る関数
 MousePosition get_mouseinfo() {
 	return mouseinfo;
 }

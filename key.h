@@ -1,13 +1,13 @@
 #pragma once
 
 
-static const int left = 1;
-static const int right = 2;
-static const int forward = 4;
-static const int backward = 8;
-static const int jump = 16;
-static const int setwall = 32;
-static const int removewall = 64;
+static const int left 		= 1;
+static const int right 		= 2;
+static const int forward 		= 4;
+static const int backward 	= 8;
+static const int jump 		= 16;
+static const int setwall 		= 32;	//壁貼り
+static const int removewall 	= 64;	//壁除去
 
 typedef enum{
 	Move,

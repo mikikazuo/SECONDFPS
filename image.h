@@ -33,9 +33,6 @@ void image_free(int no);
 void image_DrawExRotaa(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp,GLdouble a);
 void img_zoomDraw_Ca(int no,GLfloat Centerx,GLfloat Centery,double exp,GLdouble a);
 
-void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h);
-void Circle2DFill(float radius,int x,int y);//****
-
 //3D用
 void image_DrawExRota3D(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp);
 void img_zoomDraw_C3D(int no,GLfloat Centerx,GLfloat Centery,double exp);
