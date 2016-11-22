@@ -13,7 +13,6 @@
 #include <GL/glut.h>
 
 #include <X11/Xlib.h>
-//#include <GL/gl.h>
 
 #include <stdlib.h>
 
