@@ -68,10 +68,33 @@ object obj[]={
 		//エレベーター
 		object(vec3(-49,-25,45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
-		//
+		//中央柱 21
+		,object(vec3(0,10,0),vec3(2,20,2),vec3(0,45,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場 22
+		,object(vec3(0,20.5,0),vec3(15,1,15),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//螺旋階段 23〜32
+		,object(vec3(0,0.5,3),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,2.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(0,3.5,-3),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(-3,5.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		,object(vec3(0,6.5,3),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,8.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(0,9.5,-3),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(-3,11.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		,object(vec3(0,12.5,3),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,14.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//エレベーターへの足場 33
+		,object(vec3(3,14,-7),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//天空足場へ登るエレベーター 34
+		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//テンプレート
-		//object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 };
 
 static int count;
@@ -117,9 +140,14 @@ void map::DrawInitialize(){
 	obj[11].set_imgno(handle[2],100);
 	obj[12].set_imgno(handle[2],100);
 
+	//拠点横の高台へ登るエレベーター
 	obj[18].set_imgno(handle[1],100);
-
 	obj[20].set_imgno(handle[1],100);
+
+	//中央柱
+	obj[21].set_imgno(handle[1],100);
+	//天空足場
+	obj[22].set_imgno(handle[1],100);
 
 }
 void map::DrawFinalize(){
@@ -137,6 +165,7 @@ void map::Update(){
 
 	count++;
 	counts[1]++;
+	counts[2]++;
 
 	//countが240毎に方向が逆転
 	//つまり，どの移動・回転も周期は同じ
@@ -166,11 +195,14 @@ void map::Update(){
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 	obj[18].move(0,3.5*dirs[1],0);
 	obj[20].move(0,3.5*dirs[1],0);
+
+	//天空足場へのエレベーター
+	obj[34].move(0,2.0*dirs[1],0);
 }
 void map::Draw(){
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
 
-
-	image_DrawExRota3D(handle[0],0,9,0,0.1);
+	//フィールド内に3D画像表示
+	//image_DrawExRota3D(handle[0],0,9,0,0.1);
 }
