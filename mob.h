@@ -16,21 +16,24 @@ class mob {
 private:
 	bullet mobbullet;
 	float radi;
+	int myno;
+
+	int dir;
+	float dx;
+	int movecount;
+	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
+	float atkrange;
 public:
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
-	vec3 mob_collider;
-
-	float dx;
-	int dir;
 	int hp;
-	int movecount;
-	int flag;
+	int atk;
+
 
 	mob();
 	virtual ~mob();
-	void Initialize(vec3 pos,float ra);
+	void Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange);
 	void DrawInitialize();
 	void Update();
 	void move();

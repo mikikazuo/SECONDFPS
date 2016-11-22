@@ -17,7 +17,7 @@
 #include "mouse.h"
 #include "GLMetaseq.h"
 #include "CanvasUI.h"
-
+#include "sound.h"
 
 
 
@@ -57,11 +57,12 @@ void Game::setInfoPlayerWall(){
 
 //初期化
 void Game::Initialize(){
+	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize();
+	player1.Initialize(vec3(20,10,-10),1,100,100);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(vec3(-10,1,-5),1);
+		mober[i].Initialize(i,vec3(-10,1,-5),1,100,10,20);
 }
 
 void Game::DrawInitialize(){
@@ -97,8 +98,10 @@ void Game::Update(){
 	player1.Update();
 	gamecanvas.Update();
 	mapobj.Update();
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
+	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
 		mober[i].Update();
+		setMobSound(i,mober[i].position);
+	}
 
 
 

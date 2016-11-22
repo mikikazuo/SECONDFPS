@@ -36,6 +36,7 @@ public:
 	void bullet_Initialize();
 	void HitObj();
 	void PlayerToMob();
+	void MobToPlayer(int atk);
 	void setInfo(vec3 playerposition,vec3 playerdir);
 	void Update();
 	void Draw();

@@ -30,6 +30,18 @@ bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
 	return hit;
 }
 
+bool checkObjectHit::sethitcheck(int num,Wall *obb,vec3 pointpos,float radi){
+	bool hit=false;
+
+	for(int i=0;i<num;i++)
+		if(	LenOBBToPoint( obb[i].wall,  pointpos)<=radi ){
+			hit=true;
+			break;
+		}
+	return hit;
+}
+
+
 bool checkObjectHit::pointVsPoint(vec3 pointpos1,vec3 pointpos2,float radi){
 
 	float xd=pow(pointpos1.x-pointpos2.x,2);

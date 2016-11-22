@@ -14,6 +14,7 @@
 #include "object.h"
 #include "map.h"
 
+
 #define WALLMAX 5
 
 typedef struct {
@@ -25,27 +26,26 @@ typedef struct {
 class player
 {
 private:
-	int hp;
+
 	int bulletnum;
 public:
-
+	int hp;
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
 	float dx,dy;
-	int move;
-	float theta ;
 	int atk;
+	int radi;
+
 	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;
 	//プレイヤーの身体のあたり判定
 	vec3 player_collider;
-	//TODO
-	int length;
+
 
 	Wall *get_mywall();
 	player();
-	void Initialize();
+	void Initialize(vec3 pos,float ra,int sethp,int setatk);
 	void DrawInitialize();
 	void DrawFinalize();
 	void Draw();

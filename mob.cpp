@@ -19,6 +19,8 @@
 #include "Game.h"
 
 #include "mouse.h"
+#include "sound.h"
+
 checkObjectHit mobhitobj;
 MQO_MODEL mobmqo;
 
@@ -39,24 +41,29 @@ int GetRandom(int min,int max)
 
 mob::mob() {
 	// TODO 自動生成されたコンストラクター・スタブ
-	movecount=0;
+
 	dir=GetRandom(0,3);
-	hp=100;
 	flag=0;
-	dx=GetRandom(1,100);
+
 }
 
 mob::~mob() {
 	// TODO Auto-generated destructor stub
 }
 
-void mob::Initialize(vec3 pos,float ra){
+//位置、当たり半径、HP,攻撃力
+void mob::Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange){
+	dx=GetRandom(1,100);
+	movecount=0;
+	myno=no;
 	flag=0;
-	position.x=pos.x;
-	position.y=pos.y;
-	position.z=pos.z;
+	position=pos;
 	mobbullet.bullet_Initialize();
 	radi=ra;
+	hp=sethp;
+	atk=setatk;
+	atkrange=setatkrange;
+
 }
 void mob::DrawInitialize(){
 
@@ -69,6 +76,8 @@ void mob::Update(){
 	move();
 	launchBullet();
 	mobbullet.HitObj();
+	mobbullet.MobToPlayer(this->atk);
+
 }
 void mob::move(){
 	const float mousespeed = 10;
@@ -173,9 +182,12 @@ void mob::launchBullet(){
 	float y=pow(position.y-get_player()->position.y,2);
 	float z=pow(position.z-get_player()->position.z,2);
 	float big=sqrt(x+y+z);
-	if(get_mousebutton_count(LEFT_BUTTON)==2)
+	float radi=atkrange*atkrange;
+	if(radi>=x+y+z&&movecount%30==0){
 		//mobbullet.setInfo(position,vec3(0, 1, 0));
 		mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
+		PlayMobMusic(myno);
+	}
 	mobbullet.Update();
 }
 

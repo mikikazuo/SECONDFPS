@@ -74,13 +74,22 @@ void bullet::PlayerToMob(){
 					bullet_info[j].count=0;
 					break;
 				}
-
-
 	}
 }
 
+void bullet::MobToPlayer(int atk){
+		for(int j=0;j<MAXBULLET;j++)
+			if(bullet_info[j].count)
+				if(	bulletmovechecker.pointVsPoint(get_player()->position,  bullet_info[j].position,1)){
+					get_player()->hp-=atk;
+					bullet_info[j].count=0;
+					break;
+				}
+
+}
+
 void bullet::Update(){
-	const float movespeed=10;
+	const float movespeed=30;
 	for(int i=0;i<MAXBULLET;i++)
 		if(bullet_info[i].count){
 			vec3 move_delta;

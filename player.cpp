@@ -22,6 +22,8 @@
 #include "Game.h"
 #include <SDL/SDL.h>
 #include "image.h"
+#include "sound.h"
+#include "sound.h"
 
 #define HP 100
 #define BULLETNUM 10
@@ -123,8 +125,6 @@ int wallhandle;
 #define LOOK_DISTANT 100           //見える距離
 
 checkObjectHit movechecker;
-OBB playercollider;
-
 
 //static GLfloat ground[][4] = {
 //		{ 0.6, 0.6, 0.6, 1.0 },
@@ -145,24 +145,18 @@ Wall *player::get_mywall(){
 
 player::player() {
 	// TODO 自動生成されたコンストラクター・スタブ
-	move=0;
 	dx=0;
 	dy=0;
-	theta =0;
-	position.x=0;
-	position.y=10;
-	position.z=-10;
-	bulletnum=BULLETNUM;
-	playercollider.setOBB(vec3(position.x,position.y,position.z),vec3(0.3f,3,0.3f));
-	length=0;
-	hp=HP;
-	atk=100;
 
 }
-void player::Initialize(){
+void player::Initialize(vec3 pos,float ra,int sethp,int setatk){
+
 	playerbullet.bullet_Initialize();
-	hp=HP;
+	position=pos;
+	hp=sethp;
+	atk=setatk;
 	bulletnum=BULLETNUM;
+	radi=ra;
 	//	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 	//		mywall[i].count=0;
 }
@@ -210,6 +204,7 @@ void player::Draw(){
 }
 
 void player::Update(){
+	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	launchBullet();
 	playerbullet.HitObj();
 	playerbullet.PlayerToMob();
@@ -217,6 +212,7 @@ void player::Update(){
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();
 	remove_wall();
+
 
 }
 //プレイヤーとあたり判定
@@ -231,9 +227,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	static bool jumpflag=false;
 	static bool hitheadflag=false;
-	//坂道登るフラグ
-	bool upflag=false;
-	bool upwall=false;
+
 
 	static float gravity;
 
@@ -267,12 +261,14 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	player_collider=position;
 	player_collider.x=sampposition.x;
 
-
+	//坂道登るフラグ
+	bool upflag=false;
+	bool upwall=false;
 	bool hitmap=false;
 	bool hitwall=false;
 
 	for(int i=0;i<mapn;i++)
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=1    ){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi    ){
 			upflag=true;
 			hitmap=true;
 			break;
@@ -280,7 +276,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	for(int j=0;j<WALLMAX;j++){
 		if(playerwall[j].count>0){
-			if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=1){
+			if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
 				upwall=true;
 				hitwall=true;
 				break;
@@ -303,7 +299,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	player_collider.z=sampposition.z;
 
 	for(int i=0;i<mapn;i++)
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=1){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			upflag=true;
 			hitmap=true;
 			break;
@@ -311,7 +307,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	for(int j=0;j<WALLMAX;j++)
 		if(playerwall[j].count>0)
-			if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=1){
+			if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
 				hitwall=true;
 				upwall=true;
 				break;
@@ -343,7 +339,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			//object 斜面約60°まで
 			player_collider.y=sampposition.y+0.001f*j;//0.01f;
 			for(i=0;i<mapn;i++){
-				if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=1){
+				if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 					break;
 				}
 				if(i==mapn-1)
@@ -365,11 +361,11 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	//頭部分
 	for(int i=0;i<mapn;i++){
-		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=1    ){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=radi    ){
 			hitheadflag=true;
 		}
 
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=1){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			jumpflag=false;
 			hitheadflag=false;
 			hitmap=true;
@@ -382,11 +378,11 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 				if(playerwall[j].count==0)
 					continue;
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=1    ){
+				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi    ){
 					hitheadflag=true;
 				}
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=1){
+				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
 					jumpflag=false;
 					hitheadflag=false;
 					hitmap=true;
@@ -408,7 +404,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	else
 		hitmap=true;
 
-	if(position.y<1){
+	if(position.y<radi){
 		position.y=1;
 		jumpflag=false;
 	}
@@ -515,9 +511,11 @@ void player::Action()
 }
 
 void player::launchBullet(){
-	if(get_mousebutton_count(LEFT_BUTTON)%10==1)
+	if(get_mousebutton_count(LEFT_BUTTON)%10==1){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
-	playerbullet.Update();
+		ChangeSE(1);
+	}
+		playerbullet.Update();
 }
 
 player::~player() {
