@@ -214,7 +214,6 @@ void player::Update(){
 	remove_wall();
 }
 
-//プレイヤーとあたり判定
 //obj:オブジェクト
 //mapn:オブジェクトの個数
 //playerwall:プレイヤーが生成した壁
@@ -276,10 +275,15 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	playerhead_collider	   = position;
 	playerhead_collider.y += 1;
 
+	//動作確認
+	printf("pc.x = %lf pc.y = %lf pc.z = %lf\n",player_collider.x,player_collider.y,player_collider.z);
 
 	//x座標における補正
 	player_collider   = position;
 	player_collider.x = sampposition.x;
+
+	//動作確認
+	printf("pc.x = %lf pc.y = %lf pc.z = %lf\n",player_collider.x,player_collider.y,player_collider.z);
 
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
@@ -315,14 +319,14 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	}
 
 	//動作確認??
-	printf("player_collider.z = %lf\n",player_collider.z);
+	//printf("player_collider.z = %lf\n",player_collider.z);
 
 	//z座標における補正
 	player_collider	  = position;
 	player_collider.z = sampposition.z;
 
 	//動作確認??
-	printf("player_collider.z = %lf\n",player_collider.z);
+	//printf("player_collider.z = %lf\n",player_collider.z);
 
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
@@ -379,7 +383,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 					break;
 				}
 				if(i == mapn-1)
-					position=player_collider;
+					position = player_collider;
 			}
 			//for文の最後で++(インクリメント)されてしまうため条件式に"=="を使用
 			if(i == mapn)
@@ -453,6 +457,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//動作確認??
 	printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
 
+	//なぜfalseを返す??
 	return false;
 
 }
