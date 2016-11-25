@@ -11,8 +11,8 @@
 #define NET_COMMON_H_
 
 #include <netinet/in.h>
-#include <player.h>
-#include <bullet.h>
+#include "player.h"
+#include "bullet.h"
 
 #define PORT	(u_short)8888	/* ポート番号 */
 #define MAX_CLIENTS	8	/* クライアント数の最大値 */

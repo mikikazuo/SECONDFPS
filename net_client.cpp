@@ -2,8 +2,17 @@
 クライアント
 ネットワーク設定と送受信
 ***********************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <errno.h>
 
-#include <net_common.h>
+#include "net_common.h"
 
 #define MAX_LEN_NAME 256
 
@@ -12,7 +21,7 @@ static int myid;
 static int sock;
 static int num_sock;
 static fd_set mask;
-static CLIENT clients[MAX_NUM_CLIENTS];
+static CLIENT clients[MAX_CLIENTS];
 
 void client_start();
 void setup_client(char *, u_short);
@@ -20,11 +29,11 @@ int control_requests();
 void terminate_client();
 
 
-static int input_command(void);
+//static int input_command(void);
 static int execute_command(void);
 static void send_data(void *, int);
 static int receive_data(void *, int);
-static void handle_error(char *);
+void handle_error();
 
 
 //ネットワーク接続の確立
@@ -34,12 +43,12 @@ void setup_client(char *server_name, u_short port) {
 
   fprintf(stderr, "Trying to connect server %s (port = %d).\n", server_name, port);
   if ((server = gethostbyname(server_name)) == NULL) {
-    handle_error("gethostbyname()");
+    handle_error();
   }
 
   sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
-    handle_error("socket()");
+    handle_error();
   }
 
   sv_addr.sin_family = AF_INET;
@@ -47,13 +56,13 @@ void setup_client(char *server_name, u_short port) {
   sv_addr.sin_addr.s_addr = *(u_int *)server->h_addr_list[0];
 
   if(connect(sock, (struct sockaddr *)&sv_addr, sizeof(sv_addr)) != 0) {
-    handle_error("connect()");
+    handle_error();
   }
 
   fprintf(stderr, "Input your name: ");
   char user_name[MAX_LEN_NAME];
   if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
-    handle_error("fgets()");
+    handle_error();
   }
   user_name[strlen(user_name) - 1] = '\0';
   send_data(user_name, MAX_LEN_NAME);
@@ -81,7 +90,7 @@ void client_start(void){
 
 	 sprintf(server_name,"local_host");
 
-	 setup_client(port,server_name);
+	 setup_client(server_name,port);
 }
 
 
@@ -94,7 +103,7 @@ int control_requests () {
   timeout.tv_usec = 30;
 
   if(select(num_sock, (fd_set *)&read_flag, NULL, NULL, &timeout) == -1) {
-    handle_error("select()");
+    handle_error();
   }
 
   int result = 1;
@@ -140,7 +149,7 @@ static void send_data(void *data, int size) {
   }
 
   if(write(sock, data, size) == -1) {
-    handle_error("write()");
+    handle_error();
   }
 }
 
@@ -156,8 +165,8 @@ static int receive_data(void *data, int size) {
 
 
 //エラー表示
-static void handle_error(char *message) {
-  perror(message);
+void handle_error() {
+  printf("エラーです...\n");
   fprintf(stderr, "%d\n", errno);
   exit(1);
 }
