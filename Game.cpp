@@ -94,17 +94,18 @@ Game::Game(ISceneChanger* changer) : BaseScene(changer) {
 void Game::Update(){
 	setInfoPlayerWall();
 
+	//追加??
+	//キャラクターの座標表示
+	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
 
 	player1.Update();
 	gamecanvas.Update();
 	mapobj.Update();
+
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
 		mober[i].Update();
 		setMobSound(i,mober[i].position);
 	}
-
-
-
 }
 
 
@@ -130,9 +131,6 @@ void Game::Draw(){
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();
 
-
-
-
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glPushMatrix();
@@ -148,29 +146,16 @@ void Game::Draw(){
 
 	glPopMatrix();
 
-
-
-
-
 	//////////////////3dここまで///////////////
 
 	gamecanvas.view2D();
 
 	gamecanvas.Draw();
 
-
-
-
-
 	glPopMatrix();// 現在のモデルビュー行列を保存
-
-
-
-
-
-
 }
 
+//マップクラスのアドレスを返す関数
 map *get_mapobj(){
 	return &mapobj;
 }

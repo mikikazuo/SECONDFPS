@@ -23,12 +23,11 @@
 #include <SDL/SDL.h>
 #include "image.h"
 #include "sound.h"
-#include "sound.h"
 
 #define HP 100
 #define BULLETNUM 10
 
-static int count=0;
+static int count = 0;
 static bool wrap = false;
 
 
@@ -37,6 +36,7 @@ Wall mywall[WALLMAX];
 SDL_Thread *thr;
 
 int wallhandle;
+
 ///ここから//////
 //#include <opencv/cv.h>
 //#if defined(WIN32)
@@ -122,7 +122,8 @@ int wallhandle;
 //}
 
 //////////////////////////////////
-#define LOOK_DISTANT 100           //見える距離
+
+#define LOOK_DISTANT 150           //見える距離
 
 checkObjectHit movechecker;
 
@@ -134,7 +135,7 @@ checkObjectHit movechecker;
 bullet playerbullet;
 GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納するFramebuffer object
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
-double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
+double m_fDepthSize[2];   //!< デプスを格納するテクスチャのサイズ
 
 
 
@@ -145,8 +146,8 @@ Wall *player::get_mywall(){
 
 player::player() {
 	// TODO 自動生成されたコンストラクター・スタブ
-	dx=0;
-	dy=0;
+	dx = 0;
+	dy = 0;
 
 }
 void player::Initialize(vec3 pos,float ra,int sethp,int setatk){
@@ -173,7 +174,6 @@ void player::DrawFinalize(){
 
 void player::Draw(){
 
-
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -191,10 +191,10 @@ void player::Draw(){
 
 
 
-	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	//	glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
-	//	glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
-	//	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+	//glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
+	//glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 
 
 	glMatrixMode(GL_MODELVIEW);
@@ -212,28 +212,38 @@ void player::Update(){
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();
 	remove_wall();
-
-
 }
+
 //プレイヤーとあたり判定
+//obj:オブジェクト
+//mapn:オブジェクトの個数
+//playerwall:プレイヤーが生成した壁
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
+	//キャラクターの移動速度
 	const float movespeed = 7;
 
+	//動作確認?
+	//printf("mapn = %d\n",mapn);
 
-	// Calculate movement vectors
+	//printf("ABCDE\n");
+
+	//Calculate movement vectors
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+	vec3 right_dir   = vec3(-forward_dir.z, 0, forward_dir.x);
 
-	static bool jumpflag=false;
-	static bool hitheadflag=false;
+	static bool jumpflag    = false;
+	static bool hitheadflag = false;
 
 
+	//重力
 	static float gravity;
 
+	//キャラクターの座標を格納
 	vec3 sampposition;
-	sampposition=position;
+	sampposition = position;
 
+	//移動
 	if(key_getmove(Left))
 		sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
 	if(key_getmove(Right) )
@@ -242,82 +252,100 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 	if(key_getmove(Backward))
 		sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if((key_getmove(Jump))&&!jumpflag&&!hitheadflag){
-		jumpflag=true;
-		gravity=0;
 
+	//ジャンプ許可判定
+	if((key_getmove(Jump)) && !jumpflag && !hitheadflag){
+		jumpflag = true;
+		gravity  = 0;
 	}
 
-
-	//ジャンプ
-	if(jumpflag&&!hitheadflag)
+	//ジャンプ実行(初期値8)
+	if(jumpflag && !hitheadflag)
 		sampposition.y += (8 * get_mainfps().fps_getDeltaTime());
 
-	playerhead_collider=position;
-	playerhead_collider.y+=1;
+	//頭部の当たり判定(y座標は+1)
+	playerhead_collider	   = position;
+	playerhead_collider.y += 1;
 
 
 	//x座標における補正
-	player_collider=position;
-	player_collider.x=sampposition.x;
+	player_collider   = position;
+	player_collider.x = sampposition.x;
 
 	//坂道登るフラグ
-	bool upflag=false;
-	bool upwall=false;
-	bool hitmap=false;
-	bool hitwall=false;
+	bool upflag  = false;
+	//キャラクターが生成した壁に上るフラグ
+	bool upwall  = false;
+	//オブジェクトとの当たり判定フラグ
+	bool hitmap  = false;
+	//プレイヤーが生成した壁との当たり判定フラグ
+	bool hitwall = false;
 
+	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi    ){
-			upflag=true;
-			hitmap=true;
+		if(	movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
+			upflag = true;
+			hitmap = true;
 			break;
 		}
 
+	//プレイヤーが生成した壁との当たり判定
 	for(int j=0;j<WALLMAX;j++){
-		if(playerwall[j].count>0){
-			if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
-				upwall=true;
-				hitwall=true;
+		if(playerwall[j].count > 0){
+			if(	movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
+				upwall  = true;
+				hitwall = true;
 				break;
 			}
 		}
 	}
 
+	//動作確認??
+	printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
 
-
-	if(!hitmap&&!hitwall)
-		position.x=player_collider.x;
+	//オブジェクトにも壁にも当たっていないとき
+	if(!hitmap && !hitwall){
+		//何の処理??
+		position.x = player_collider.x;
+	}
 	else{
-		hitmap=false;
-		hitwall=false;
+		hitmap  = false;
+		hitwall = false;
 	}
 
+	//動作確認??
+	printf("player_collider.z = %lf\n",player_collider.z);
+
 	//z座標における補正
+	player_collider	  = position;
+	player_collider.z = sampposition.z;
 
-	player_collider=position;
-	player_collider.z=sampposition.z;
+	//動作確認??
+	printf("player_collider.z = %lf\n",player_collider.z);
 
+	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
 		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-			upflag=true;
-			hitmap=true;
+			upflag = true;
+			hitmap = true;
 			break;
 		}
 
+	//プレイヤーが生成した壁との当たり判定
 	for(int j=0;j<WALLMAX;j++)
 		if(playerwall[j].count>0)
 			if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
-				hitwall=true;
-				upwall=true;
+				hitwall = true;
+				upwall  = true;
 				break;
 			}
 
-	if(!hitmap&&!hitwall)
-		position.z=player_collider.z;
+	//オブジェクトにも壁にも当たっていなとき
+	if(!hitmap && !hitwall)
+		position.z = player_collider.z;
 	else{
-		hitmap=false;
-		hitwall=false;
+		hitmap  = false;
+		hitwall = false;
 	}
 
 
@@ -331,48 +359,51 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 
 	int i;
-	if(upflag&&!upwall){
+	if(upflag && !upwall){
+		//なぜ700回ループ??
 		for(int j=0;j<700;j++){
-			player_collider=position;
-			player_collider.x=sampposition.x;
-			player_collider.z=sampposition.z;
+			player_collider	  = position;
+			player_collider.x = sampposition.x;
+			player_collider.z = sampposition.z;
 			//object 斜面約60°まで
-			player_collider.y=sampposition.y+0.001f*j;//0.01f;
+			player_collider.y = sampposition.y + 0.001f*j;//0.01f;
 			for(i=0;i<mapn;i++){
-				if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+				if(	movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
 					break;
 				}
-				if(i==mapn-1)
+				if(i == mapn-1)
 					position=player_collider;
 			}
 			//for文の最後で++されてしまうため==
-			if(i==mapn)
+			if(i == mapn)
 				break;
 		}
 	}
 
-	gravity+=0.3f;
-	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+	gravity += 0.3f;
+	sampposition.y -= (gravity*get_mainfps().fps_getDeltaTime());
 
 
 	//y座標の補正
-	player_collider=position;
-	player_collider.y=sampposition.y;
+	player_collider	  = position;
+	player_collider.y = sampposition.y;
 
-	//頭部分
+	//頭部
 	for(int i=0;i<mapn;i++){
-		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=radi    ){
-			hitheadflag=true;
+		//キャラクターの頭部とオブジェクトとの当たり判定
+		if(movechecker.LenOBBToPoint(mapobject[i],playerhead_collider) <= radi){
+			hitheadflag = true;
 		}
 
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-			jumpflag=false;
-			hitheadflag=false;
-			hitmap=true;
-			gravity=0;
+		//キャラクターの頭部と生成された壁との当たり判定
+		if(movechecker.LenOBBToPoint(mapobject[i],player_collider) <= radi){
+			jumpflag 	= false;
+			hitheadflag = false;
+			hitmap 		= true;
+			gravity 	= 0;
 			break;
 		}
-		if(i==mapn-1){
+		if(i == mapn-1){
 
 			for(int j=0;j<WALLMAX;j++){
 				if(playerwall[j].count==0)
@@ -383,36 +414,37 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 				}
 
 				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
-					jumpflag=false;
-					hitheadflag=false;
-					hitmap=true;
-					gravity=0;
+					jumpflag	= false;
+					hitheadflag	= false;
+					hitmap		= true;
+					gravity		= 0;
 					break;
 				}
-				if(j==WALLMAX-1)
-					hitmap=false;
+				if(j == WALLMAX-1)
+					hitmap = false;
 			}
 		}
 	}
 
-
-
-
-
-	if(hitmap==false)
-		position.y=player_collider.y;
+	//オブジェクトに当たっていないとき
+	if(hitmap == false)
+		position.y = player_collider.y;
 	else
-		hitmap=true;
+		hitmap = true;
 
-	if(position.y<radi){
-		position.y=1;
-		jumpflag=false;
+	//何の処理??
+	if(position.y < radi){
+		position.y = 1;
+		jumpflag   = false;
 	}
 
+	//動作確認??
+	printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
 
 	return false;
 
 }
+
 void player::set_wall(){
 	if(key_getmove(Setwall)==2)
 		for(int i=0;i<WALLMAX;i++)
@@ -430,7 +462,7 @@ void player::remove_wall(){
 	if(key_getmove(Removewall)==2)
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count!=0)
-				if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
+				if(	movechecker.LenOBBToPoint(mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
 					mywall[i].count=0;
 				}
 

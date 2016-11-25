@@ -111,12 +111,16 @@ map::~map() {
 object *map::get_obj(){
 	return obj;
 }
+
+//オブジェクトの数を返す変数
 int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
+
 void map::Initialize(){
 
 }
+
 void map::DrawInitialize(){
 //描画初期化関数
 	handle[0]=image_Load("Data/image/capture2.png");
@@ -164,7 +168,7 @@ void map::Update(){
 	static int dirs[]   = {1,1,1,1,1,1};
 
 	count++;
-	if(count >= 300){
+	//if(count >= 300){
 	counts[1]++;
 	counts[2]++;
 
@@ -185,23 +189,24 @@ void map::Update(){
 
 	//周期なし counts[0] dirs[0]
 
-	//移動
-	obj[4].move(2*dir,2*dir,0);
-
-	//回転
+	/***回転***/
 	obj[5].rotate(60*dir,20*dir,40*dir);
 	obj[6].rotate(20*dir,20*dir,10*dir);
 
+	/***移動***/
+	obj[4].move(2*dir,2*dir,0);
+
+	//動作確認
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 
-	//高台へのエレベーター(特定座標まで上下)
+	//高台へのエレベーター(特定座標間を上下)
 	obj[18].ud_move(3.5,-3,23,-1);
 	obj[20].ud_move(3.5,-3,23,-1);
 
-	//天空足場へのエレベーター(上方向のみの移動)
+	//天空足場へのエレベーター(特定座標間を上方向のみで移動)
 	obj[34].one_way_move(2.0,14,23,1);
 
-	}
+	//}
 }
 
 void map::Draw(){
