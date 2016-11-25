@@ -16,13 +16,39 @@
 
 #define PORT	(u_short)8888	/* ポート番号 */
 #define MAX_CLIENTS	8	/* クライアント数の最大値 */
+#define MAX_LEN_NAME 20
+
+
+
 
 //コマンド
 #define QUIT_GAME 'Q'//終了コマンド
 #define DATA 'D' //データ全般ですよコマンド
 
+#define BROADCAST -1//全送信
+
 typedef struct{
-	int cid;
+	float x;
+	float y;
+	float z;
+}v3;//vec3互換
+
+typedef struct{
+	int count;
+	v3 obj_pos;
+	v3 obj_size;
+	v3 obj_rot;
+}wall2;//Wall互換
+
+typedef struct{
+	int count;
+	v3 pos;
+	v3 dir;
+}shot2;//Shot互換
+
+typedef struct{
+	int cid;//ID
+	char name[MAX_LEN_NAME];//名前
 	int sock;
 	struct sockaddr_in addr;
 }CLIENT;
@@ -30,16 +56,16 @@ typedef struct{
 typedef struct{
 	int hp;//HP
 	int atk;//攻撃力
-	vec3 position;//位置
-	vec3 angles;//向き
-	vec3 lookat;//視点
-	vec3 playerhead_collider;//プレイヤー頭当たり判定？
-	vec3 player_colider;//プレイヤー当たり判定？
-	Wall mywall[WALLMAX];
+	v3 position;//位置
+	v3 angles;//向き
+	v3 lookat;//視点
+	v3 playerhead_collider;//プレイヤー頭当たり判定？
+	v3 player_colider;//プレイヤー当たり判定？
+	wall2 mywall[WALLMAX];
 }PLAYER_DATA;
 
 typedef struct{
-	Shot bullet_info;
+	shot2 bullet_info;
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ

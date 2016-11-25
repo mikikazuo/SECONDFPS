@@ -14,8 +14,6 @@
 
 #include "net_common.h"
 
-#define MAX_LEN_NAME 256
-
 static int num_clients;
 static int myid;
 static int sock;
