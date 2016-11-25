@@ -23,6 +23,7 @@
 
 checkObjectHit mobhitobj;
 MQO_MODEL mobmqo;
+MQO_MODEL pre_mobmqo[10];
 
 
 
@@ -42,7 +43,6 @@ int GetRandom(int min,int max)
 mob::mob() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
-	dir=GetRandom(0,3);
 	flag=0;
 
 }
@@ -65,11 +65,22 @@ void mob::Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkr
 	atkrange=setatkrange;
 
 }
-void mob::DrawInitialize(){
+void mob::DrawInitialize(char *filename){
+	static char *flname='\0';
+	static int mqonum;
+	if(flname!=filename){
+		flname=filename;
+		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0035);
+		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
+	}
+}
 
-	char *flname=(char*)"Data/a/a.mqo";
-	mobmqo=mqoCreateModel(flname,0.0035);
-
+void mob::DrawFinalize(){
+	for(int i=0;(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));i++)
+		if(pre_mobmqo[i]!=NULL){
+			mqoDeleteModel( pre_mobmqo[i]);
+			pre_mobmqo[i]=NULL;
+		}
 }
 void mob::Update(){
 	movecount++;
@@ -86,11 +97,10 @@ void mob::move(){
 
 	if(movecount%(60*1)==0)
 		dx=GetRandom(-10,10);
-	if(flag>10)
-		angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
-	else{
-		angles.x -= 0* mousespeed*get_mainfps().fps_getDeltaTime();
-	}
+
+	angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
+
+
 
 	dx=0;
 	if(angles.x < -M_PI)
@@ -136,10 +146,10 @@ void mob::move(){
 
 	}
 
-//	static float gravity;
-//	gravity+=0.3f;
-//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
-//
+	//	static float gravity;
+	//	gravity+=0.3f;
+	//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+	//
 
 	position=sampposition;
 
@@ -166,7 +176,7 @@ void mob::Draw(){
 
 	glTranslatef(x,y,z);
 
-			glutSolidSphere( 1, 50, 50 );
+	glutSolidSphere( 1, 50, 50 );
 
 	glRotated(angles.x * 180 /M_PI ,0,1,0);
 

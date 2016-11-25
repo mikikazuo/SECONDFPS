@@ -30,7 +30,7 @@ typedef struct {
 class bullet : public OBB{
 private:
 	Shot bullet_info[MAXBULLET];
-	OBB bulletcollider[MAXBULLET];
+
 public:
 	bullet();
 	void bullet_Initialize();

@@ -33,7 +33,6 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 			if(bullet_info[i].count==0){
 				bullet_info[i].position=playerposition;
 				bullet_info[i].dir=playerdir;
-				bulletcollider[i].setOBB((vec3)bullet_info[i].position,vec3(1,1,1));
 				bullet_info[i].count++;
 				break;
 			}

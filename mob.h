@@ -18,7 +18,6 @@ private:
 	float radi;
 	int myno;
 
-	int dir;
 	float dx;
 	int movecount;
 	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
@@ -34,7 +33,8 @@ public:
 	mob();
 	virtual ~mob();
 	void Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange);
-	void DrawInitialize();
+	void DrawInitialize(char *filename);
+	void DrawFinalize();
 	void Update();
 	void move();
 	void Draw();

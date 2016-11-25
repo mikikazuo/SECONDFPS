@@ -32,7 +32,7 @@ static int count=0;
 static bool wrap = false;
 
 
-Wall mywall[WALLMAX];
+
 
 SDL_Thread *thr;
 
@@ -242,6 +242,13 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 	if(key_getmove(Backward))
 		sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+
+	playerfoot_collider=position;
+	playerfoot_collider.y-=0.7;
+
+	bool foothit;
+	foothit=movechecker.sethitcheck(mapn, mapobject,playerfoot_collider,0.5f);
+
 	if((key_getmove(Jump))&&!jumpflag&&!hitheadflag){
 		jumpflag=true;
 		gravity=0;
@@ -255,6 +262,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	playerhead_collider=position;
 	playerhead_collider.y+=1;
+
 
 
 	//x座標における補正
@@ -331,24 +339,108 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 
 	int i;
-	if(upflag&&!upwall){
-		for(int j=0;j<700;j++){
-			player_collider=position;
-			player_collider.x=sampposition.x;
-			player_collider.z=sampposition.z;
-			//object 斜面約60°まで
-			player_collider.y=sampposition.y+0.001f*j;//0.01f;
-			for(i=0;i<mapn;i++){
-				if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+	if(foothit){
+		if(upflag&&!upwall)
+			for(int j=0;j<100;j++){
+				player_collider=position;
+				player_collider.x=sampposition.x;
+				player_collider.z=sampposition.z;
+				//object 斜面約40°まで
+				player_collider.y=sampposition.y+0.001f*j;//0.01f;
+				for(i=0;i<mapn;i++){
+					if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+						break;
+					}
+					if(i==mapn-1)
+						position=player_collider;
+				}
+				//for文の最後で++されてしまうため==
+				if(i==mapn)
+					break;
+			}
+
+	}else if(upflag){
+		for(int i=0;i<500;i++)
+			for(int j=0;j<8;j++){
+				player_collider=position;
+
+				switch(i){
+				case 0:
+					player_collider.x+=0.001f*i;
+					break;
+				case 1:
+					player_collider.x-=0.001f*i;
+					break;
+				case 2:
+					player_collider.z+=0.001f*i;
+					break;
+				case 3:
+					player_collider.z-=0.001f*i;
+					break;
+				case 4:
+					player_collider.x+=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 5:
+					player_collider.x-=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 6:
+					player_collider.x-=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+				case 7:
+					player_collider.x+=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+
+				}
+				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
+					position=player_collider;
 					break;
 				}
-				if(i==mapn-1)
-					position=player_collider;
 			}
-			//for文の最後で++されてしまうため==
-			if(i==mapn)
-				break;
-		}
+	}else if(upwall){
+		for(int i=0;i<500;i++)
+			for(int j=0;j<8;j++){
+				player_collider=position;
+
+				switch(i){
+				case 0:
+					player_collider.x+=0.001f*i;
+					break;
+				case 1:
+					player_collider.x-=0.001f*i;
+					break;
+				case 2:
+					player_collider.z+=0.001f*i;
+					break;
+				case 3:
+					player_collider.z-=0.001f*i;
+					break;
+				case 4:
+					player_collider.x+=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 5:
+					player_collider.x-=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 6:
+					player_collider.x-=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+				case 7:
+					player_collider.x+=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+
+				}
+				if(!movechecker.sethitcheck(mapn,playerwall,player_collider,radi)){
+					position=player_collider;
+					break;
+				}
+			}
 	}
 
 	gravity+=0.3f;
@@ -515,7 +607,7 @@ void player::launchBullet(){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 		ChangeSE(1);
 	}
-		playerbullet.Update();
+	playerbullet.Update();
 }
 
 player::~player() {

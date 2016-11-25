@@ -18,7 +18,7 @@ checkObjectHit::~checkObjectHit() {
 	// TODO Auto-generated destructor stub
 }
 
-//１：壁やマップオブジェクトの数　２：壁やオブジェクトそのもの　３：点座標  4：点座標から広がる半径
+//１：マップオブジェクトの数　２：壁やオブジェクトそのもの　３：点座標  4：点座標から広がる半径
 bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
 	bool hit=false;
 

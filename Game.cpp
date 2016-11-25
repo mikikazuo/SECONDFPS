@@ -77,13 +77,14 @@ void Game::DrawInitialize(){
 	char *flname=(char*)"Data/a/char4.mqo";
 	mqomodel=mqoCreateModel(flname,0.0035);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].DrawInitialize();
+		mober[i].DrawInitialize("Data/a/a.mqo");
 }
 
 void Game::DrawFinalize(){
 	gamecanvas.DrawFinalize();
 	mapobj.DrawFinalize();
 	player1.DrawFinalize();
+	mober[0].DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {

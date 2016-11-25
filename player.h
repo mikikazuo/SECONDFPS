@@ -41,7 +41,9 @@ public:
 	vec3 playerhead_collider;
 	//プレイヤーの身体のあたり判定
 	vec3 player_collider;
-
+	//プレイヤーの足元のあたり判定
+	vec3 playerfoot_collider;
+	Wall mywall[WALLMAX];
 
 	Wall *get_mywall();
 	player();
