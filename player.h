@@ -29,13 +29,16 @@ private:
 
 	int bulletnum;
 public:
-	int hp;
+	float maxhp;
+	float hp;
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
 	float dx,dy;
-	int atk;
+	float atk;
 	int radi;
+
+	Team myteam;
 
 	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;
@@ -47,7 +50,7 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,int sethp,int setatk);
+	void Initialize(vec3 pos,float ra,float sethp,int setatk,Team setteam);
 	void DrawInitialize();
 	void DrawFinalize();
 	void Draw();

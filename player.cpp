@@ -18,7 +18,6 @@
 #include "checkObjectHit.h"
 #include "object.h"
 #include "bullet.h"
-//#include <X11/Xlib.h>
 #include "Game.h"
 #include <SDL/SDL.h>
 #include "image.h"
@@ -149,14 +148,15 @@ player::player() {
 	dy=0;
 
 }
-void player::Initialize(vec3 pos,float ra,int sethp,int setatk){
+void player::Initialize(vec3 pos,float ra,float sethp,int setatk,Team setteam){
 
 	playerbullet.bullet_Initialize();
 	position=pos;
-	hp=sethp;
+	hp=maxhp=sethp;
 	atk=setatk;
 	bulletnum=BULLETNUM;
 	radi=ra;
+	myteam=setteam;
 	//	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 	//		mywall[i].count=0;
 }
@@ -206,7 +206,10 @@ void player::Draw(){
 void player::Update(){
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	launchBullet();
-	playerbullet.HitObj();
+	if(myteam==RedTeam)
+		playerbullet.HitObj(BlueTeam,atk);
+	else
+		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
 	MouseMove();
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
@@ -436,7 +439,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 					break;
 
 				}
-				if(!movechecker.sethitcheck(mapn,playerwall,player_collider,radi)){
+				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
 					position=player_collider;
 					break;
 				}

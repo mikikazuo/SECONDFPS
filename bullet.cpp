@@ -29,15 +29,16 @@ void bullet::bullet_Initialize(){
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
 
-		for(int i=0;i<MAXBULLET;i++)
-			if(bullet_info[i].count==0){
-				bullet_info[i].position=playerposition;
-				bullet_info[i].dir=playerdir;
-				bullet_info[i].count++;
-				break;
-			}
+	for(int i=0;i<MAXBULLET;i++)
+		if(bullet_info[i].count==0){
+			bullet_info[i].position=playerposition;
+			bullet_info[i].dir=playerdir;
+			bullet_info[i].count++;
+			break;
+		}
 }
 
+//mobの弾専用（拠点にダメージを与えない）
 void bullet::HitObj(){
 	object *mapobject=get_mapobj()->get_obj();
 	int mapn=get_mapobj()->get_objnum();
@@ -56,13 +57,49 @@ void bullet::HitObj(){
 		for(int j=0;j<MAXBULLET;j++)
 			if(playerwall[i].count)
 				if(bullet_info[j].count)
-				if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
-					bullet_info[j].count=0;
-					break;
-				}
+					if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
+						bullet_info[j].count=0;
+						break;
+					}
 
 
 	}
+}
+//プレイヤーの弾専用(拠点にダメージを与える
+void bullet::HitObj(Team enemyteam,float atk){
+	object *mapobject=get_mapobj()->get_obj();
+	int mapn=get_mapobj()->get_objnum();
+	Wall *playerwall=get_allplayerwall()[0];
+
+	for(int i=0;i<mapn;i++){
+		for(int j=0;j<MAXBULLET;j++)
+			if(bullet_info[j].count)
+				if(bulletmovechecker.LenOBBToPoint( mapobject[i],  bullet_info[j].position)==0    ){
+					for(int k=0;k<BASENUM;k++){
+						if(get_mapobj()->get_Base(enemyteam)[k]==i){
+							printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
+							get_mapobj()->minus_BaseHp(enemyteam,atk);
+							break;
+						}
+					}
+					bullet_info[j].count=0;
+					break;
+				}
+	}
+
+	for(int i=0;i<WALLMAX;i++){
+		for(int j=0;j<MAXBULLET;j++)
+			if(playerwall[i].count)
+				if(bullet_info[j].count)
+					if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
+						bullet_info[j].count=0;
+						break;
+					}
+
+
+	}
+
+
 }
 void bullet::PlayerToMob(){
 	for(int i=0;i<get_mobernum();i++){
@@ -77,13 +114,13 @@ void bullet::PlayerToMob(){
 }
 
 void bullet::MobToPlayer(int atk){
-		for(int j=0;j<MAXBULLET;j++)
-			if(bullet_info[j].count)
-				if(	bulletmovechecker.pointVsPoint(get_player()->position,  bullet_info[j].position,1)){
-					get_player()->hp-=atk;
-					bullet_info[j].count=0;
-					break;
-				}
+	for(int j=0;j<MAXBULLET;j++)
+		if(bullet_info[j].count)
+			if(	bulletmovechecker.pointVsPoint(get_player()->position,  bullet_info[j].position,1)){
+				get_player()->hp-=atk;
+				bullet_info[j].count=0;
+				break;
+			}
 
 }
 

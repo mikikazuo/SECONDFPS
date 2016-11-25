@@ -24,7 +24,7 @@
 #define PLAYERNUM 5
 
 
-MQO_MODEL mqomodel;
+MQO_MODEL mqomodel[7];
 
 player player1;
 mob mober[10];
@@ -60,9 +60,9 @@ void Game::Initialize(){
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize(vec3(20,10,-10),1,100,100);
+	player1.Initialize(vec3(20,10,-10),1,100,1,RedTeam);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,1,-5),1,100,10,20);
+		mober[i].Initialize(i,vec3(-10,1,-5),1,100,1,20);
 }
 
 void Game::DrawInitialize(){
@@ -74,8 +74,23 @@ void Game::DrawInitialize(){
 	player1.DrawInitialize();
 
 
-	char *flname=(char*)"Data/a/char4.mqo";
-	mqomodel=mqoCreateModel(flname,0.0035);
+	char *flname=(char*)"Data/charamodel/char1/char1_exp.mqo";
+	mqomodel[0]=mqoCreateModel(flname,0.0035);
+
+	flname=(char*)"Data/charamodel/char2/char2_exp.mqo";
+	mqomodel[1]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char3/char3_exp.mqo";
+	mqomodel[2]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char4/char4_exp.mqo";
+	mqomodel[3]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char4/char4_exp.mqo";
+	mqomodel[4]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char6/char6_exp.mqo";
+	mqomodel[5]=mqoCreateModel(flname,0.0035);
+//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
+//	mqomodel[6]=mqoCreateModel(flname,0.0035);
+
+
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].DrawInitialize("Data/a/a.mqo");
 }
@@ -136,14 +151,20 @@ void Game::Draw(){
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glPushMatrix();
+
 
 	glColor3f(0.5,0.5,0.5);
-	glTranslated(5,0,-8);
-	glRotated(180,0,1,0);
-	mqoCallModel(mqomodel );
 
-	glPopMatrix();
+	for(int i=0;i<6;i++){
+		glPushMatrix();
+		glTranslated(5+i*5,1,-8);
+		glRotated(180,0,1,0);
+
+		mqoCallModel(mqomodel[i]);
+		glPopMatrix();
+	}
+
+
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 

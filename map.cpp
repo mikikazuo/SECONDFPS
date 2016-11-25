@@ -9,6 +9,7 @@
 
 #include "image.h"
 
+
 object obj[]={
 		//関数objectの引数:
 		//座標・各座標におけるサイズ・回転・色(テクスチャを貼らない場合)
@@ -114,11 +115,36 @@ object *map::get_obj(){
 int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
-void map::Initialize(){
 
+//拠点にするobjectの添字を設定
+void map::set_Base(Team team,int objectno){
+	for(int j=0;j<BASENUM;j++){
+		if(baseno[team][j]==-1)
+			baseno[team][j]=objectno;
+	}
+}
+
+int *map::get_Base(Team enemyteam){
+	return baseno[enemyteam];
+}
+
+void map::minus_BaseHp(Team attacedteam,float atk){
+	basehp[attacedteam]-=atk;
+}
+
+void map::Initialize(){
+	for(int i=0;i<NoneTeam;i++)
+		basehp[i]=basemaxhp[i]=BASEHP;
+
+	for(int i=0;i<NoneTeam;i++)
+		for(int j=0;j<BASENUM;j++)
+			baseno[i][j]=-1;
+
+	set_Base(RedTeam,13);
+	set_Base(BlueTeam,14);
 }
 void map::DrawInitialize(){
-//描画初期化関数
+	//描画初期化関数
 	handle[0]=image_Load("Data/image/capture2.png");
 	handle[1]=image_Load("Data/image/2079.jpg");
 	handle[2]=image_Load("Data/image/20791.jpg");
@@ -155,7 +181,7 @@ void map::DrawFinalize(){
 }
 
 void map::Update(){
-//オブジェクトの移動・回転
+	//オブジェクトの移動・回転
 
 	static int dir = 1;
 
@@ -175,8 +201,8 @@ void map::Update(){
 
 	//周期7秒
 	if(counts[1] % 420 == 0){
-			dirs[1] *= -1;
-		}
+		dirs[1] *= -1;
+	}
 
 	/*** 周期一覧 ***/
 	//4秒 count

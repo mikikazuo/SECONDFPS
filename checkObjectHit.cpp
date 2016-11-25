@@ -34,6 +34,7 @@ bool checkObjectHit::sethitcheck(int num,Wall *obb,vec3 pointpos,float radi){
 	bool hit=false;
 
 	for(int i=0;i<num;i++)
+		if(obb[i].count>0)
 		if(	LenOBBToPoint( obb[i].wall,  pointpos)<=radi ){
 			hit=true;
 			break;

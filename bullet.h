@@ -35,6 +35,7 @@ public:
 	bullet();
 	void bullet_Initialize();
 	void HitObj();
+	void HitObj(Team enemyteam,float atk);
 	void PlayerToMob();
 	void MobToPlayer(int atk);
 	void setInfo(vec3 playerposition,vec3 playerdir);

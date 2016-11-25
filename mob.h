@@ -22,17 +22,20 @@ private:
 	int movecount;
 	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
 	float atkrange;
+	bool hitmap;
+	bool hitwall;
 public:
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
-	int hp;
-	int atk;
+	float hp;
+	float maxhp;
+	float atk;
 
 
 	mob();
 	virtual ~mob();
-	void Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange);
+	void Initialize(int no,vec3 pos,float ra,float sethp,float setatk,float setatkrange);
 	void DrawInitialize(char *filename);
 	void DrawFinalize();
 	void Update();

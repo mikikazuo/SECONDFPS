@@ -52,7 +52,7 @@ mob::~mob() {
 }
 
 //位置、当たり半径、HP,攻撃力
-void mob::Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange){
+void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,float setatkrange){
 	dx=GetRandom(1,100);
 	movecount=0;
 	myno=no;
@@ -60,7 +60,7 @@ void mob::Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkr
 	position=pos;
 	mobbullet.bullet_Initialize();
 	radi=ra;
-	hp=sethp;
+	hp=maxhp=sethp;
 	atk=setatk;
 	atkrange=setatkrange;
 
@@ -126,7 +126,8 @@ void mob::move(){
 
 
 	//マップに衝突時向きを反転
-	if(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,1)){
+	if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+			mobhitobj.sethitcheck(WALLMAX,get_allplayerwall()[0],sampposition,radi))	){
 		angles.x -= M_PI;
 		if(angles.x < -M_PI)
 			angles.x += M_PI * 2;
@@ -136,15 +137,17 @@ void mob::move(){
 		vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 		//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
-
+		this->hitmap=true;
 
 		vec3 sampposition;
 		sampposition=position;
-
-
 		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 
-	}
+	}else
+		this->hitmap=false;
+
+
+
 
 	//	static float gravity;
 	//	gravity+=0.3f;
