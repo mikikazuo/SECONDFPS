@@ -13,10 +13,10 @@
 
 
 //ライトの位置
-static GLfloat lightpos[] = { 10.0, 10.0, 50,0 }; /* 光源の位置 */
-static GLfloat lightDiffuse[3]  = { 1.0,   1.0, 1.0  }; //拡散光
-static GLfloat lightAmbient[3]  = {  1.0,   1.0, 1.0  }; //環境光
-static GLfloat lightSpecular[3] = { 1.0,   1.0, 1.0  }; //鏡面光
+static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0 }; /* 光源の位置 */
+static GLfloat lightDiffuse[3]  = { 1.0,  1.0, 1.0  }; //拡散光
+static GLfloat lightAmbient[3]  = { 1.0,  1.0, 1.0  }; //環境光
+static GLfloat lightSpecular[3] = { 1.0,  1.0, 1.0  }; //鏡面光
 
 double const texture_repos=0;
 
@@ -327,13 +327,46 @@ void object::Line3D(float x1,float y1,float z1,float x2,float y2,float z2){
 	glLineWidth(1.0);
 }
 
+//オブジェクトの座標を取得する関数
 vec3 object::get_m_Pos(){
 	return this->m_Pos;
 }
 
+//オブジェクトの座標を書き換える関数
 void object::set_m_Pos(vec3 Pos){
 	this->m_Pos.x = Pos.x;
 	this->m_Pos.y = Pos.y;
 	this->m_Pos.z = Pos.z;
+}
+
+//オブジェクトの各軸方向の長さを取得する関数
+vec3 object::get_Radius(){
+	return this->Radius;
+}
+
+//オブジェクトを特定の座標まで上下させる関数
+//dir : 1(正方向) -1(負方向)
+void object::ud_move(float speed,float up,float down,int dir){
+	static int y_dir = dir;
+	//printf("y_dir = %d\n",y_dir);
+
+	vec3 temp = get_m_Pos();	//オブジェクトの座標
+	vec3 rad  = get_Radius();	//オブジェクトの各軸方向の長さ
+
+	//オブジェクトの上面で方向を管理
+	if((y_dir == 1 && temp.y + rad.y/2 >= up) || (y_dir == -1 && temp.y + rad.y/2 <= down)){
+			y_dir *= -1;
+	}
+
+	//オブジェクトの中心で方向を管理(不要)
+	/*if((y_dir == 1 && temp.y >= up) || (y_dir == -1 && temp.y <= down)){
+		y_dir *= -1;
+	}*/
+
+	//移動
+	move(0,speed*y_dir,0);
+
+	//動作確認
+	//printf("y_dir = %d temp.y = %lf up = %lf\n",y_dir,temp.y,up);
 }
 

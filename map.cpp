@@ -60,13 +60,13 @@ object obj[]={
 		//高台 前方(赤) 17
 		object(vec3(49,10,-49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
-		object(vec3(49,-25,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(49,-13,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//object(vec3(48.5,1,-41.5),vec3(2,2,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//高台 後方(青) 19
 		object(vec3(-49,10,49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
-		object(vec3(-49,-25,45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		object(vec3(-49,-13,45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//中央柱 21
 		,object(vec3(0,10,0),vec3(2,20,2),vec3(0,45,0),vec4(0.5f,0.5f,0.5f,1))
@@ -164,6 +164,7 @@ void map::Update(){
 	static int dirs[]   = {1,1,1,1,1,1};
 
 	count++;
+	if(count >= 300){
 	counts[1]++;
 	counts[2]++;
 
@@ -191,22 +192,25 @@ void map::Update(){
 	obj[5].rotate(60*dir,20*dir,40*dir);
 	obj[6].rotate(20*dir,20*dir,10*dir);
 
-	//追加??
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
-	obj[18].move(0,3.5*dirs[1],0);
-	obj[20].move(0,3.5*dirs[1],0);
+
+	//高台へのエレベーター(特定座標まで上下)
+	obj[18].ud_move(3.5,23,-3,-1);
+	obj[20].ud_move(3.5,23,-3,-1);
 
 	//天空足場へのエレベーター
 	obj[34].move(0,2.0*dirs[0],0);
 
-	vec3 temp;
+	vec3 temp;	//オブジェクトの座標書き換えに使用
 
-	if(obj[34].get_m_Pos().y >= 20){
+	if(obj[34].get_m_Pos().y >= 25){
 		temp = obj[34].get_m_Pos();
 		temp.y = 14;
 		obj[34].set_m_Pos(temp);
 	}
+	}
 }
+
 void map::Draw(){
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
