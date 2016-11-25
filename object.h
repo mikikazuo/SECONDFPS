@@ -38,8 +38,12 @@ public:
 	vec3 get_Radius();
 	//特定の高さまでオブジェクトを上下させる関数
 	void ud_move(float speed,float down,float up,int dir);
+	//オブジェクトを特定の座標間で移動させる関数(x方向)
+	void x_side_move(float speed,float left,float right,int dir);
 	//オブジェクトを特定の空間で単一方向に移動させる関数(y軸方向)
 	void one_way_move(float speed,float down,float up,int dir);
+
+	vec3 dir;
 };
 
 #endif /* OBJECT_H_ */

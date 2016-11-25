@@ -370,6 +370,22 @@ void object::ud_move(float speed,float down,float up,int dir){
 	//printf("y_dir = %d temp.y = %lf up = %lf\n",y_dir,temp.y,up);
 }
 
+//オブジェクトを特定の座標間で移動させる関数(x方向)
+void object::x_side_move(float speed,float left,float right,int dir){
+	static int x_dir = dir;
+
+	vec3 temp = get_m_Pos();	//オブジェクトの座標
+	vec3 rad  = get_Radius();	//オブジェクトの各軸方向の長さ
+
+	//オブジェクトの上面で方向を管理
+	if((x_dir == 1 && temp.x + rad.x/2 >= right) || (x_dir == -1 && temp.x + rad.x/2 <= left)){
+		x_dir *= -1;
+	}
+
+	//移動
+	move(speed*x_dir,0,0);
+}
+
 //オブジェクトを特定の空間で単一方向に移動させる関数(y軸方向)
 //dir : 1(正方向) -1(負方向)
 void object::one_way_move(float speed,float down,float up,int dir){

@@ -235,9 +235,18 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	static bool jumpflag    = false;
 	static bool hitheadflag = false;
 
+	//坂道登るフラグ
+	bool upflag  = false;
+	//キャラクターが生成した壁に上るフラグ
+	bool upwall  = false;
+	//オブジェクトとの当たり判定フラグ
+	bool hitmap  = false;
+	//プレイヤーが生成した壁との当たり判定フラグ
+	bool hitwall = false;
 
-	//重力
-	static float gravity;
+	static float gravity;		//重力
+
+	static int hitnum;			//プレイヤーと接触しているオブジェクトの番号
 
 	//キャラクターの座標を格納
 	vec3 sampposition;
@@ -272,20 +281,12 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	player_collider   = position;
 	player_collider.x = sampposition.x;
 
-	//坂道登るフラグ
-	bool upflag  = false;
-	//キャラクターが生成した壁に上るフラグ
-	bool upwall  = false;
-	//オブジェクトとの当たり判定フラグ
-	bool hitmap  = false;
-	//プレイヤーが生成した壁との当たり判定フラグ
-	bool hitwall = false;
-
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
 		if(	movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
 			upflag = true;
 			hitmap = true;
+			hitnum = i;
 			break;
 		}
 
@@ -328,6 +329,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			upflag = true;
 			hitmap = true;
+			hitnum = i;
 			break;
 		}
 
@@ -347,6 +349,11 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		hitmap  = false;
 		hitwall = false;
 	}
+
+	if(!hitmap)
+		hitnum = 0;
+
+	printf("hitnum = %d\n",hitnum);
 
 
 	//	//頭衝突時
@@ -374,7 +381,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 				if(i == mapn-1)
 					position=player_collider;
 			}
-			//for文の最後で++されてしまうため==
+			//for文の最後で++(インクリメント)されてしまうため条件式に"=="を使用
 			if(i == mapn)
 				break;
 		}
@@ -403,25 +410,30 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			gravity 	= 0;
 			break;
 		}
+		//最後のループ時
 		if(i == mapn-1){
-
 			for(int j=0;j<WALLMAX;j++){
-				if(playerwall[j].count==0)
+				if(playerwall[j].count == 0)
 					continue;
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi    ){
-					hitheadflag=true;
+				//生成された壁と頭部との当たり判定
+				if(	movechecker.LenOBBToPoint(playerwall[j].wall,playerhead_collider) <= radi){
+					hitheadflag = true;
 				}
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+				//生成された壁との当たり判定
+				if(	movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
 					jumpflag	= false;
 					hitheadflag	= false;
 					hitmap		= true;
 					gravity		= 0;
 					break;
 				}
-				if(j == WALLMAX-1)
+
+				//最後のループ時
+				if(j == WALLMAX-1){
 					hitmap = false;
+				}
 			}
 		}
 	}
