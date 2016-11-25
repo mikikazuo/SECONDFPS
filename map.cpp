@@ -195,19 +195,12 @@ void map::Update(){
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 
 	//高台へのエレベーター(特定座標まで上下)
-	obj[18].ud_move(3.5,23,-3,-1);
-	obj[20].ud_move(3.5,23,-3,-1);
+	obj[18].ud_move(3.5,-3,23,-1);
+	obj[20].ud_move(3.5,-3,23,-1);
 
-	//天空足場へのエレベーター
-	obj[34].move(0,2.0*dirs[0],0);
+	//天空足場へのエレベーター(上方向のみの移動)
+	obj[34].one_way_move(2.0,14,23,1);
 
-	vec3 temp;	//オブジェクトの座標書き換えに使用
-
-	if(obj[34].get_m_Pos().y >= 25){
-		temp = obj[34].get_m_Pos();
-		temp.y = 14;
-		obj[34].set_m_Pos(temp);
-	}
 	}
 }
 

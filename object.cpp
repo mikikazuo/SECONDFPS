@@ -346,7 +346,7 @@ vec3 object::get_Radius(){
 
 //オブジェクトを特定の座標まで上下させる関数
 //dir : 1(正方向) -1(負方向)
-void object::ud_move(float speed,float up,float down,int dir){
+void object::ud_move(float speed,float down,float up,int dir){
 	static int y_dir = dir;
 	//printf("y_dir = %d\n",y_dir);
 
@@ -368,5 +368,25 @@ void object::ud_move(float speed,float up,float down,int dir){
 
 	//動作確認
 	//printf("y_dir = %d temp.y = %lf up = %lf\n",y_dir,temp.y,up);
+}
+
+//オブジェクトを特定の空間で単一方向に移動させる関数(y軸方向)
+//dir : 1(正方向) -1(負方向)
+void object::one_way_move(float speed,float down,float up,int dir){
+	vec3 temp = get_m_Pos();	//オブジェクトの座標
+	vec3 rad  = get_Radius();	//オブジェクトの各軸方向の長さ
+
+	//オブジェクトの上面基準で座標書き換え
+	if(dir == 1 && temp.y + rad.y/2 >= up){
+		temp.y = down;
+		set_m_Pos(temp);
+	}
+
+	if(dir == -1 && temp.y + rad.y/2 <= down){
+		temp.y = up;
+		set_m_Pos(temp);
+	}
+
+	move(0,speed*dir,0);
 }
 

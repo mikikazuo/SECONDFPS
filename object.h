@@ -36,7 +36,9 @@ public:
 	//オブジェクトの各軸方向の長さを取得する関数
 	vec3 get_Radius();
 	//特定の高さまでオブジェクトを上下させる関数
-	void ud_move(float speed,float up,float down,int dir);
+	void ud_move(float speed,float down,float up,int dir);
+	//オブジェクトを特定の空間で単一方向に移動させる関数(y軸方向)
+	void one_way_move(float speed,float down,float up,int dir);
 };
 
 #endif /* OBJECT_H_ */
