@@ -127,7 +127,6 @@ int thread_Update(void *arg){
 
 		mouseCounter();
 		sceneMgr.Update();  //更新
-
 		mainfps.wait_Update();
 		key_Update();
 	}

@@ -9,7 +9,8 @@
 #include "fps.h"
 #include "image.h"
 #include "main.h"
-
+#include "checkObjectHit.h"
+#include "Game.h"
 
 
 //ライトの位置
@@ -291,14 +292,33 @@ void object::Draw(){
 
 //移動
 void object::move(float x,float y,float z){
+
+	checkObjectHit player;
+
 	static int flag;
+	vec3 uppos=this->m_Pos;
+	uppos.y+=1;
+	object own(uppos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+
+
 	if(flag){
 		this->m_Pos.x+=x*get_mainfps().fps_getDeltaTime();
 		this->m_Pos.y+=y*get_mainfps().fps_getDeltaTime();
 		this->m_Pos.z+=z*get_mainfps().fps_getDeltaTime();
+		//if(playerchecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi)
+		if(player.LenOBBToPoint(own,get_player()->player_collider)<=1){
+			get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
+			get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
+			get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();
+		}
+
 	}else
 		flag=1;
+
+
+
 }
+
 
 //回転
 void object::rotate(float x,float y,float z){

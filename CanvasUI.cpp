@@ -110,7 +110,7 @@ void CanvasUI::Update() {
 void CanvasUI::shake(float nowhp){
 	static int shakecount;
 	static float prehp=prehp==0?nowhp:prehp;
-	printf("%f::::::%f\n",prehp,nowhp);
+
 
 	if(shakecount>40){
 		prehp=nowhp;
@@ -120,7 +120,7 @@ void CanvasUI::shake(float nowhp){
 
 	}
 
-	if(shakecount%6==0&&shakecount!=0){
+	if(shakecount%10==0&&shakecount!=0){
 		shakeX = rand()%15-7;
 		shakeY = rand()%15-7;
 	}else{

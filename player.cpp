@@ -279,7 +279,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	bool hitwall=false;
 
 	for(int i=0;i<mapn;i++)
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi    ){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			upflag=true;
 			hitmap=true;
 			break;

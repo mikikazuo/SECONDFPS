@@ -77,7 +77,7 @@ void bullet::HitObj(Team enemyteam,float atk){
 				if(bulletmovechecker.LenOBBToPoint( mapobject[i],  bullet_info[j].position)==0    ){
 					for(int k=0;k<BASENUM;k++){
 						if(get_mapobj()->get_Base(enemyteam)[k]==i){
-							printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
+							//printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
 							get_mapobj()->minus_BaseHp(enemyteam,atk);
 							break;
 						}

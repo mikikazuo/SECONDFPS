@@ -24,7 +24,7 @@
 #define PLAYERNUM 5
 
 
-MQO_MODEL mqomodel[7];
+MQO_MODEL mqomodel[12];
 
 player player1;
 mob mober[10];
@@ -74,21 +74,35 @@ void Game::DrawInitialize(){
 	player1.DrawInitialize();
 
 
-	char *flname=(char*)"Data/charamodel/char1/char1_exp.mqo";
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2_1.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
-	flname=(char*)"Data/charamodel/char2/char2_exp.mqo";
+	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
 	mqomodel[1]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char3/char3_exp.mqo";
+	flname=(char*)"Data/charamodel/char3/char3_exp_ver2.mqo";
 	mqomodel[2]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char4/char4_exp.mqo";
+	flname=(char*)"Data/charamodel/char4/char4_exp_ver2.mqo";
 	mqomodel[3]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char4/char4_exp.mqo";
+	flname=(char*)"Data/charamodel/char5/char5_exp_ver2.mqo";
 	mqomodel[4]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char6/char6_exp.mqo";
+	flname=(char*)"Data/charamodel/char6/char6_exp_ver2.mqo";
 	mqomodel[5]=mqoCreateModel(flname,0.0035);
-//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
-//	mqomodel[6]=mqoCreateModel(flname,0.0035);
+
+	flname=(char*)"Data/charamodel/prechar/char1/char1_exp.mqo";
+	mqomodel[6]=mqoCreateModel(flname,0.0035);
+
+	flname=(char*)"Data/charamodel/prechar/char2/char2_exp.mqo";
+	mqomodel[7]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/prechar/char3/char3_exp.mqo";
+	mqomodel[8]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/prechar/har4/char4_exp.mqo";
+	mqomodel[9]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/prechar/char4/char4_exp.mqo";
+	mqomodel[10]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/prechar/char6/char6_exp.mqo";
+	mqomodel[11]=mqoCreateModel(flname,0.0035);
+	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
+	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -149,15 +163,17 @@ void Game::Draw(){
 
 
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 
 
 	glColor3f(0.5,0.5,0.5);
 
-	for(int i=0;i<6;i++){
+	for(int i=0;i<12;i++){
+
 		glPushMatrix();
-		glTranslated(5+i*5,1,-8);
+		if(i>=6)
+			glTranslated(5+(i-6)*5,1,-4);
+		else
+			glTranslated(5+i*5,1,-8);
 		glRotated(180,0,1,0);
 
 		mqoCallModel(mqomodel[i]);
