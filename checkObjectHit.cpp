@@ -338,8 +338,8 @@ float checkObjectHit::LenOBBToPoint(object &obb, vec3 pointpos)
 		}
 
 		//プレイヤーの当たり判定座標 - オブジェクトの座標
-		//この値がプレイヤーの当たり判定の半径より小さいと衝突??
-		//sa:差??
+		//この値がプレイヤーの当たり判定の半径より小さいと衝突
+		//sa:差
 		vec3 sa	 = pointpos - obb.GetPos_W();
 		//動作確認
 		/*if(i == 1){
@@ -363,5 +363,45 @@ float checkObjectHit::LenOBBToPoint(object &obb, vec3 pointpos)
 	return Vec3Length(&samp);
 }
 
+
+float checkObjectHit::LenOBBToPoint_move(object &obb, vec3 pointpos)
+{
+	vec3 samp;   //最終的に長さを求めるベクトル
+
+	//各軸についてはみ出た部分のベクトルを算出
+	for(int i=0; i<3; i++)
+	{
+		//x,y,z軸それぞれの中心までの長さを取得(各軸方向の長さの半分を取得)
+		float L = obb.GetLen_W(i);
+		//Lが0以下のとき
+		if( L <= 0 ){
+			continue;
+		}
+
+		//プレイヤーの当たり判定座標 - オブジェクトの座標
+		//この値がプレイヤーの当たり判定の半径より小さいと衝突
+		//sa:差
+		vec3 sa	 = pointpos - obb.Pos_move;
+		//動作確認
+		/*if(i == 1){
+			printf("i = %d sa.x = %lf\n",i,sa.x);
+		}*/
+
+		//x,y,z軸の単位方向ベクトルを格納
+		vec3 dir = obb.GetDirect(i);
+
+		//sに saとdirの内積 を 各軸方向の長さの半分 で割った値を格納
+		float s = Dot(&sa, &dir) / L;
+
+		//sの値から、はみ出した部分があればそのベクトルを加算
+		s = fabs(s);	//絶対値を取得
+		if(s > 1)
+			//1−sの値は必ず負の値をとる
+			samp += obb.GetDirect(i)*(1-s)*L;   //はみ出した部分のベクトル算出
+	}
+
+	//ベクトルの大きさを返す
+	return Vec3Length(&samp);
+}
 
 
