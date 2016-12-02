@@ -38,9 +38,6 @@ Wall *allplayerwall [PLAYERNUM];
 bool che=false;
 checkObjectHit hitChecker;
 
-
-
-
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 GLfloat specular[] = { 0.0, 0.0, 0.0, 1.0 };
@@ -57,12 +54,13 @@ void Game::setInfoPlayerWall(){
 
 //初期化
 void Game::Initialize(){
+
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize(vec3(20,10,-10),1,100,1,RedTeam);
+	player1.Initialize(vec3(20,10,-10),1,7,100,50,20,3,3,100,RedTeam);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,1,-5),1,100,1,20);
+		mober[i].Initialize(i,vec3(-10,1,-5),1,100,1,30,10);
 }
 
 void Game::DrawInitialize(){
@@ -74,7 +72,7 @@ void Game::DrawInitialize(){
 	player1.DrawInitialize();
 
 
-	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2_1.mqo";
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
 	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
@@ -107,6 +105,7 @@ void Game::DrawInitialize(){
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].DrawInitialize("Data/a/a.mqo");
+
 }
 
 void Game::DrawFinalize(){

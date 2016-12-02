@@ -93,7 +93,7 @@ object obj[]={
 		,object(vec3(3,14,-7),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//天空足場へ登るエレベーター 34
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-
+		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 };
@@ -221,6 +221,8 @@ void map::Update(){
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 	obj[18].move(0,3.5*dirs[1],0);
 	obj[20].move(0,3.5*dirs[1],0);
+
+	obj[35].move(3.5*dirs[1],0,0);
 
 	//天空足場へのエレベーター
 	obj[34].move(0,2.0*dirs[1],0);

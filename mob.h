@@ -12,6 +12,7 @@
 #include "player.h"
 #include "bullet.h"
 
+int GetRandom(int min,int max);
 class mob {
 private:
 	bullet mobbullet;
@@ -24,6 +25,7 @@ private:
 	float atkrange;
 	bool hitmap;
 	bool hitwall;
+	int atktime;
 public:
 	vec3 position;
 	vec3 angles;
@@ -35,7 +37,7 @@ public:
 
 	mob();
 	virtual ~mob();
-	void Initialize(int no,vec3 pos,float ra,float sethp,float setatk,float setatkrange);
+	void Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange);
 	void DrawInitialize(char *filename);
 	void DrawFinalize();
 	void Update();

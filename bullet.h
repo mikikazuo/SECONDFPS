@@ -26,18 +26,35 @@ typedef struct {
 	vec3 dir;
 }Shot;
 
+typedef enum{
+	Crossbow,
+	Rifle,
+	Gatling,
+	Spear,
+	Magicstick,
+	Magic,
+	Mob,
+	nonemode
+}bulletmode;
 
 class bullet : public OBB{
 private:
 	Shot bullet_info[MAXBULLET];
-
+	int reloadmax;
+	int lifetime;
+	int launchbulletcount;
+	int reloadtime;
+	int speed;
+	bulletmode mode;
+	int modemovecount;
 public:
 	bullet();
-	void bullet_Initialize();
+	void bullet_Initialize(int setspeed,int setlifetime,int setreloadmax,bulletmode setbulletmode);
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
 	void PlayerToMob();
 	void MobToPlayer(int atk);
+	void reload();
 	void setInfo(vec3 playerposition,vec3 playerdir);
 	void Update();
 	void Draw();

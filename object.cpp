@@ -298,7 +298,27 @@ void object::move(float x,float y,float z){
 	static int flag;
 	vec3 uppos=this->m_Pos;
 	uppos.y+=1;
-	object own(uppos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	object ownup(uppos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+
+//	vec3 underpos=this->m_Pos;
+//	underpos.y-=1;
+//	object ownunder(underpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+//
+//	vec3 rightpos=this->m_Pos;
+//	rightpos.x+=1;
+//	object ownright(rightpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+//
+//	vec3 leftpos=this->m_Pos;
+//	leftpos.x-=1;
+//	object ownleft(leftpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+//
+//	vec3 forwardpos=this->m_Pos;
+//	forwardpos.z+=1;
+//	object ownforward(forwardpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+//
+//	vec3 backpos=this->m_Pos;
+//	forwardpos.z-=1;
+//	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
 
 	if(flag){
@@ -306,7 +326,7 @@ void object::move(float x,float y,float z){
 		this->m_Pos.y+=y*get_mainfps().fps_getDeltaTime();
 		this->m_Pos.z+=z*get_mainfps().fps_getDeltaTime();
 		//if(playerchecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi)
-		if(player.LenOBBToPoint(own,get_player()->player_collider)<=1){
+		if(player.LenOBBToPoint(ownup,get_player()->playerfoot_collider)<=1){
 			get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
 			get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
 			get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();

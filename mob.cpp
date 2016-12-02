@@ -23,7 +23,7 @@
 
 checkObjectHit mobhitobj;
 MQO_MODEL mobmqo;
-MQO_MODEL pre_mobmqo[10];
+MQO_MODEL pre_mobmqo[10];			//異なるモデルを保存する
 
 
 
@@ -52,18 +52,18 @@ mob::~mob() {
 }
 
 //位置、当たり半径、HP,攻撃力
-void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,float setatkrange){
+void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange){
 	dx=GetRandom(1,100);
 	movecount=0;
 	myno=no;
 	flag=0;
 	position=pos;
-	mobbullet.bullet_Initialize();
+	mobbullet.bullet_Initialize(10,5,10,Mob);
 	radi=ra;
 	hp=maxhp=sethp;
 	atk=setatk;
 	atkrange=setatkrange;
-
+	atktime=setatktime;
 }
 void mob::DrawInitialize(char *filename){
 	static char *flname='\0';
@@ -196,12 +196,14 @@ void mob::launchBullet(){
 	float z=pow(position.z-get_player()->position.z,2);
 	float big=sqrt(x+y+z);
 	float radi=atkrange*atkrange;
-	if(radi>=x+y+z&&movecount%30==0){
-		//mobbullet.setInfo(position,vec3(0, 1, 0));
-		mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
-		PlayMobMusic(myno);
+	if(hp>0){
+		if(radi>=x+y+z&&movecount%atktime==0){
+			//mobbullet.setInfo(position,vec3(0, 1, 0));
+			mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
+			PlayMobMusic(myno);
+		}
+		mobbullet.Update();
 	}
-	mobbullet.Update();
 }
 
 

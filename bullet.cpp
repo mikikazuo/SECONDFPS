@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "Game.h"
 #include "player.h"
+#include "key.h"
 
 checkObjectHit bulletmovechecker;
 
@@ -21,22 +22,54 @@ bullet::bullet() {
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 }
-void bullet::bullet_Initialize(){
+void bullet::bullet_Initialize(int setspeed,int setlifetime,int setreloadmax,bulletmode setbulletmode){
+	reloadmax=setreloadmax;
+	lifetime=setlifetime;
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
-
+	launchbulletcount=0;
+	reloadtime=0;
+	mode=setbulletmode;
+	speed=setspeed;
+	modemovecount=0;
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
 
+
 	for(int i=0;i<MAXBULLET;i++)
-		if(bullet_info[i].count==0){
-			bullet_info[i].position=playerposition;
-			bullet_info[i].dir=playerdir;
-			bullet_info[i].count++;
-			break;
-		}
+		if(launchbulletcount<reloadmax)
+			if(bullet_info[i].count==0){
+				bullet_info[i].position=playerposition;
+				bullet_info[i].dir=playerdir;
+				if(mode==Gatling){
+					bullet_info[i].dir.x+=0.01*GetRandom(-5,5);
+					bullet_info[i].dir.y+=0.01*GetRandom(-5,5);
+					bullet_info[i].dir.z+=0.01*GetRandom(-5,5);
+				}
+				bullet_info[i].count++;
+				launchbulletcount++;
+				break;
+			}
 }
+
+void bullet::reload(){
+
+	if(key_getmove(Reload)==2&&reloadtime==0){
+		reloadtime++;
+	}
+
+
+	if(reloadtime>0)
+		reloadtime++;
+	if(reloadtime>UPDATEFPS*3){
+		reloadtime=0;
+		launchbulletcount=0;
+	}
+
+
+}
+
 
 //mobの弾専用（拠点にダメージを与えない）
 void bullet::HitObj(){
@@ -125,19 +158,57 @@ void bullet::MobToPlayer(int atk){
 }
 
 void bullet::Update(){
-	const float movespeed=30;
+	const float movespeed=speed;
 	for(int i=0;i<MAXBULLET;i++)
 		if(bullet_info[i].count){
 			vec3 move_delta;
-			move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
-			move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
-			move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+			switch(mode){
+			case Crossbow:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				bullet_info[i].dir.y-=0.005f;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+				break;
+			case Rifle:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+				break;
+			case Gatling:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+				break;
+			case Spear:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				bullet_info[i].dir.y-=0.01f;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+				break;
+			case Magicstick:
+				break;
+			case Magic:
+				break;
+
+			case Mob:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+
+				break;
+			default:
+				break;
+			}
+
+
+
+
 			bullet_info[i].position+=move_delta;//fps_getDeltaTime()* movespeed*bullet_info[i].dir;
 			bullet_info[i].count++;
-			if(bullet_info[i].count>UPDATEFPS*5)
+			if(bullet_info[i].count>UPDATEFPS*lifetime)
 				bullet_info[i].count=0;
 		}
-
+	reload();
 }
 
 void bullet::Draw(){

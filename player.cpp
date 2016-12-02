@@ -148,15 +148,18 @@ player::player() {
 	dy=0;
 
 }
-void player::Initialize(vec3 pos,float ra,float sethp,int setatk,Team setteam){
 
-	playerbullet.bullet_Initialize();
+void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam){
+
+	playerbullet.bullet_Initialize(setbulletspeed,setlifetime,setreloadmax,Spear);
 	position=pos;
 	hp=maxhp=sethp;
 	atk=setatk;
 	bulletnum=BULLETNUM;
 	radi=ra;
 	myteam=setteam;
+	atktime=setatktime;
+	speed=setspeed;
 	//	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 	//		mywall[i].count=0;
 }
@@ -221,7 +224,7 @@ void player::Update(){
 //プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
-	const float movespeed = 7;
+	const float movespeed = speed;
 
 
 	// Calculate movement vectors
@@ -606,10 +609,16 @@ void player::Action()
 }
 
 void player::launchBullet(){
-	if(get_mousebutton_count(LEFT_BUTTON)%10==1){
+	atkcount++;
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 		ChangeSE(1);
+		atkok=false;
 	}
+	if(atkcount%atktime==0)
+		atkok=true;
+
+
 	playerbullet.Update();
 }
 

@@ -49,7 +49,7 @@ void CanvasUI::DrawInitialize(){
 	handle[13]=image_Load("Data/image/HP_bar_frame.png");//枠
 
 	//Wallinfo
-	handle[14]=image_Load("Data/image/wall_info.png");//壁情報
+	handle[14]=image_Load("Data/image/3wall_info.png");//壁情報
 
 }
 
@@ -181,7 +181,7 @@ void CanvasUI::Draw() {
 	//			break;
 	//		}
 	//	}
-	for(i=0;i<5;i++){
+	for(i=0;i<WALLMAX;i++){
 		GLdouble R=0,G=0,B=0;
 		if(get_player()->mywall[i].count>0){
 			R=0.0;

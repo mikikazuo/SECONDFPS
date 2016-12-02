@@ -15,7 +15,7 @@
 #include "map.h"
 
 
-#define WALLMAX 5
+#define WALLMAX 3
 
 typedef struct {
 	int count;
@@ -28,6 +28,10 @@ class player
 private:
 
 	int bulletnum;
+	int atktime;
+	bool atkok;
+	int atkcount;
+	int speed;
 public:
 	float maxhp;
 	float hp;
@@ -50,7 +54,7 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,float sethp,int setatk,Team setteam);
+	void Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam);
 	void DrawInitialize();
 	void DrawFinalize();
 	void Draw();
