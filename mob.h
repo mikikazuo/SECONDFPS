@@ -26,6 +26,7 @@ private:
 	bool hitmap;
 	bool hitwall;
 	int atktime;
+	bool findplayer;
 public:
 	vec3 position;
 	vec3 angles;

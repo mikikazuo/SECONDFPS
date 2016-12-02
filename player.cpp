@@ -151,7 +151,7 @@ player::player() {
 
 void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam){
 
-	playerbullet.bullet_Initialize(setbulletspeed,setlifetime,setreloadmax,Spear);
+	playerbullet.bullet_Initialize(setbulletspeed,setlifetime,setreloadmax,Magic);
 	position=pos;
 	hp=maxhp=sethp;
 	atk=setatk;
@@ -612,6 +612,7 @@ void player::launchBullet(){
 	atkcount++;
 	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
+		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
 		ChangeSE(1);
 		atkok=false;
 	}

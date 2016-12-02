@@ -40,9 +40,9 @@ typedef enum{
 class bullet : public OBB{
 private:
 	Shot bullet_info[MAXBULLET];
-	int reloadmax;
+
 	int lifetime;
-	int launchbulletcount;
+
 	int reloadtime;
 	int speed;
 	bulletmode mode;
@@ -58,6 +58,10 @@ public:
 	void setInfo(vec3 playerposition,vec3 playerdir);
 	void Update();
 	void Draw();
+
+	int reloadmax;
+	int launchbulletcount;
+
 	virtual ~bullet();
 };
 

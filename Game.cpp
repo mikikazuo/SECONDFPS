@@ -86,10 +86,10 @@ void Game::DrawInitialize(){
 	flname=(char*)"Data/charamodel/char6/char6_exp_ver2.mqo";
 	mqomodel[5]=mqoCreateModel(flname,0.0035);
 
-	flname=(char*)"Data/charamodel/prechar/char1/char1_exp.mqo";
-	mqomodel[6]=mqoCreateModel(flname,0.0035);
 
-	flname=(char*)"Data/charamodel/prechar/char2/char2_exp.mqo";
+	flname=(char*)"Data/charamodel/char1/char1_firstside.mqo";
+	mqomodel[6]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	mqomodel[7]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/prechar/char3/char3_exp.mqo";
 	mqomodel[8]=mqoCreateModel(flname,0.0035);
@@ -104,7 +104,7 @@ void Game::DrawInitialize(){
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].DrawInitialize("Data/a/a.mqo");
+		mober[i].DrawInitialize("Data/charamodel/enemy1/enemy2_exp.mqo");
 
 }
 
@@ -125,7 +125,7 @@ void Game::Update(){
 
 	//追加??
 	//キャラクターの座標表示
-	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
 
 	player1.Update();
 	gamecanvas.Update();

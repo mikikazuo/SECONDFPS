@@ -64,6 +64,7 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	atk=setatk;
 	atkrange=setatkrange;
 	atktime=setatktime;
+	findplayer=false;
 }
 void mob::DrawInitialize(char *filename){
 	static char *flname='\0';
@@ -94,76 +95,79 @@ void mob::move(){
 	const float mousespeed = 10;
 	const float movespeed = 4;
 
-
-	if(movecount%(60*1)==0)
-		dx=GetRandom(-10,10);
-
-	angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
-
-
-
-	dx=0;
-	if(angles.x < -M_PI)
-		angles.x += M_PI * 2;
-	else if(angles.x > M_PI)
-		angles.x -= M_PI * 2;
-
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+	if(!findplayer){
+		if(movecount%(60*1)==0)
+			dx=GetRandom(-10,10);
+
+		angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
 
 
 
-	vec3 sampposition;
-	sampposition=position;
-
-
-	if(flag>10)
-		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	else{
-		sampposition += forward_dir * 0* get_mainfps().fps_getDeltaTime();
-		flag++;
-	}
-
-
-
-	//マップに衝突時向きを反転
-	if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
-			mobhitobj.sethitcheck(WALLMAX,get_allplayerwall()[0],sampposition,radi))	){
-		angles.x -= M_PI;
+		dx=0;
 		if(angles.x < -M_PI)
 			angles.x += M_PI * 2;
 		else if(angles.x > M_PI)
 			angles.x -= M_PI * 2;
 
-		vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-		//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
-		this->hitmap=true;
+
+
 
 		vec3 sampposition;
 		sampposition=position;
-		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-
-	}else
-		this->hitmap=false;
 
 
-
-
-	//	static float gravity;
-	//	gravity+=0.3f;
-	//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
-	//
-
-	position=sampposition;
-
-	//	float x=pow(position.x-playerinfo->position.x,2);
-	//	float y=pow(position.y-playerinfo->position.y,2);
-	//	float z=pow(position.z-playerinfo->position.z,2);
-
-	//	if(x+y+z<pow(5,2))
+		if(flag>10)
+			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		else{
+			sampposition += forward_dir * 0* get_mainfps().fps_getDeltaTime();
+			flag++;
+		}
 
 
 
+		//マップに衝突時向きを反転
+		if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+				mobhitobj.sethitcheck(WALLMAX,get_allplayerwall()[0],sampposition,radi))	){
+			angles.x -= M_PI;
+			if(angles.x < -M_PI)
+				angles.x += M_PI * 2;
+			else if(angles.x > M_PI)
+				angles.x -= M_PI * 2;
+
+			vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+			//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+
+			this->hitmap=true;
+
+			vec3 sampposition;
+			sampposition=position;
+			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+
+		}else{
+			this->hitmap=false;
+
+		}
+
+
+		//	static float gravity;
+		//	gravity+=0.3f;
+		//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+		//
+
+		position=sampposition;
+
+		//	float x=pow(position.x-playerinfo->position.x,2);
+		//	float y=pow(position.y-playerinfo->position.y,2);
+		//	float z=pow(position.z-playerinfo->position.z,2);
+
+		//	if(x+y+z<pow(5,2))
+	}else{
+
+
+	}
 }
 
 void mob::Draw(){
@@ -179,7 +183,7 @@ void mob::Draw(){
 
 	glTranslatef(x,y,z);
 
-	glutSolidSphere( 1, 50, 50 );
+	//glutSolidSphere( 1, 50, 50 );
 
 	glRotated(angles.x * 180 /M_PI ,0,1,0);
 
@@ -197,11 +201,15 @@ void mob::launchBullet(){
 	float big=sqrt(x+y+z);
 	float radi=atkrange*atkrange;
 	if(hp>0){
-		if(radi>=x+y+z&&movecount%atktime==0){
-			//mobbullet.setInfo(position,vec3(0, 1, 0));
-			mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
-			PlayMobMusic(myno);
-		}
+		if(radi>=x+y+z){
+			if(movecount%atktime==0){
+				//mobbullet.setInfo(position,vec3(0, 1, 0));
+				mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
+				PlayMobMusic(myno);
+				findplayer=true;
+			}
+		}else
+			findplayer=false;
 		mobbullet.Update();
 	}
 }

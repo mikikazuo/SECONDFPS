@@ -35,22 +35,48 @@ void bullet::bullet_Initialize(int setspeed,int setlifetime,int setreloadmax,bul
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
-
-
-	for(int i=0;i<MAXBULLET;i++)
-		if(launchbulletcount<reloadmax)
-			if(bullet_info[i].count==0){
-				bullet_info[i].position=playerposition;
-				bullet_info[i].dir=playerdir;
-				if(mode==Gatling){
-					bullet_info[i].dir.x+=0.01*GetRandom(-5,5);
-					bullet_info[i].dir.y+=0.01*GetRandom(-5,5);
-					bullet_info[i].dir.z+=0.01*GetRandom(-5,5);
+	if(mode==Magic){
+		for(int i=0;i<MAXBULLET;i++)
+			if(launchbulletcount<reloadmax)
+				if(bullet_info[i].count==0){
+					for(int j=0;j<3;j++){
+						if(i+j>MAXBULLET)
+							break;
+						bullet_info[i+j].position=playerposition;
+						switch(j){
+						case 0:
+							bullet_info[i+j].position.x+=0.5;
+							break;
+						case 1:
+							bullet_info[i+j].position.x-=0.5;
+							break;
+						case 2:
+							bullet_info[i+j].position.y-=0.5;
+							break;
+						}
+						bullet_info[i+j].dir=playerdir;
+						bullet_info[i+j].count++;
+					}
+					launchbulletcount++;
+					break;
 				}
-				bullet_info[i].count++;
-				launchbulletcount++;
-				break;
-			}
+	}else{
+		for(int i=0;i<MAXBULLET;i++)
+			if(launchbulletcount<reloadmax)
+				if(bullet_info[i].count==0){
+					bullet_info[i].position=playerposition;
+					bullet_info[i].dir=playerdir;
+					if(mode==Gatling){
+						bullet_info[i].dir.x+=0.01*GetRandom(-5,5);
+						bullet_info[i].dir.y+=0.01*GetRandom(-5,5);
+						bullet_info[i].dir.z+=0.01*GetRandom(-5,5);
+					}
+					bullet_info[i].count++;
+					launchbulletcount++;
+					break;
+				}
+	}
+
 }
 
 void bullet::reload(){
@@ -186,10 +212,15 @@ void bullet::Update(){
 				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
 				break;
 			case Magicstick:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
 				break;
 			case Magic:
+				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
+				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
+				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
 				break;
-
 			case Mob:
 				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;
 				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
