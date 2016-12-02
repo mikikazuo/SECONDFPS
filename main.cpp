@@ -136,21 +136,18 @@ int thread_Update(void *arg){
 
 int main (int argc, char** argv)
 {
-	argci=&argc;
-	argvi=argv;
+	argci = &argc;
+	argvi = argv;
 	XInitThreads();
 
 	glutInit(&argc,argv);
 
-
 	myInit(argv[0]);
-
-
 
 	sceneMgr.DrawInitialize();
 	glutDisplayFunc(display);
 	glutTimerFunc(1000/DRAWFPS,timer,0);
-	update=SDL_CreateThread(thread_Update,NULL);
+	update= SDL_CreateThread(thread_Update,NULL);
 	glutReshapeFunc(resize);
 	glutMainLoop();
 	return 0;

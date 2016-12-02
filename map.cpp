@@ -47,9 +47,9 @@ object obj[]={
 		//左
 		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
-		//拠点1(前方) 13
+		//拠点1(前方:赤) 13
 		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
-		//拠点2(後方) 14
+		//拠点2(後方:青) 14
 		object(vec3(-(MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(0,0,256,1)),
 
 		//マップ分割
@@ -61,13 +61,12 @@ object obj[]={
 		//高台 前方(赤) 17
 		object(vec3(49,10,-49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
-		object(vec3(49,-25,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
-		//object(vec3(48.5,1,-41.5),vec3(2,2,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		object(vec3(49,-13,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
 		//高台 後方(青) 19
 		object(vec3(-49,10,49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
-		object(vec3(-49,-25,45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		object(vec3(-49,-13,45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//中央柱 21
 		,object(vec3(0,10,0),vec3(2,20,2),vec3(0,45,0),vec4(0.5f,0.5f,0.5f,1))
@@ -90,10 +89,47 @@ object obj[]={
 		,object(vec3(3,14.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//エレベーターへの足場 33
-		,object(vec3(3,14,-7),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//天空足場へ登るエレベーター 34
+
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//x軸方向の当たり判定用オブジェクト 35
+		,object(vec3(15,1,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//z軸方向の当たり判定用オブジェクト 36
+		,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//赤拠点を囲む壁
+		//右側面 37
+		,object(vec3(47.5,1,-4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左側面
+		,object(vec3(47.5,1,4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//右前方
+		,object(vec3(44.5,1,-3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左前方 40
+		,object(vec3(44.5,1,3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場へのエレベーターと通路を囲む壁
+		//側面1(赤側)
+		//object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//側面2(青側)
+		,object(vec3(1.80,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(1.80,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場の壁
+		//前
+		//,object(vec3(7,23.5,0),vec3(1,5,15),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//後
+		//右
+		//左
+
+
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 };
@@ -112,6 +148,8 @@ map::~map() {
 object *map::get_obj(){
 	return obj;
 }
+
+//オブジェクトの数を返す変数
 int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
@@ -143,6 +181,7 @@ void map::Initialize(){
 	set_Base(RedTeam,13);
 	set_Base(BlueTeam,14);
 }
+
 void map::DrawInitialize(){
 	//描画初期化関数
 	handle[0]=image_Load("Data/image/capture2.png");
@@ -174,6 +213,11 @@ void map::DrawInitialize(){
 	obj[21].set_imgno(handle[1],100);
 	//天空足場
 	obj[22].set_imgno(handle[1],100);
+
+	obj[33].set_imgno(handle[1],100);
+
+	//赤拠点を囲む壁
+	obj[40].set_imgno(handle[1],100);
 
 }
 void map::DrawFinalize(){
@@ -210,23 +254,38 @@ void map::Update(){
 
 	//周期なし counts[0] dirs[0]
 
-	//移動
-	obj[4].move(2*dir,2*dir,0);
-
-	//回転
+	/***回転***/
 	obj[5].rotate(60*dir,20*dir,40*dir);
 	obj[6].rotate(20*dir,20*dir,10*dir);
 
-	//追加??
-	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
-	obj[18].move(0,3.5*dirs[1],0);
-	obj[20].move(0,3.5*dirs[1],0);
+	/***移動***/
+	obj[4].move(2*dir,2*dir,0);
+	//obj[4].move(2*dir,0,0);
+	//obj[4].move(0,2*dir,0);
+
 
 	obj[35].move(3.5*dirs[1],0,0);
 
 	//天空足場へのエレベーター
 	obj[34].move(0,2.0*dirs[1],0);
+
+	//動作確認
+	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
+
+	//高台へのエレベーター(特定座標間を上下)
+	obj[18].y_ud_move(3.5,-3,23,-1);
+	obj[20].y_ud_move(3.5,-3,23,-1);
+
+	//天空足場へのエレベーター(特定座標間を上方向のみで移動)
+	obj[34].y_one_way_move(2.0,14,23,1);
+
+	//左右の当たり判定用オブジェクト
+	obj[35].x_side_move(2.0,15,20,1);
+	obj[36].z_side_move(2.0,13,15,1);
+
+
 }
+
 void map::Draw(){
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
