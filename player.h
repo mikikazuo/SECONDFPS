@@ -35,7 +35,7 @@ public:
 	vec3 lookat;
 	float dx,dy;
 	int atk;
-	int radi;
+	int radi;		//当たり判定の半径?
 
 	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;

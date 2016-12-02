@@ -36,24 +36,23 @@ class OBB
 {
 protected:
 
-	vec3 m_Pos;              // 位置
-	vec3 m_NormaDirect[3];   // 方向ベクトル
-	vec3 m_Rota;   //回転
-	vec3 Radius;       // 各軸方向の長さ
+	vec3 m_Pos;             //位置
+	vec3 m_NormaDirect[3];  //方向ベクトル
+	vec3 m_Rota;   			//回転
+	vec3 Radius;       		//各軸方向の長さ
 	GLfloat color[4];
 	int imgno;
 	double imgresize;
 public:
 
-
 	void setOBB(vec3 position,vec3 size);
-	float Dot(vec3 *vec1,vec3 *vec2);		//内積
+	float Dot(vec3 *vec1,vec3 *vec2);					 //内積
 	void crossFunc(vec3 *cross,vec3 *vec1,vec3 *vec2); //外積
 	float LenSegOnSeparateAxis( vec3 *Sep, vec3 *e1, vec3 *e2, vec3 *e3=0);
 	vec3 GetPos_W();    //位置の取得
-	float  Vec3Length(vec3 *vec);			//ベクトルの長さ（大きさ）
-	vec3 GetDirect( int elem );  // 指定軸番号の方向ベクトルを取得
-	float GetLen_W( int elem );          // 指定軸方向の長さを取得
+	float  Vec3Length(vec3 *vec);		//ベクトルの長さ（大きさ）
+	vec3 GetDirect( int elem );  		//指定軸番号の方向ベクトルを取得
+	float GetLen_W( int elem );       //指定軸方向の長さを取得
 
 	MATRIX2  YawPitchRoll(float y, float x, float z);
 	MATRIX2 Multiplication(MATRIX2 mat,MATRIX2 mat2);

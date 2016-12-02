@@ -8,6 +8,9 @@
 #include "checkObjectHit.h"
 #include <math.h>
 
+//動作確認のため追加??
+#include <stdio.h>
+
 
 checkObjectHit::checkObjectHit() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -18,7 +21,7 @@ checkObjectHit::~checkObjectHit() {
 	// TODO Auto-generated destructor stub
 }
 
-//１：壁やマップオブジェクトの数　２：壁やオブジェクトそのもの　３：点座標  4：点座標から広がる半径
+//1：壁やマップオブジェクトの数　2：壁やオブジェクトそのもの　3：点座標  4：点座標から広がる半径
 bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
 	bool hit=false;
 
@@ -316,25 +319,47 @@ bool checkObjectHit::ColOBBs( object &obb1,object &obb2 )
 	return true;
 }
 
-float checkObjectHit::LenOBBToPoint( object &obb, vec3 pointpos)
+//オブジェクトとの当たり判定をする際に用いる関数
+//&obb:判定対象のオブジェクト
+//pointpos:プレイヤーの当たり判定対象座標
+//返却値:オブジェクトとプレイヤーの当たり判定座標の間の距離
+float checkObjectHit::LenOBBToPoint(object &obb, vec3 pointpos)
 {
-	vec3 samp;   // 最終的に長さを求めるベクトル
+	vec3 samp;   //最終的に長さを求めるベクトル
 
-	// 各軸についてはみ出た部分のベクトルを算出
+	//各軸についてはみ出た部分のベクトルを算出
 	for(int i=0; i<3; i++)
 	{
+		//x,y,z軸それぞれの中心までの長さを取得(各軸方向の長さの半分を取得)
 		float L = obb.GetLen_W(i);
-		if( L <= 0 ) continue;  // L=0は計算できない
-		vec3 sa=pointpos-obb.GetPos_W();
-		vec3 dir=obb.GetDirect(i);
-		float s = Dot( &sa, &dir) / L;
+		//Lが0以下のとき
+		if( L <= 0 ){
+			continue;
+		}
 
-		// sの値から、はみ出した部分があればそのベクトルを加算
-		s = fabs(s);
-		if( s > 1)
-			samp += obb.GetDirect(i)*(1-s)*L;   // はみ出した部分のベクトル算出
+		//プレイヤーの当たり判定座標 - オブジェクトの座標
+		//この値がプレイヤーの当たり判定の半径より小さいと衝突??
+		//sa:差??
+		vec3 sa	 = pointpos - obb.GetPos_W();
+		//動作確認
+		/*if(i == 1){
+			printf("i = %d sa.x = %lf\n",i,sa.x);
+		}*/
+
+		//x,y,z軸の単位方向ベクトルを格納
+		vec3 dir = obb.GetDirect(i);
+
+		//sに saとdirの内積 を 各軸方向の長さの半分 で割った値を格納
+		float s = Dot(&sa, &dir) / L;
+
+		//sの値から、はみ出した部分があればそのベクトルを加算
+		s = fabs(s);	//絶対値を取得
+		if(s > 1)
+			//1−sの値は必ず負の値をとる
+			samp += obb.GetDirect(i)*(1-s)*L;   //はみ出した部分のベクトル算出
 	}
 
+	//ベクトルの大きさを返す
 	return Vec3Length(&samp);
 }
 
