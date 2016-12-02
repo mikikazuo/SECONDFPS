@@ -46,9 +46,9 @@ object obj[]={
 		//左
 		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
-		//拠点1(前方) 13
+		//拠点1(前方:赤) 13
 		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
-		//拠点2(後方) 14
+		//拠点2(後方:青) 14
 		object(vec3(-(MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(0,0,256,1)),
 
 		//マップ分割
@@ -61,7 +61,6 @@ object obj[]={
 		object(vec3(49,10,-49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
 		object(vec3(49,-13,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
-		//object(vec3(48.5,1,-41.5),vec3(2,2,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//高台 後方(青) 19
 		object(vec3(-49,10,49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
@@ -89,15 +88,41 @@ object obj[]={
 		,object(vec3(3,14.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//エレベーターへの足場 33
-		,object(vec3(3,14,-7),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//天空足場へ登るエレベーター 34
-		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
 		,object(vec3(15,1,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//z軸方向の当たり判定用オブジェクト 36
-		//,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//赤拠点を囲む壁
+		//右側面 37
+		,object(vec3(47.5,1,-4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左側面
+		,object(vec3(47.5,1,4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//右前方
+		,object(vec3(44.5,1,-3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左前方 40
+		,object(vec3(44.5,1,3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場へのエレベーターと通路を囲む壁
+		//側面1(赤側)
+		//object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//側面2(青側)
+		,object(vec3(1.80,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(1.80,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場の壁
+		//前
+		//,object(vec3(7,23.5,0),vec3(1,5,15),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//後
+		//右
+		//左
 
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -158,6 +183,11 @@ void map::DrawInitialize(){
 	obj[21].set_imgno(handle[1],100);
 	//天空足場
 	obj[22].set_imgno(handle[1],100);
+
+	obj[33].set_imgno(handle[1],100);
+
+	//赤拠点を囲む壁
+	obj[40].set_imgno(handle[1],100);
 
 }
 void map::DrawFinalize(){
