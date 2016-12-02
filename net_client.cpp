@@ -13,6 +13,10 @@
 #include <errno.h>
 
 #include "net_common.h"
+#include "net_client.h"
+
+#include "Game.h"
+#include "player.h"
 
 static int num_clients;
 static int myid;
@@ -41,6 +45,7 @@ void setup_client(char *server_name, u_short port) {
 
   fprintf(stderr, "Trying to connect server %s (port = %d).\n", server_name, port);
   if ((server = gethostbyname(server_name)) == NULL) {
+	  perror("gethostbyname()");
     handle_error();
   }
 
@@ -75,6 +80,10 @@ void setup_client(char *server_name, u_short port) {
     receive_data(&clients[i], sizeof(CLIENT));
   }
 
+  for(i=0;i<num_clients;i++){
+	  printf("clients[%d] = %s \n",i,clients[i].name);
+  }
+
   num_sock = sock + 1;
   FD_ZERO(&mask);
   FD_SET(0, &mask);
@@ -86,7 +95,7 @@ void client_start(void){
 	 u_short port = PORT;
 	 char server_name[MAX_LEN_NAME];
 
-	 sprintf(server_name,"local_host");
+	 sprintf(server_name,"clpc007");
 
 	 setup_client(server_name,port);
 }
@@ -103,7 +112,7 @@ int control_requests () {
   if(select(num_sock, (fd_set *)&read_flag, NULL, NULL, &timeout) == -1) {
     handle_error();
   }
-
+  //printf("select():\n");
   int result = 1;
   //データが送られてきたなら実行
   if (FD_ISSET(sock, &read_flag)) {
@@ -111,7 +120,20 @@ int control_requests () {
   }
 
   //データを送信
+  C_CONTAINER cdata;
+  static int A = 300;
+  memset(&cdata,0,sizeof(C_CONTAINER));
+  cdata.my_bullet.num = 1;
+  cdata.my_bullet.bullet_info.count = A--;
+  cdata.command = DATA;
 
+  player me = player1;
+  cdata.my_player.position.x = me.position.x;
+  cdata.my_player.position.y = me.position.y;
+  cdata.my_player.position.z = me.position.z;
+
+  //printf("x=%f\n",me.position.x);
+  send_data(&cdata,sizeof(cdata));
 
   return result;
 }
@@ -131,7 +153,8 @@ static int execute_command() {
   case DATA://データを受信した.
 
 	  //*****************ここで各オブジェクトの変数を書き換え
-
+	  get_bulletdata(data);
+	  get_playerdata(data);
 	  break;
   default:
     fprintf(stderr, "execute_command(): %c is not a valid command.\n", data.command);

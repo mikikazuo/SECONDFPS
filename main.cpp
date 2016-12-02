@@ -28,6 +28,7 @@
 #include "image.h"
 #include "SceneMgr.h"
 
+#include "net_client.h"
 
 #define LOOK_DISTANT 1000            //見える距離
 #define TEXWIDTH  512
@@ -130,6 +131,9 @@ int thread_Update(void *arg){
 
 		mainfps.wait_Update();
 		key_Update();
+
+		control_requests ();//ネットワーク（毎フレーム？）
+
 	}
 	sceneMgr.Finalize();
 	return 0;
@@ -140,6 +144,8 @@ int main (int argc, char** argv)
 	argci = &argc;
 	argvi = argv;
 	XInitThreads();
+
+	client_start();//ネットワークの始まり
 
 	glutInit(&argc,argv);
 

@@ -42,6 +42,7 @@ typedef struct{
 
 typedef struct{
 	int count;
+	int shooter;
 	v3 pos;
 	v3 dir;
 }shot2;//Shot互換
@@ -65,6 +66,7 @@ typedef struct{
 }PLAYER_DATA;
 
 typedef struct{
+	int num;
 	shot2 bullet_info;
 }BULLET_DATA;
 
