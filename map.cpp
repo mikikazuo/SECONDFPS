@@ -97,7 +97,7 @@ object obj[]={
 		,object(vec3(15,1,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//z軸方向の当たり判定用オブジェクト 36
-		,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -200,6 +200,8 @@ void map::Update(){
 
 	/***移動***/
 	obj[4].move(2*dir,2*dir,0);
+	//obj[4].move(2*dir,0,0);
+	//obj[4].move(0,2*dir,0);
 
 	//動作確認
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);

@@ -238,7 +238,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//プレイヤーが生成した壁との当たり判定フラグ
 	bool hitwall = false;
 
-	static float gravity;		//重力
+	static float gravity;	//重力
 
 	static int hitnum = 0;	//プレイヤーと接触しているオブジェクトの番号(接触してないときは0(本来0は地面だが，不動であるので問題なし))
 
@@ -293,7 +293,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			break;
 		}
 
-		else
+		//else
 			//hitnum = 0;
 
 	//プレイヤーが生成した壁との当たり判定
@@ -368,7 +368,15 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
 	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
 			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-		printf("ABCDE\n");
+		printf("衝突処理 分岐1:ノーマル\n");
+		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	}
+
+	//オブジェクト降下時
+	else if(mapobject[hitnum].type == MOVE
+				&& mapobject[hitnum].speed.y < 0){
+				//&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+		printf("衝突処理 分岐3:オブジェクト降下\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
 
@@ -377,10 +385,11 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//else if(mapobject[hitnum].type == MOVE){
 	else if(mapobject[hitnum].type == MOVE
 				&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("12345\n");
+		printf("衝突処理 分岐2:オブジェクト乗り上げ\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
 
+	//動作確認
 	//衝突したオブジェクトの番号
 	printf("hitnum = %d\n",hitnum);
 	//オブジェクトの位置
@@ -425,7 +434,9 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	}
 
 	gravity += 0.3f;
-	sampposition.y -= (gravity*get_mainfps().fps_getDeltaTime());
+	//重力による下降処理
+	//if(mapobject[hitnum].type != MOVE)
+		sampposition.y -= (gravity*get_mainfps().fps_getDeltaTime());
 
 
 	//y座標の補正
