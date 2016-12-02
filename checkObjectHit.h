@@ -22,6 +22,7 @@ public:
 	bool alphaOBBs( OBB &obb1,object &obb2 );
 	bool ColOBBs( object &obb1,object &obb2 );
 	float LenOBBToPoint( object &obb,vec3 pointpos);
+	float LenOBBToPoint_move( object &obb,vec3 pointpos);
 
 };
 

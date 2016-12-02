@@ -29,17 +29,17 @@ private:
 
 	int bulletnum;
 public:
-	int hp;
-	vec3 position;
-	vec3 angles;
-	vec3 lookat;
-	float dx,dy;
-	int atk;
-	int radi;		//当たり判定の半径?
+	int hp;			//体力
+	vec3 position;	//座標
+	vec3 angles;	//角度
+	vec3 lookat;	//視点
+	float dx,dy;	//??
+	int atk;		//攻撃力
+	int radi;		//当たり判定の半径
 
-	//プレイヤーの頭のあたり判定
+	//プレイヤーの頭のあたり判定で使用
 	vec3 playerhead_collider;
-	//プレイヤーの身体のあたり判定
+	//プレイヤーの身体のあたり判定で使用
 	vec3 player_collider;
 
 
