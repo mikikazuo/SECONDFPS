@@ -14,6 +14,7 @@
 #include "Game.h"
 #include "player.h"
 #include "key.h"
+#include "math.h"
 
 checkObjectHit bulletmovechecker;
 
@@ -22,18 +23,56 @@ bullet::bullet() {
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 }
-void bullet::bullet_Initialize(int setspeed,int setlifetime,int setreloadmax,bulletmode setbulletmode){
-	reloadmax=setreloadmax;
-	lifetime=setlifetime;
+void bullet::bullet_Initialize(bulletmode setbulletmode){
+	bulletradi=0.01f;
+
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 	launchbulletcount=0;
 	reloadtime=0;
 	mode=setbulletmode;
-	speed=setspeed;
+
 	modemovecount=0;
+
+	lifetime=3;
+	switch(setbulletmode){
+	case Crossbow:
+		reloadmax=5;
+		speed=5;
+		break;
+	case Rifle:
+		reloadmax=10;
+		speed=10;
+		break;
+	case Gatling:
+		reloadmax=150;
+		speed=8;
+		break;
+	case Spear:
+		reloadmax=1;
+		speed=5;
+		break;
+	case Magicstick:
+		reloadmax=20;
+		speed=8;
+		break;
+	case Magic:
+		reloadmax=30;
+		speed=9;
+		break;
+	case Mob:
+		reloadmax=30;
+		speed=3;
+		break;
+	default:
+		break;
+	}
+
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
+
+	vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
+	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
 	if(mode==Magic){
 		for(int i=0;i<MAXBULLET;i++)
@@ -45,13 +84,13 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 						bullet_info[i+j].position=playerposition;
 						switch(j){
 						case 0:
-							bullet_info[i+j].position.x+=0.5;
+							bullet_info[i+j].position+=right_dir*0.2f;
 							break;
 						case 1:
-							bullet_info[i+j].position.x-=0.5;
+							bullet_info[i+j].position-=right_dir*0.2f;
 							break;
 						case 2:
-							bullet_info[i+j].position.y-=0.5;
+							bullet_info[i+j].position.y-=0.2f;
 							break;
 						}
 						bullet_info[i+j].dir=playerdir;
@@ -256,7 +295,7 @@ void bullet::Draw(){
 			float z=bullet_info[i].position.z;
 			glTranslatef(x,y,z);
 
-			glutSolidSphere( 0.01f, 50, 50 );
+			glutSolidSphere( bulletradi, 50, 50 );
 			glPopMatrix();
 
 		}

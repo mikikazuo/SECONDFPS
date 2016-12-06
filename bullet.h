@@ -37,6 +37,8 @@ typedef enum{
 	nonemode
 }bulletmode;
 
+
+
 class bullet : public OBB{
 private:
 	Shot bullet_info[MAXBULLET];
@@ -47,9 +49,10 @@ private:
 	int speed;
 	bulletmode mode;
 	int modemovecount;
+	float bulletradi;
 public:
 	bullet();
-	void bullet_Initialize(int setspeed,int setlifetime,int setreloadmax,bulletmode setbulletmode);
+	void bullet_Initialize(bulletmode setbulletmode);
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
 	void PlayerToMob();

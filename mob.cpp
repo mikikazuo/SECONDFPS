@@ -58,20 +58,21 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	myno=no;
 	flag=0;
 	position=pos;
-	mobbullet.bullet_Initialize(10,5,10,Mob);
+	mobbullet.bullet_Initialize(Mob);
 	radi=ra;
 	hp=maxhp=sethp;
 	atk=setatk;
 	atkrange=setatkrange;
 	atktime=setatktime;
-	findplayer=false;
+	vsinfo.findplayer=false;
+	vsinfo.mobmode=noneaction;
 }
 void mob::DrawInitialize(char *filename){
 	static char *flname='\0';
 	static int mqonum;
 	if(flname!=filename){
 		flname=filename;
-		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0035);
+		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
 		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
 	}
 }
@@ -96,8 +97,11 @@ void mob::move(){
 	const float movespeed = 4;
 
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
-	if(!findplayer){
+	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+	vec3 toplayer_dir = vec3((get_player()->position.x-position.x), (get_player()->position.y-position.y), (get_player()->position.z-position.z));
+
+	if(!vsinfo.findplayer){
+		angles.y=0;
 		if(movecount%(60*1)==0)
 			dx=GetRandom(-10,10);
 
@@ -165,6 +169,30 @@ void mob::move(){
 
 		//	if(x+y+z<pow(5,2))
 	}else{
+		switch(vsinfo.mobmode){
+		case sidestep:
+			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			break;
+		case sidestephard:
+			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			break;
+		case runaway:
+			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+
+			position.x-=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+			position.z-=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			break;
+		case noneaction:
+
+			break;
+		}
 
 
 	}
@@ -186,7 +214,7 @@ void mob::Draw(){
 	//glutSolidSphere( 1, 50, 50 );
 
 	glRotated(angles.x * 180 /M_PI ,0,1,0);
-
+	glRotated(-angles.y * 180 /M_PI ,1,0,0);
 	mqoCallModel(mobmqo);
 
 	glPopMatrix();
@@ -206,10 +234,18 @@ void mob::launchBullet(){
 				//mobbullet.setInfo(position,vec3(0, 1, 0));
 				mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
 				PlayMobMusic(myno);
-				findplayer=true;
+
 			}
+			if(!vsinfo.findplayer){
+				vsinfo.findplayer=true;
+				vsinfo.mobmode=runaway;//(attackmode)GetRandom(0,2);
+			}
+		}else if(vsinfo.mobmode==runaway){
+			if(radi*2<=x+y+z)
+				vsinfo.findplayer=false;
 		}else
-			findplayer=false;
+			vsinfo.findplayer=false;
+
 		mobbullet.Update();
 	}
 }

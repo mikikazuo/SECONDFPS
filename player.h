@@ -32,6 +32,7 @@ private:
 	bool atkok;
 	int atkcount;
 	int speed;
+	double pers;
 public:
 	float maxhp;
 	float hp;
@@ -67,6 +68,7 @@ public:
 	void launchBullet();
 	void Action();
 	void MakeCamAndLightMatrix();
+	void set_Pers(double next);
 	virtual ~player();
 };
 

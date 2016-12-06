@@ -12,6 +12,20 @@
 #include "player.h"
 #include "bullet.h"
 
+typedef enum{
+	sidestep,
+	sidestephard,
+	runaway,
+	noneaction
+}attackmode;
+
+typedef struct {
+	bool findplayer;
+	attackmode mobmode;
+	int dircount;
+	int dir;
+}vsplayer;
+
 int GetRandom(int min,int max);
 class mob {
 private:
@@ -24,9 +38,9 @@ private:
 	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
 	float atkrange;
 	bool hitmap;
-	bool hitwall;
 	int atktime;
-	bool findplayer;
+	vsplayer vsinfo;
+
 public:
 	vec3 position;
 	vec3 angles;

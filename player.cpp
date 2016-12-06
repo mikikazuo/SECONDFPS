@@ -22,7 +22,7 @@
 #include <SDL/SDL.h>
 #include "image.h"
 #include "sound.h"
-
+#include "GLMetaseq.h"
 
 #define HP 100
 #define BULLETNUM 10
@@ -121,7 +121,7 @@ int wallhandle;
 //}
 
 //////////////////////////////////
-#define LOOK_DISTANT 100           //見える距離
+#define LOOK_DISTANT 200           //見える距離
 
 checkObjectHit movechecker;
 
@@ -135,7 +135,7 @@ GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納す
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
 double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
 
-
+MQO_MODEL handmodel;
 
 Wall *player::get_mywall(){
 	return mywall;
@@ -151,7 +151,7 @@ player::player() {
 
 void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam){
 
-	playerbullet.bullet_Initialize(setbulletspeed,setlifetime,setreloadmax,Magic);
+	playerbullet.bullet_Initialize(Gatling);
 	position=pos;
 	hp=maxhp=sethp;
 	atk=setatk;
@@ -160,18 +160,35 @@ void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,in
 	myteam=setteam;
 	atktime=setatktime;
 	speed=setspeed;
-	//	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
-	//		mywall[i].count=0;
+	pers=60.0;
+	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
+		mywall[i].count=0;
+
+	reset_Scroll();
+	reset_ScrollLimit();
+	set_ScrollMax(18);
+	set_ScrollMin(0);
+
 }
 void player::DrawInitialize(){
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
+	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
+	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
+	handmodel=mqoCreateModel(flname,0.0035);
+
 }
 
 void player::DrawFinalize(){
 	image_free(wallhandle);
+}
+
+void player::set_Pers(double next){
+	pers=next;
 }
 
 void player::Draw(){
@@ -187,11 +204,10 @@ void player::Draw(){
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	gluPerspective(60.0, (double)w / (double)h,0.1,LOOK_DISTANT);/*view volume 注意*/
-	gluLookAt( position.x,position.y,position.z, // 視点の位置x,y,z;
-			position.x+lookat.x, position.y+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
+	gluPerspective(pers, (double)w / (double)h,0.0001,LOOK_DISTANT);/*view volume 注意*/
+	gluLookAt( position.x,position.y+0.5f,position.z, // 視点の位置x,y,z;
+			position.x+lookat.x, position.y+0.5f+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
 			0,1,0);
-
 
 
 	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
@@ -201,6 +217,16 @@ void player::Draw(){
 
 
 	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	glTranslatef(position.x,position.y+0.5f,position.z);
+	glRotated(angles.x* 180 /M_PI ,0,1,0);
+	glRotated(-angles.y* 180 /M_PI ,1,0,0);
+
+
+	mqoCallModel(handmodel);
+	glPopMatrix();
+
 	playerbullet.Draw();
 	DrawMyWall();
 
@@ -219,7 +245,7 @@ void player::Update(){
 	set_wall();
 	remove_wall();
 
-
+	set_Pers(60-3*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
 }
 //プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
@@ -611,9 +637,9 @@ void player::Action()
 void player::launchBullet(){
 	atkcount++;
 	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
-		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
+		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
-		ChangeSE(1);
+			ChangeSE(1);
 		atkok=false;
 	}
 	if(atkcount%atktime==0)

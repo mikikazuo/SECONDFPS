@@ -60,7 +60,7 @@ void Game::Initialize(){
 	mapobj.Initialize();
 	player1.Initialize(vec3(20,10,-10),1,7,100,50,20,3,3,100,RedTeam);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,1,-5),1,100,1,30,10);
+		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 }
 
 void Game::DrawInitialize(){
@@ -87,17 +87,17 @@ void Game::DrawInitialize(){
 	mqomodel[5]=mqoCreateModel(flname,0.0035);
 
 
-	flname=(char*)"Data/charamodel/char1/char1_firstside.mqo";
+	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 	mqomodel[6]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	mqomodel[7]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/prechar/char3/char3_exp.mqo";
+	flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
 	mqomodel[8]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/prechar/har4/char4_exp.mqo";
+	flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";
 	mqomodel[9]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/prechar/char4/char4_exp.mqo";
+	flname=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
 	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/prechar/char6/char6_exp.mqo";
+	flname=(char*)"Data/charamodel/char6/char6_firstside_shooted.mqo";
 	mqomodel[11]=mqoCreateModel(flname,0.0035);
 	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
 	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
@@ -112,6 +112,7 @@ void Game::DrawFinalize(){
 	gamecanvas.DrawFinalize();
 	mapobj.DrawFinalize();
 	player1.DrawFinalize();
+	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
 }
 
