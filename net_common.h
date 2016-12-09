@@ -14,8 +14,8 @@
 #include "player.h"
 #include "bullet.h"
 
-#define PORT	(u_short)8888	/* ポート番号 */
-#define MAX_CLIENTS	8	/* クライアント数の最大値 */
+#define PORT	(u_short)65531	/* ポート番号 */
+#define MAX_CLIENTS	2	/* クライアント数の最大値 */
 #define MAX_LEN_NAME 20
 
 

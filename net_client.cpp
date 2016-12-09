@@ -64,9 +64,10 @@ void setup_client(char *server_name, u_short port) {
 
   fprintf(stderr, "Input your name: ");
   char user_name[MAX_LEN_NAME];
-  if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
-    handle_error();
-  }
+//  if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
+//    handle_error();
+//  }
+  user_name[0]='a';
   user_name[strlen(user_name) - 1] = '\0';
   send_data(user_name, MAX_LEN_NAME);
 
@@ -95,7 +96,7 @@ void client_start(void){
 	 u_short port = PORT;
 	 char server_name[MAX_LEN_NAME];
 
-	 sprintf(server_name,"clpc007");
+	 sprintf(server_name,"clpc019");
 
 	 setup_client(server_name,port);
 }
