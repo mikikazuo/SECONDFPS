@@ -204,7 +204,7 @@ void player::Draw(){
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	gluPerspective(pers, (double)w / (double)h,0.0001,LOOK_DISTANT);/*view volume 注意*/
+	gluPerspective(pers, (double)w / (double)h,0.1,LOOK_DISTANT);/*view volume 注意*/
 	gluLookAt( position.x,position.y+0.5f,position.z, // 視点の位置x,y,z;
 			position.x+lookat.x, position.y+0.5f+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
 			0,1,0);

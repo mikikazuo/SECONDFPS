@@ -99,6 +99,7 @@ void Game::DrawInitialize(){
 	mqomodel[10]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg1.mqo";
 	mqomodel[11]=mqoCreateModel(flname,0.0035);
+
 	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
 	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
 
