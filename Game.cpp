@@ -87,17 +87,17 @@ void Game::DrawInitialize(){
 	mqomodel[5]=mqoCreateModel(flname,0.0035);
 
 
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg2.mqo";
 	mqomodel[6]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg3.mqo";
 	mqomodel[7]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_reload.mqo";
 	mqomodel[8]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_shoot.mqo";
 	mqomodel[9]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_head.mqo";
 	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char6/char6_firstside_shooted.mqo";
+	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg1.mqo";
 	mqomodel[11]=mqoCreateModel(flname,0.0035);
 	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
 	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
