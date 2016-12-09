@@ -12,49 +12,29 @@
 #include "player.h"
 #include "bullet.h"
 
-typedef enum{
-	sidestep,
-	sidestephard,
-	runaway,
-	noneaction
-}attackmode;
-
-typedef struct {
-	bool findplayer;
-	attackmode mobmode;
-	int dircount;
-	int dir;
-}vsplayer;
-
-int GetRandom(int min,int max);
 class mob {
 private:
 	bullet mobbullet;
 	float radi;
 	int myno;
 
+	int dir;
 	float dx;
 	int movecount;
 	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
 	float atkrange;
-	bool hitmap;
-	int atktime;
-	vsplayer vsinfo;
-
 public:
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
-	float hp;
-	float maxhp;
-	float atk;
+	int hp;
+	int atk;
 
 
 	mob();
 	virtual ~mob();
-	void Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange);
-	void DrawInitialize(char *filename);
-	void DrawFinalize();
+	void Initialize(int no,vec3 pos,float ra,int sethp,int setatk,float setatkrange);
+	void DrawInitialize();
 	void Update();
 	void move();
 	void Draw();

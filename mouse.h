@@ -31,9 +31,5 @@ void mouse(int button , int state , int x , int y);
 void mouseCounter();
 MousePosition get_mouseinfo();
 int get_mousebutton_count(Buttontype button);
-void reset_Scroll();
-void set_ScrollMax(int nextcount);
-void set_ScrollMin(int nextcount);
-void reset_ScrollLimit();
 
 #endif /* MOUSE_H_ */

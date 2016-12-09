@@ -197,7 +197,6 @@ void img_Ori_Rota(int no,GLfloat CenterX,GLfloat CenterY,double rota){
 //原寸大拡大縮小
 void image_DrawExRota(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp){
 	glPushMatrix();
-	//glTranslated(CenterX,CenterY,0);
 	glTranslated(CenterX,CenterY,0.000001*no);//1115 変更：レイヤー的表現用に仮変更
 	glRotated(rota,0,0,1);
 	img_zoomDraw_C(no, 0,0, exp);
@@ -228,6 +227,9 @@ void image_DrawExRotaa(int no,GLfloat CenterX,GLfloat CenterY,double rota,double
 void img_DrawXY(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
 	if(!enableNo(no))return;
 	glEnable(GL_TEXTURE_2D);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//
+	//glEnable(GL_BLEND);//
+
 
 	glBindTexture(GL_TEXTURE_2D,sa[no].no);
 	glColor3d(1.0,1.0,1.0);
@@ -244,6 +246,7 @@ void img_DrawXY(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
+//	glDisable(GL_BLEND);//
 }
 
 //自由に縦横幅
@@ -323,14 +326,11 @@ void image_Drawrota_C(int no,GLfloat CenterX,GLfloat CenterY,int rota){
 	img_Ori_Rota(no,CenterX,CenterY,rota);
 }
 
-
-
-
 void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
 	if(!enableNo(no))return;
 	//glColor3d(1.0,0.2,0.2);
 
-    //glPushMatrix();
+	//glPushMatrix();
 	//glTranslated((x+w)/2,(y+w)/2,0.000001*no);//1115 変更：レイヤー的表現用に仮変更
 	//glPopMatrix();
 

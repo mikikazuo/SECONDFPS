@@ -24,7 +24,7 @@
 #define PLAYERNUM 5
 
 
-MQO_MODEL mqomodel[12];
+MQO_MODEL mqomodel;
 
 player player1;
 mob mober[10];
@@ -37,6 +37,9 @@ Wall *allplayerwall [PLAYERNUM];
 
 bool che=false;
 checkObjectHit hitChecker;
+
+
+
 
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -54,13 +57,12 @@ void Game::setInfoPlayerWall(){
 
 //初期化
 void Game::Initialize(){
-
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize(vec3(20,10,-10),1,7,100,50,20,3,3,100,RedTeam);
+	player1.Initialize(vec3(20,10,-10),1,100,100);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
+		mober[i].Initialize(i,vec3(-10,1,-5),1,100,10,20);
 }
 
 void Game::DrawInitialize(){
@@ -72,49 +74,16 @@ void Game::DrawInitialize(){
 	player1.DrawInitialize();
 
 
-	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
-	mqomodel[0]=mqoCreateModel(flname,0.0035);
-
-	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
-	mqomodel[1]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shooted.mqo";
-	mqomodel[2]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shoot.mqo";
-	mqomodel[3]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_reload.mqo";
-	mqomodel[4]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg3.mqo";
-	mqomodel[5]=mqoCreateModel(flname,0.0035);
-
-
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_arm.mqo";
-	mqomodel[6]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_body1.mqo";
-	mqomodel[7]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_body2.mqo";
-	mqomodel[8]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_head.mqo";
-	mqomodel[9]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg1.mqo";
-	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg2.mqo";
-	mqomodel[11]=mqoCreateModel(flname,0.0035);
-
-	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
-	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
-
-
+	char *flname=(char*)"Data/a/char4.mqo";
+	mqomodel=mqoCreateModel(flname,0.0035);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].DrawInitialize("Data/charamodel/enemy1/enemy2_exp.mqo");
-
+		mober[i].DrawInitialize();
 }
 
 void Game::DrawFinalize(){
 	gamecanvas.DrawFinalize();
 	mapobj.DrawFinalize();
 	player1.DrawFinalize();
-	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
-	mober[0].DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {
@@ -127,7 +96,7 @@ void Game::Update(){
 
 	//追加??
 	//キャラクターの座標表示
-//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
 
 	player1.Update();
 	gamecanvas.Update();
@@ -166,23 +135,12 @@ void Game::Draw(){
 	glEnable(GL_LIGHT0);
 	glPushMatrix();
 
-
 	glColor3f(0.5,0.5,0.5);
+	glTranslated(5,0,-8);
+	glRotated(180,0,1,0);
+	mqoCallModel(mqomodel );
 
-	for(int i=0;i<12;i++){
-
-		glPushMatrix();
-		if(i>=6)
-			glTranslated(5+(i-6)*5,1,-4);
-		else
-			glTranslated(5+i*5,1,-8);
-		glRotated(180,0,1,0);
-
-		mqoCallModel(mqomodel[i]);
-		glPopMatrix();
-	}
-
-
+	glPopMatrix();
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 

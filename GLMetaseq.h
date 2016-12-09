@@ -161,7 +161,7 @@ Copyright (c) 2009 Sunao Hashimoto and Keisuke Konishi
 #define SIZE_STR				256			// ������o�b�t�@�̃T�C�Y
 #define DEF_IS_LITTLE_ENDIAN	1			// �G���f�B�A���w��iintel�n=1�j
 #define DEF_USE_LIBJPEG			0			// libjpeg�̎g�p�i1:�g�p 0:���g�p�j
-#define DEF_USE_LIBPNG			1			// libpng �̎g�p�i1:�g�p 0:���g�p�j
+#define DEF_USE_LIBPNG			0			// libpng �̎g�p�i1:�g�p 0:���g�p�j
 
 
 

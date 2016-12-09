@@ -18,7 +18,6 @@ typedef enum{
 	Jump,
 	Setwall,
 	Removewall,
-	Reload,
 	none
 }Key;
 
