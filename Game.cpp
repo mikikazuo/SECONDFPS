@@ -77,27 +77,27 @@ void Game::DrawInitialize(){
 
 	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
 	mqomodel[1]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char3/char3_exp_ver2.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shooted.mqo";
 	mqomodel[2]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char4/char4_exp_ver2.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shoot.mqo";
 	mqomodel[3]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char5/char5_exp_ver2.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_reload.mqo";
 	mqomodel[4]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char6/char6_exp_ver2.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg3.mqo";
 	mqomodel[5]=mqoCreateModel(flname,0.0035);
 
 
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg2.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_arm.mqo";
 	mqomodel[6]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg3.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_body1.mqo";
 	mqomodel[7]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_reload.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_body2.mqo";
 	mqomodel[8]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_shoot.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_head.mqo";
 	mqomodel[9]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_head.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg1.mqo";
 	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/相手/char1_ene_leg1.mqo";
+	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg2.mqo";
 	mqomodel[11]=mqoCreateModel(flname,0.0035);
 
 	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
