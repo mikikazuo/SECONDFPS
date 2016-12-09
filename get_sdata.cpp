@@ -6,6 +6,7 @@
  */
 #include "stdio.h"
 #include "net_common.h"
+#include "Game.h"
 
 int get_bulletdata(S_CONTAINER sdata){
 	int i;
@@ -29,6 +30,26 @@ int get_playerdata(S_CONTAINER sdata){
 		y=sdata.players[i].position.y;
 		z=sdata.players[i].position.z;
 
+		get_enemy()->position.x=x;
+		get_enemy()->position.y=y;
+		get_enemy()->position.z=z;
+
+		get_enemy()->position.x=sdata.players[i].angles.x;
+		get_enemy()->position.y=sdata.players[i].angles.y;
+		get_enemy()->position.z=sdata.players[i].angles.z;
+
+		get_enemy()->angles.x=sdata.players[i].angles.x;
+		get_enemy()->angles.y=sdata.players[i].angles.y;
+		get_enemy()->angles.z=sdata.players[i].angles.z;
+
+//		get_enemy()->position.x=sdata.players[i].angles.;
+//		get_enemy()->position.y=sdata.players[i].angles.;
+//		get_enemy()->position.z=sdata.players[i].angles.;
+
+
+		get_enemy()->position.x=x;
+		get_enemy()->position.y=y;
+		get_enemy()->position.z=z;
 		printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
 	}
 	return 0;

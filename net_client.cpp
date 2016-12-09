@@ -133,6 +133,23 @@ int control_requests () {
   cdata.my_player.position.y = me.position.y;
   cdata.my_player.position.z = me.position.z;
 
+  cdata.my_player.angles.x = me.angles.x;
+  cdata.my_player.angles.y = me.angles.y;
+  cdata.my_player.angles.z = me.angles.z;
+
+  cdata.my_player.lookat.x = me.lookat.x;
+  cdata.my_player.lookat.y = me.lookat.y;
+  cdata.my_player.lookat.z = me.lookat.z;
+
+  cdata.my_player.playerhead_collider.x = me.playerhead_collider.x;
+  cdata.my_player.playerhead_collider.y = me.playerhead_collider.y;
+  cdata.my_player.playerhead_collider.z = me.playerhead_collider.z;
+
+  cdata.my_player.player_colider.x = me.player_collider.x;
+  cdata.my_player.player_colider.y = me.player_collider.y;
+  cdata.my_player.player_colider.z = me.player_collider.z;
+
+
   //printf("x=%f\n",me.position.x);
   send_data(&cdata,sizeof(cdata));
 

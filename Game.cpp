@@ -19,7 +19,7 @@
 #include "CanvasUI.h"
 #include "sound.h"
 
-
+#include "enemyPlayer.h"
 
 #define PLAYERNUM 5
 
@@ -38,6 +38,7 @@ Wall *allplayerwall [PLAYERNUM];
 bool che=false;
 checkObjectHit hitChecker;
 
+enemyPlayer enemy;
 
 
 
@@ -78,6 +79,8 @@ void Game::DrawInitialize(){
 	mqomodel=mqoCreateModel(flname,0.0035);
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].DrawInitialize();
+
+	enemy.DrawInitialize(mqomodel);
 }
 
 void Game::DrawFinalize(){
@@ -125,7 +128,7 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-
+	enemy.Draw();
 	mapobj.Draw();
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -171,4 +174,8 @@ mob *get_mober(){
 }
 int get_mobernum(){
 	return (int)(sizeof(mober)/sizeof(mober[0]));
+}
+
+enemyPlayer *get_enemy(){
+	return &enemy;
 }
