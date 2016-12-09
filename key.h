@@ -18,6 +18,7 @@ typedef enum{
 	Jump,
 	Setwall,
 	Removewall,
+	Test,   //マウスカーソルのキャプチャを外す
 	none
 }Key;
 

@@ -37,6 +37,7 @@ SDL_Thread *thr;
 
 int wallhandle;
 
+static bool testcursol=true;  //カーソルの固定外し
 ///ここから//////
 //#include <opencv/cv.h>
 //#if defined(WIN32)
@@ -212,6 +213,10 @@ void player::Update(){
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();
 	remove_wall();
+
+
+	if(key_getmove(Test)==3)
+		testcursol=!testcursol;
 }
 
 //obj:オブジェクト
@@ -286,7 +291,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
-		//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
+			//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
 			upflag = true;
 			hitmap = true;
 			hitnum = i;			//衝突したオブジェクトを判定
@@ -296,16 +301,16 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		else
 			//hitnum = 0;
 
-	//プレイヤーが生成した壁との当たり判定
-	for(int j=0;j<WALLMAX;j++){
-		if(playerwall[j].count > 0){
-			if(movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
-				upwall  = true;
-				hitwall = true;
-				break;
+			//プレイヤーが生成した壁との当たり判定
+			for(int j=0;j<WALLMAX;j++){
+				if(playerwall[j].count > 0){
+					if(movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
+						upwall  = true;
+						hitwall = true;
+						break;
+					}
+				}
 			}
-		}
-	}
 
 	//動作確認??
 	//printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
@@ -357,7 +362,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	}
 
 	//if(!hitmap)
-		//hitnum = -1;
+	//hitnum = -1;
 
 	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
 	mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
@@ -376,7 +381,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
 	//else if(mapobject[hitnum].type == MOVE){
 	else if(mapobject[hitnum].type == MOVE
-				&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
 		printf("12345\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
@@ -528,7 +533,12 @@ int thread(void *data){
 
 	player *info=(player*)data;
 	while(1){
-		if(!wrap) {
+
+		if(testcursol){
+
+		}
+
+		else if(!wrap) {
 			float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
 			float wh = 700;//glutGet(GLUT_WINDOW_HEIGHT);
 
@@ -598,7 +608,7 @@ void player::launchBullet(){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 		ChangeSE(1);
 	}
-		playerbullet.Update();
+	playerbullet.Update();
 }
 
 player::~player() {
