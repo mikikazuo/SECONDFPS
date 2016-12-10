@@ -27,7 +27,7 @@
 #include "mouse.h"
 #include "image.h"
 #include "SceneMgr.h"
-#include net_client.h""
+#include "net_client.h"
 
 #define LOOK_DISTANT 1000            //見える距離
 #define TEXWIDTH  512
@@ -129,6 +129,7 @@ int thread_Update(void *arg){
 		sceneMgr.Update();  //更新
 		mainfps.wait_Update();
 		key_Update();
+		control_requests ();
 	}
 	sceneMgr.Finalize();
 	return 0;

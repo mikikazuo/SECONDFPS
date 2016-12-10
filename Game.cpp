@@ -18,7 +18,7 @@
 #include "GLMetaseq.h"
 #include "CanvasUI.h"
 #include "sound.h"
-
+#include "enemyPlayer.h"
 
 
 #define PLAYERNUM 5
@@ -31,7 +31,7 @@ mob mober[10];
 
 CanvasUI gamecanvas;
 map mapobj;
-
+enemyPlayer enemy;
 
 Wall *allplayerwall [PLAYERNUM];
 
@@ -105,8 +105,8 @@ void Game::DrawInitialize(){
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].DrawInitialize("Data/charamodel/enemy1/enemy2_exp.mqo");
-
+		mober[i].DrawInitialize((char*)"Data/charamodel/enemy1/enemy2_exp.mqo");
+	enemy.DrawInitialize(mqomodel[0]);
 }
 
 void Game::DrawFinalize(){
@@ -156,7 +156,7 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-
+	enemy.Draw();
 	mapobj.Draw();
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -214,3 +214,8 @@ mob *get_mober(){
 int get_mobernum(){
 	return (int)(sizeof(mober)/sizeof(mober[0]));
 }
+
+enemyPlayer *get_enemy(){
+	return &enemy;
+}
+
