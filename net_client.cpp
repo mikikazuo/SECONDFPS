@@ -127,7 +127,7 @@ int control_requests () {
   memset(&cdata,0,sizeof(C_CONTAINER));
 //  cdata.my_bullet.num = 1;
 //  cdata.my_bullet.bullet_info.count = A--;
- // cdata.my_bullet.bullet_info=get_player()->get_playerbullet();
+
 
   cdata.command = DATA;
 
@@ -167,7 +167,7 @@ static int execute_command() {
   case DATA://データを受信した.
 
 	  //*****************ここで各オブジェクトの変数を書き換え
-	  //get_bulletdata(data);
+	  get_bulletdata(data);
 	  get_playerdata(data);
 	  break;
   default:

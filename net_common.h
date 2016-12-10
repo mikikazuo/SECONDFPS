@@ -67,23 +67,22 @@ typedef struct{
 
 typedef struct{
 	int shooter;
-	bullet bullet_info;
-//	int num;
-//	shot2 bullet_info;
+	int num;
+	shot2 bullet_info;
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ
 typedef struct{
 	char command;//コマンド
 	PLAYER_DATA players[MAX_CLIENTS];
-	//BULLET_DATA bullets;
+	BULLET_DATA bullets;
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
 typedef struct{
 	char command;//コマンド
 	PLAYER_DATA my_player;
-	//BULLET_DATA my_bullet;
+	BULLET_DATA my_bullet;
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */
