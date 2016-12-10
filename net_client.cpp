@@ -75,6 +75,7 @@ void setup_client(char *server_name, u_short port) {
   receive_data(&num_clients, sizeof(int));
   fprintf(stderr, "Number of clients = %d.\n", num_clients);
   receive_data(&myid, sizeof(int));
+  get_player()->myid=myid;
   fprintf(stderr, "Your ID = %d.\n", myid);
   int i;
   for(i = 0; i < num_clients; i++) {
@@ -122,10 +123,12 @@ int control_requests () {
 
   //データを送信
   C_CONTAINER cdata;
-  static int A = 300;
+// static int A = 300;
   memset(&cdata,0,sizeof(C_CONTAINER));
-  cdata.my_bullet.num = 1;
-  cdata.my_bullet.bullet_info.count = A--;
+//  cdata.my_bullet.num = 1;
+//  cdata.my_bullet.bullet_info.count = A--;
+ // cdata.my_bullet.bullet_info=get_player()->get_playerbullet();
+
   cdata.command = DATA;
 
   player me = player1;
@@ -133,21 +136,14 @@ int control_requests () {
   cdata.my_player.position.y = me.position.y;
   cdata.my_player.position.z = me.position.z;
 
-//  cdata.my_player.angles.x = me.angles.x;
-//  cdata.my_player.angles.y = me.angles.y;
-//  cdata.my_player.angles.z = me.angles.z;
-//
-//  cdata.my_player.lookat.x = me.lookat.x;
-//  cdata.my_player.lookat.y = me.lookat.y;
-//  cdata.my_player.lookat.z = me.lookat.z;
-//
-//  cdata.my_player.playerhead_collider.x = me.playerhead_collider.x;
-//  cdata.my_player.playerhead_collider.y = me.playerhead_collider.y;
-//  cdata.my_player.playerhead_collider.z = me.playerhead_collider.z;
-//
-//  cdata.my_player.player_colider.x = me.player_collider.x;
-//  cdata.my_player.player_colider.y = me.player_collider.y;
-//  cdata.my_player.player_colider.z = me.player_collider.z;
+  cdata.my_player.angles.x = me.angles.x;
+  cdata.my_player.angles.y = me.angles.y;
+  cdata.my_player.angles.z = me.angles.z;
+
+  cdata.my_player.lookat.x = me.lookat.x;
+  cdata.my_player.lookat.y = me.lookat.y;
+  cdata.my_player.lookat.z = me.lookat.z;
+
 
 
   //printf("x=%f\n",me.position.x);
@@ -171,7 +167,7 @@ static int execute_command() {
   case DATA://データを受信した.
 
 	  //*****************ここで各オブジェクトの変数を書き換え
-	  get_bulletdata(data);
+	  //get_bulletdata(data);
 	  get_playerdata(data);
 	  break;
   default:

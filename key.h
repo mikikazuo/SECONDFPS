@@ -19,6 +19,7 @@ typedef enum{
 	Setwall,
 	Removewall,
 	Reload,
+	Test,   //マウスカーソルのキャプチャを外す
 	none
 }Key;
 

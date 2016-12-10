@@ -19,14 +19,21 @@ void enemyPlayer::DrawInitialize(MQO_MODEL setmodel){
 }
 
 void enemyPlayer::Draw() {
+	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+
 	glPushMatrix();
 
 	glColor3f(0.5,0.5,0.5);
 	glTranslated(position.x,position.y,position.z);
-	glRotated(180,0,1,0);
+	glRotated(angles.x * 180 /M_PI ,0,1,0);
+	//glRotated(-angles.y * 180 /M_PI ,1,0,0);
+
 	mqoCallModel(enemymodel);
 
 	glPopMatrix();
+
+	enemybullet.Draw();
 }
 enemyPlayer::~enemyPlayer() {
 	// TODO Auto-generated destructor stub

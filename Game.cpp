@@ -19,7 +19,7 @@
 #include "CanvasUI.h"
 #include "sound.h"
 
-
+#include "enemyPlayer.h"
 
 #define PLAYERNUM 5
 
@@ -37,6 +37,10 @@ Wall *allplayerwall [PLAYERNUM];
 
 bool che=false;
 checkObjectHit hitChecker;
+
+
+enemyPlayer enemy;
+
 
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -77,9 +81,9 @@ void Game::DrawInitialize(){
 
 	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
 	mqomodel[1]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shooted.mqo";
+	flname=(char*)"Data/charamodel/char3/enemy/char3_ene_arm1.mqo";
 	mqomodel[2]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_shoot.mqo";
+	flname=(char*)"Data/charamodel/char2/char3_ene_arm2.mqo";
 	mqomodel[3]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char2/相手/char2_ene_reload.mqo";
 	mqomodel[4]=mqoCreateModel(flname,0.0035);
@@ -97,7 +101,7 @@ void Game::DrawInitialize(){
 	mqomodel[9]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg1.mqo";
 	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/相手/char2_ene_leg2.mqo";
+	flname=(char*)"Data/charamodel/拠点/相手/castle2_exp.mqo";
 	mqomodel[11]=mqoCreateModel(flname,0.0035);
 
 	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
@@ -105,7 +109,12 @@ void Game::DrawInitialize(){
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
+
 		mober[i].DrawInitialize((char*)"Data/charamodel/enemy1/enemy2_exp.mqo");
+
+
+
+	enemy.DrawInitialize(mqomodel[0]);
 
 }
 
@@ -156,7 +165,7 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-
+	enemy.Draw();
 	mapobj.Draw();
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -216,4 +225,7 @@ int get_mobernum(){
 }
 
 
+enemyPlayer *get_enemy(){
+	return &enemy;
+}
 

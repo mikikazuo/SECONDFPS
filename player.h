@@ -13,13 +13,16 @@
 
 #include "object.h"
 #include "map.h"
+#include "bullet.h"
 
+class bullet;
 
 #define WALLMAX 3
 
 typedef struct {
 	int count;
 	object wall;
+
 }Wall;
 
 
@@ -34,6 +37,8 @@ private:
 	int speed;
 	double pers;
 public:
+
+	int myid;    //my server id
 	float maxhp;
 	float hp;
 	vec3 position;
@@ -70,6 +75,7 @@ public:
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
 	virtual ~player();
+	bullet get_playerbullet();
 };
 
 #endif /* PLAYER_H_ */

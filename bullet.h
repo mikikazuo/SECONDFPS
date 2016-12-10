@@ -17,6 +17,8 @@
 #include "map.h"
 #include "player.h"
 
+class player;
+
 #define MAXBULLET 300
 
 

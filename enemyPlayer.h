@@ -10,7 +10,7 @@
 
 #include "glm.h"
 #include "GLMetaseq.h"
-
+#include "bullet.h"
 
 class enemyPlayer {
 private:
@@ -18,6 +18,7 @@ private:
 
 
 public:
+	bullet enemybullet;
 	vec3 position;	//座標
 	vec3 angles;	//角度
 	vec3 lookat;	//視点
