@@ -115,7 +115,7 @@ void OBB::UpdateAxisAll()
 	MATRIX2 mRot = YawPitchRoll(DegToRad(m_Rota.y), DegToRad(m_Rota.x), DegToRad(m_Rota.z));
 	m_NormaDirect[0] = operato(&mRot,vec3(1, 0, 0));
 	m_NormaDirect[1] = operato(&mRot,vec3(0, 1, 0));
-	m_NormaDirect[2]= operato(&mRot,vec3(0, 0, 1));
+	m_NormaDirect[2] = operato(&mRot,vec3(0, 0, 1));
 }
 
 
