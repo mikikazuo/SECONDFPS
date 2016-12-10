@@ -41,7 +41,7 @@ void CanvasUI::DrawInitialize(){
 	handle[3]=image_Load("Data/image/level.png");
 	handle[4]=image_Load("Data/image/pHP_bar2.png");
 	handle[5]=image_Load("Data/image/BULLET_bar2.png");
-
+	handle[6]=image_Load("Data/image/exp_bar.png");
 
 	//HPbar 10-13
 	handle[10]=image_Load("Data/image/HP_bar_back.png");//下地B
@@ -145,6 +145,11 @@ void CanvasUI::Draw() {
 	rect_Draw2D(handle[3],510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
 	image_DrawExRota(handle[5],620+shakeX,680+shakeY,0,1);//bullet
 
+	glColor3d(0.1,0.8,0.5);
+	rect_Draw2D(handle[6],210+shakeX,640+shakeY,260*0.01*a,20);//ゲージ描画
+	glColor3d(0.1,0.1,0.1);
+	rect_Draw2D(handle[6],210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
+	image_DrawExRota(handle[6],320+shakeX,650+shakeY,0,1);
 
 	int i;
 	for(i=0;i<4;i++){
