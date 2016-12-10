@@ -176,7 +176,7 @@ static int execute_command() {
 	  break;
   default:
     fprintf(stderr, "execute_command(): %c is not a valid command.\n", data.command);
-  //  exit(1);
+    exit(1);
   }
   return result;
 }
