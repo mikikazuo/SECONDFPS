@@ -62,7 +62,9 @@ void Game::Initialize(){
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
-	player1.Initialize(vec3(20,10,-10),1,Crossbow,RedTeam);
+
+	player1.Initialize(vec3(30,10,-10),1,Crossbow,RedTeam);
+
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 }
