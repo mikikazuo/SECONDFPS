@@ -12,7 +12,7 @@
 #include "checkObjectHit.h"
 #include <stdio.h>
 #include "Game.h"
-#include "player.h"
+
 #include "key.h"
 #include "math.h"
 
@@ -23,7 +23,7 @@ bullet::bullet() {
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 }
-void bullet::bullet_Initialize(bulletmode setbulletmode){
+void bullet::bullet_Initialize(Role setbulletmode){
 	bulletradi=0.01f;
 
 	for(int i=0;i<MAXBULLET;i++)
@@ -32,17 +32,20 @@ void bullet::bullet_Initialize(bulletmode setbulletmode){
 	reloadtime=0;
 	mode=setbulletmode;
 
-	modemovecount=0;
 
 	lifetime=3;
+
+
 	switch(setbulletmode){
 	case Crossbow:
 		reloadmax=5;
-		speed=5;
-		break;
+		speed=50;
+
+
+				break;
 	case Rifle:
 		reloadmax=10;
-		speed=10;
+		speed=50;
 		break;
 	case Gatling:
 		reloadmax=150;
@@ -68,6 +71,38 @@ void bullet::bullet_Initialize(bulletmode setbulletmode){
 		break;
 	}
 
+}
+
+void bullet::bullet_DrawInitialize(){
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
+
+
+	switch(mode){
+		case Crossbow:
+			bulletmodel=mqoCreateModel(flname,0.0035);
+
+					break;
+		case Rifle:
+
+			break;
+		case Gatling:
+
+			break;
+		case Spear:
+
+			break;
+		case Magicstick:
+
+			break;
+		case Magic:
+
+			break;
+		case Mob:
+
+			break;
+		default:
+			break;
+		}
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
@@ -111,6 +146,9 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 						bullet_info[i].dir.z+=0.01*GetRandom(-5,5);
 					}
 					bullet_info[i].count++;
+					bullet_info[i].angles=vec3(atan2(bullet_info[i].dir.x,bullet_info[i].dir.z),
+										atan2(bullet_info[i].dir.y,bullet_info[i].dir.x*bullet_info[i].dir.x+bullet_info[i].dir.z*bullet_info[i].dir.z),
+										atan2(bullet_info[i].dir.z,bullet_info[i].dir.x));
 					launchbulletcount++;
 					break;
 				}
@@ -294,8 +332,9 @@ void bullet::Draw(){
 			float y=bullet_info[i].position.y;
 			float z=bullet_info[i].position.z;
 			glTranslatef(x,y,z);
-
-			glutSolidSphere( bulletradi, 50, 50 );
+			glRotated(bullet_info[i].angles.x * 180 /M_PI ,0,1,0);
+			glRotated(-bullet_info[i].angles.y * 180 /M_PI ,1,0,0);
+			mqoCallModel(bulletmodel);
 			glPopMatrix();
 
 		}

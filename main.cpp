@@ -12,7 +12,7 @@
 
 #include <GL/glut.h>
 
-#include <X11/Xlib.h>
+//#include <X11/Xlib.h>
 
 #include <stdlib.h>
 
@@ -28,12 +28,13 @@
 #include "image.h"
 #include "SceneMgr.h"
 
-#include "net_client.h"
+
 
 #define LOOK_DISTANT 1000            //見える距離
 #define TEXWIDTH  512
 #define TEXHEIGHT 512
 
+static bool debug=false;    //sever connect
 
 
 SceneMgr sceneMgr;
@@ -128,11 +129,9 @@ int thread_Update(void *arg){
 
 		mouseCounter();
 		sceneMgr.Update();  //更新
-
 		mainfps.wait_Update();
 		key_Update();
 
-		control_requests ();//ネットワーク（毎フレーム？）
 
 	}
 	sceneMgr.Finalize();
@@ -143,9 +142,8 @@ int main (int argc, char** argv)
 {
 	argci = &argc;
 	argvi = argv;
-	XInitThreads();
 
-	client_start();//ネットワークの始まり
+
 
 	glutInit(&argc,argv);
 

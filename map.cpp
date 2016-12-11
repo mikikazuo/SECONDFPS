@@ -9,6 +9,7 @@
 
 #include "image.h"
 
+
 object obj[]={
 		//関数objectの引数:
 		//座標・各座標におけるサイズ・回転・色(テクスチャを貼らない場合)
@@ -46,9 +47,9 @@ object obj[]={
 		//左
 		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
-		//拠点1(前方) 13
+		//拠点1(前方:赤) 13
 		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
-		//拠点2(後方) 14
+		//拠点2(後方:青) 14
 		object(vec3(-(MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(0,0,256,1)),
 
 		//マップ分割
@@ -61,7 +62,6 @@ object obj[]={
 		object(vec3(49,10,-49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//エレベーター
 		object(vec3(49,-13,-45),vec3(2,30,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
-		//object(vec3(48.5,1,-41.5),vec3(2,2,4),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//高台 後方(青) 19
 		object(vec3(-49,10,49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
@@ -89,15 +89,46 @@ object obj[]={
 		,object(vec3(3,14.0,0),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//エレベーターへの足場 33
-		,object(vec3(3,14,-7),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//天空足場へ登るエレベーター 34
+
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
 		,object(vec3(15,1,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//z軸方向の当たり判定用オブジェクト 36
 		,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//赤拠点を囲む壁
+		//右側面 37
+		,object(vec3(47.5,1,-4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左側面
+		,object(vec3(47.5,1,4.5),vec3(5,2,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//右前方
+		,object(vec3(44.5,1,-3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//左前方 40
+		,object(vec3(44.5,1,3.5),vec3(1,2,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場へのエレベーターと通路を囲む壁
+		//側面1(赤側)
+		//object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(4.30,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//側面2(青側)
+		,object(vec3(1.80,17,-6.25),vec3(0.1,6,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(1.80,21.5,-9.0),vec3(0.1,3,3),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//天空足場の壁
+		//前
+		//,object(vec3(7,23.5,0),vec3(1,5,15),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//後
+		//右
+		//左
+
 
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -123,12 +154,36 @@ int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
 
-void map::Initialize(){
+//拠点にするobjectの添字を設定
+void map::set_Base(Team team,int objectno){
+	for(int j=0;j<BASENUM;j++){
+		if(baseno[team][j]==-1)
+			baseno[team][j]=objectno;
+	}
+}
 
+int *map::get_Base(Team enemyteam){
+	return baseno[enemyteam];
+}
+
+void map::minus_BaseHp(Team attacedteam,float atk){
+	basehp[attacedteam]-=atk;
+}
+
+void map::Initialize(){
+	for(int i=0;i<NoneTeam;i++)
+		basehp[i]=basemaxhp[i]=BASEHP;
+
+	for(int i=0;i<NoneTeam;i++)
+		for(int j=0;j<BASENUM;j++)
+			baseno[i][j]=-1;
+
+	set_Base(RedTeam,13);
+	set_Base(BlueTeam,14);
 }
 
 void map::DrawInitialize(){
-//描画初期化関数
+	//描画初期化関数
 	handle[0]=image_Load("Data/image/capture2.png");
 	handle[1]=image_Load("Data/image/2079.jpg");
 	handle[2]=image_Load("Data/image/20791.jpg");
@@ -159,13 +214,18 @@ void map::DrawInitialize(){
 	//天空足場
 	obj[22].set_imgno(handle[1],100);
 
+	obj[33].set_imgno(handle[1],100);
+
+	//赤拠点を囲む壁
+	obj[40].set_imgno(handle[1],100);
+
 }
 void map::DrawFinalize(){
 
 }
 
 void map::Update(){
-//オブジェクトの移動・回転
+	//オブジェクトの移動・回転
 
 	static int dir = 1;
 
@@ -185,8 +245,8 @@ void map::Update(){
 
 	//周期7秒
 	if(counts[1] % 420 == 0){
-			dirs[1] *= -1;
-		}
+		dirs[1] *= -1;
+	}
 
 	/*** 周期一覧 ***/
 	//4秒 count
@@ -200,6 +260,14 @@ void map::Update(){
 
 	/***移動***/
 	obj[4].move(2*dir,2*dir,0);
+	//obj[4].move(2*dir,0,0);
+	//obj[4].move(0,2*dir,0);
+
+
+	obj[35].move(3.5*dirs[1],0,0);
+
+	//天空足場へのエレベーター
+	obj[34].move(0,2.0*dirs[1],0);
 
 	//動作確認
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
@@ -214,6 +282,7 @@ void map::Update(){
 	//左右の当たり判定用オブジェクト
 	obj[35].x_side_move(2.0,15,20,1);
 	obj[36].z_side_move(2.0,13,15,1);
+
 
 }
 

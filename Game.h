@@ -6,6 +6,8 @@
 #include "mob.h"
 #include "player.h"
 
+#include "enemyPlayer.h"
+
 
 //ゲーム画面クラス
 class Game : public BaseScene {
@@ -28,3 +30,6 @@ Wall **get_allplayerwall();
 player *get_player();
 mob *get_mober();
 int get_mobernum();
+
+enemyPlayer *get_enemy();
+
