@@ -35,24 +35,45 @@ typedef struct{
 
 typedef struct{
 	int count;
-	v3 obj_pos;
-	v3 obj_size;
-	v3 obj_rot;
+	vec3 obj_pos;
+	vec3 obj_size;
+	vec3 obj_rot;
 }wall2;//Wall互換
 
 typedef struct{
 	int count;
-	int shooter;
-	v3 pos;
-	v3 dir;
+	//int shooter;
+	vec3 pos;
+	//v3 dir;
+	vec3 angles;
 }shot2;//Shot互換
 
+typedef struct{
+	shot2 mobbullet;
+	vec3 position;//位置
+	vec3 angles;//向き
+	int myno;//３次元定位オーディオ用の番付
+	float hp;
+	float maxhp;
+	float atk;
+}mob2;//Mob互換
+
+typedef struct{
+	int objno;  //動かすまたは回転させているオブジェクトの添字
+	vec3 position;//位置
+	vec3 rotation;//回転
+}Mapobj;
+typedef struct{
+	int basehp;
+}Basehp;
 typedef struct{
 	int cid;//ID
 	char name[MAX_LEN_NAME];//名前
 	int sock;
 	struct sockaddr_in addr;
 }CLIENT;
+
+
 
 typedef struct{
 	int hp;//HP
@@ -67,15 +88,20 @@ typedef struct{
 
 typedef struct{
 	int shooter;
-	int num;
-	shot2 bullet_info;
+	//int num;
+	shot2 bullet_info[300];
+	float minusmobhp[10];
+	float minusbasehp[2];
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ
 typedef struct{
 	char command;//コマンド
 	PLAYER_DATA players[MAX_CLIENTS];
-	BULLET_DATA bullets;
+	BULLET_DATA bullets[MAX_CLIENTS];
+	Mapobj movablemapobj[50];
+	mob2 mob[10];
+	Basehp hp[2];
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
@@ -83,6 +109,7 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
+	Basehp minusbasehp[2];
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */

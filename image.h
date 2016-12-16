@@ -11,6 +11,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <GL/glut.h>
+#include "glm.h"
 struct img{
 	GLuint no;
 	GLfloat color[4];
@@ -37,7 +38,7 @@ void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h);
 void Circle2DFill(float radius,int x,int y);//****
 
 //3D用
-void image_DrawExRota3D(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp);
+void image_DrawExRota3D(int no,vec3 Center,double rota,vec3 nvec,double exp);
 void img_zoomDraw_C3D(int no,GLfloat Centerx,GLfloat Centery,double exp);
 void img_DrawXY3D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h);
 

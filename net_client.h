@@ -16,8 +16,7 @@ extern void client_start(void);
 extern int control_requests ();
 
 
-extern int get_bulletdata(S_CONTAINER);
-extern int get_playerdata(S_CONTAINER);
+
 
 
 #endif /* NET_CLIENT_H_ */

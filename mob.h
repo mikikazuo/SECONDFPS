@@ -32,7 +32,6 @@ private:
 	bullet mobbullet;
 	float radi;
 	int myno;
-
 	float dx;
 	int movecount;
 	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
@@ -49,6 +48,8 @@ public:
 	float maxhp;
 	float atk;
 
+	float serverminushp;          //sa-ba-
+
 
 	mob();
 	virtual ~mob();
@@ -59,6 +60,7 @@ public:
 	void move();
 	void Draw();
 	void launchBullet();
+	void resetminushp();
 };
 
 #endif /* MOB_H_ */

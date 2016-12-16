@@ -23,6 +23,8 @@
 #include "image.h"
 #include "sound.h"
 #include "GLMetaseq.h"
+#include "bullet.h"
+
 
 #define HP 100
 #define BULLETNUM 10
@@ -37,6 +39,8 @@ SDL_Thread *thr;
 
 int wallhandle;
 
+
+bullet playerbullet;
 
 static bool testcursol=false;  //カーソルの固定外し
 
@@ -125,7 +129,7 @@ static bool testcursol=false;  //カーソルの固定外し
 //}
 
 //////////////////////////////////
-#define LOOK_DISTANT 200           //見える距離
+#define LOOK_DISTANT 1200           //見える距離
 
 checkObjectHit movechecker;
 
@@ -134,7 +138,7 @@ checkObjectHit movechecker;
 //		{ 0.3, 0.3, 0.3, 1.0 }
 //};
 
-bullet playerbullet;
+
 GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納するFramebuffer object
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
 double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
@@ -153,17 +157,38 @@ player::player() {
 
 }
 
-void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam){
+void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 
-	playerbullet.bullet_Initialize(Gatling);
+
+
+	playerbullet.bullet_Initialize(setrole);
+	switch(setrole){
+	case Crossbow:
+		break;
+	case Rifle:
+		break;
+	case Gatling:
+	case Spear:
+		break;
+	case Magicstick:
+		break;
+	case Magic:
+		break;
+	default:
+		break;
+	}
+
 	position=pos;
-	hp=maxhp=sethp;
-	atk=setatk;
-	bulletnum=BULLETNUM;
+	speed=7;
+	hp=maxhp=100;
+	atk=100;
+	atktime=60;
+atkok=true;
+
+
 	radi=ra;
 	myteam=setteam;
-	atktime=setatktime;
-	speed=setspeed;
+
 	pers=60.0;
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].count=0;
@@ -175,6 +200,8 @@ void player::Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,in
 
 }
 void player::DrawInitialize(){
+	playerbullet.bullet_DrawInitialize();
+
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
@@ -184,7 +211,7 @@ void player::DrawInitialize(){
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
 	handmodel=mqoCreateModel(flname,0.0035);
-
+//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
 void player::DrawFinalize(){
@@ -223,6 +250,7 @@ void player::Draw(){
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
+	//glTranslatef(position.x-0.1,position.y+0.48f,position.z+0.3);
 	glTranslatef(position.x,position.y+0.5f,position.z);
 	glRotated(angles.x* 180 /M_PI ,0,1,0);
 	glRotated(-angles.y* 180 /M_PI ,1,0,0);
@@ -238,6 +266,7 @@ void player::Draw(){
 
 void player::Update(){
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
+	playerbullet.Update();
 	launchBullet();
 	if(myteam==RedTeam)
 		playerbullet.HitObj(BlueTeam,atk);
@@ -248,7 +277,6 @@ void player::Update(){
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();
 	remove_wall();
-
 
 
 
@@ -447,7 +475,7 @@ int hitnum=0;
 	}
 
 	//衝突したオブジェクトの番号
-	printf("hitnum = %d\n",hitnum);
+	//printf("hitnum = %d\n",hitnum);
 	//オブジェクトの位置
 	//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
 	//移動後のオブジェクトの位置
@@ -455,7 +483,7 @@ int hitnum=0;
 	//オブジェクトの進行速度
 	//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
 	//オブジェクトのタイプ
-	printf("type = %d\n",mapobject[hitnum].type);
+	//printf("type = %d\n",mapobject[hitnum].type);
 
 
 	int i;
@@ -689,10 +717,10 @@ int thread(void *data){
 			else if(info->angles.x > M_PI)
 				info->angles.x -= M_PI * 2;
 
-			if(info->angles.y < -M_PI / 2)
-				info->angles.y = -M_PI / 2;
-			if(info->angles.y > M_PI / 2)
-				info->angles.y = M_PI / 2;
+			if(info->angles.y < -M_PI / 2+0.01f)
+				info->angles.y = -M_PI / 2+0.01f;
+			if(info->angles.y > M_PI / 2-0.01f)
+				info->angles.y = M_PI / 2-0.01f;
 
 			info->lookat.x = sinf(info->angles.x) * cosf(info->angles.y);
 			info->lookat.y = sinf(info->angles.y);
@@ -728,21 +756,40 @@ void player::Action()
 }
 
 void player::launchBullet(){
+	if(!atkok)
 	atkcount++;
+
+	static bool lastbullet=false;
+
 	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
+
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
+				lastbullet=false;
+
+		if(playerbullet.launchbulletcount<=playerbullet.reloadmax&&lastbullet==false)
 			ChangeSE(1);
+
+		if(playerbullet.launchbulletcount==playerbullet.reloadmax&& lastbullet==false){
+				lastbullet=true;
+			}
+
+
+
 		atkok=false;
 	}
 
-	if(atkcount%atktime==0)
+
+	if(atkcount>atktime){
 		atkok=true;
+		atkcount=0;
+	}
 
-	playerbullet.Update();
+//	playerbullet.Update();
 }
-
-bullet player::get_playerbullet(){
+//TODO
+//ポインタなし？
+bullet get_playerbullet(){
 	return playerbullet;
 }
 

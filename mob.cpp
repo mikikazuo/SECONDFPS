@@ -66,6 +66,11 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	atktime=setatktime;
 	vsinfo.findplayer=false;
 	vsinfo.mobmode=noneaction;
+
+}
+
+void mob::resetminushp(){
+	serverminushp=0;
 }
 void mob::DrawInitialize(char *filename){
 	static char *flname='\0';

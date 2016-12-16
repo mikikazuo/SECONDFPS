@@ -320,19 +320,12 @@ void object::move(float x,float y,float z){
 //	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
 
-	if(flag){
-		this->m_Pos.x+=x*get_mainfps().fps_getDeltaTime();
-		this->m_Pos.y+=y*get_mainfps().fps_getDeltaTime();
-		this->m_Pos.z+=z*get_mainfps().fps_getDeltaTime();
-		//if(playerchecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi)
+
 		if(player.LenOBBToPoint(ownup,get_player()->playerfoot_collider)<=1){
 			get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
 			get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
 			get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();
 		}
-
-	}else
-		flag=1;
 
 
 
@@ -374,9 +367,16 @@ vec3 object::get_m_Pos(){
 
 //オブジェクトの座標を書き換える関数
 void object::set_m_Pos(vec3 Pos){
-	this->m_Pos.x = Pos.x;
-	this->m_Pos.y = Pos.y;
-	this->m_Pos.z = Pos.z;
+	this->m_Pos = Pos;
+}
+
+//オブジェクトの回転を取得する関数
+vec3 object::get_m_Rot(){
+	return this->m_Rota;
+}
+//オブジェクトの回転を変更する関数
+void object::set_m_Rot(vec3 Rot){
+	this->m_Rota=Rot;
 }
 
 //オブジェクトの各軸方向の長さを取得する関数

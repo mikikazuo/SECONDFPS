@@ -12,7 +12,7 @@
 #include "checkObjectHit.h"
 #include <stdio.h>
 #include "Game.h"
-#include "player.h"
+
 #include "key.h"
 #include "math.h"
 
@@ -22,8 +22,9 @@ bullet::bullet() {
 	// TODO 自動生成されたコンストラクター・スタブ
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
+	lifetime=3;
 }
-void bullet::bullet_Initialize(bulletmode setbulletmode){
+void bullet::bullet_Initialize(Role setbulletmode){
 	bulletradi=0.01f;
 
 	for(int i=0;i<MAXBULLET;i++)
@@ -32,17 +33,20 @@ void bullet::bullet_Initialize(bulletmode setbulletmode){
 	reloadtime=0;
 	mode=setbulletmode;
 
-	modemovecount=0;
 
 	lifetime=3;
+
+
 	switch(setbulletmode){
 	case Crossbow:
 		reloadmax=5;
-		speed=5;
-		break;
+		speed=50;
+
+
+				break;
 	case Rifle:
 		reloadmax=10;
-		speed=10;
+		speed=50;
 		break;
 	case Gatling:
 		reloadmax=150;
@@ -68,6 +72,38 @@ void bullet::bullet_Initialize(bulletmode setbulletmode){
 		break;
 	}
 
+}
+
+void bullet::bullet_DrawInitialize(){
+	char *flname=(char*)"Data/charamodel/char1/char1_tama.mqo";
+
+
+	switch(mode){
+		case Crossbow:
+			bulletmodel=mqoCreateModel(flname,0.02);
+
+					break;
+		case Rifle:
+
+			break;
+		case Gatling:
+
+			break;
+		case Spear:
+
+			break;
+		case Magicstick:
+
+			break;
+		case Magic:
+
+			break;
+		case Mob:
+
+			break;
+		default:
+			break;
+		}
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
@@ -110,8 +146,12 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 						bullet_info[i].dir.y+=0.01*GetRandom(-5,5);
 						bullet_info[i].dir.z+=0.01*GetRandom(-5,5);
 					}
-					bullet_info[i].count++;
+
+					bullet_info[i].angles=vec3(atan2(bullet_info[i].dir.x,bullet_info[i].dir.z),
+										atan2(bullet_info[i].dir.y,bullet_info[i].dir.x*bullet_info[i].dir.x+bullet_info[i].dir.z*bullet_info[i].dir.z),
+										atan2(bullet_info[i].dir.z,bullet_info[i].dir.x));
 					launchbulletcount++;
+					bullet_info[i].count++;
 					break;
 				}
 	}
@@ -176,7 +216,8 @@ void bullet::HitObj(Team enemyteam,float atk){
 					for(int k=0;k<BASENUM;k++){
 						if(get_mapobj()->get_Base(enemyteam)[k]==i){
 							//printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
-							get_mapobj()->minus_BaseHp(enemyteam,atk);
+						//	get_mapobj()->minus_BaseHp(enemyteam,atk);
+							get_mapobj()->serverminushp[enemyteam]=get_player()->atk;
 							break;
 						}
 					}
@@ -204,7 +245,8 @@ void bullet::PlayerToMob(){
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
 				if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
-					get_mober()[i].hp-=get_player()->atk;
+					get_mober()[i].serverminushp=get_player()->atk;
+					printf("%f\n",get_mober()[i].serverminushp);
 					bullet_info[j].count=0;
 					break;
 				}
@@ -221,6 +263,9 @@ void bullet::MobToPlayer(int atk){
 			}
 
 }
+
+
+
 
 void bullet::Update(){
 	const float movespeed=speed;
@@ -294,10 +339,10 @@ void bullet::Draw(){
 			float y=bullet_info[i].position.y;
 			float z=bullet_info[i].position.z;
 			glTranslatef(x,y,z);
-
-			glutSolidSphere( bulletradi, 50, 50 );
+			glRotated(bullet_info[i].angles.x * 180 /M_PI ,0,1,0);
+			glRotated(-bullet_info[i].angles.y * 180 /M_PI ,1,0,0);
+			mqoCallModel(bulletmodel);
 			glPopMatrix();
-
 		}
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHTING);

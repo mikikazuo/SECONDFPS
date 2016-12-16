@@ -46,6 +46,7 @@ public:
 	float basemaxhp[NoneTeam];
 	int baseno[NoneTeam][BASENUM];			//object配列の何番目が拠点かどうかを保存
 
+	float serverminushp[2];          //sa-ba- red adn blue
 	map();
 	virtual ~map();
 	object *get_obj();
@@ -54,13 +55,13 @@ public:
 	void set_Base(Team team,int objectno);
 	int *get_Base(Team enemyteam);
 	void minus_BaseHp(Team attacedteam,float atk);
-
+	void resetminushp();
 	void Initialize();
 	void DrawInitialize();
 	void DrawFinalize();
-
 	void Update();
 	void Draw();
+
 
 
 

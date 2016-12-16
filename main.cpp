@@ -34,7 +34,9 @@
 #define TEXWIDTH  512
 #define TEXHEIGHT 512
 
-static bool debug=true;    //sever connect
+
+static bool debug=false;    //sever connect
+
 
 
 SceneMgr sceneMgr;
@@ -131,8 +133,10 @@ int thread_Update(void *arg){
 		sceneMgr.Update();  //更新
 		mainfps.wait_Update();
 		key_Update();
+
 		if(!debug)
 		control_requests ();
+
 
 	}
 	sceneMgr.Finalize();
@@ -143,11 +147,12 @@ int main (int argc, char** argv)
 {
 	argci = &argc;
 	argvi = argv;
-	XInitThreads();
+
 
 if(!debug)
 	client_start();//ネットワークの始まり
 
+    XInitThreads();
 	glutInit(&argc,argv);
 
 	myInit(argv[0]);

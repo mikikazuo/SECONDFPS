@@ -40,8 +40,9 @@ void CanvasUI::DrawInitialize(){
 	handle[1]=image_Load("Data/image/man.png");
 	handle[2]=image_Load("Data/image/man_B.png");
 	handle[3]=image_Load("Data/image/level.png");
-	handle[4]=image_Load("Data/image/player_HP_bar.png");
-
+	handle[4]=image_Load("Data/image/pHP_bar2.png");
+	handle[5]=image_Load("Data/image/BULLET_bar2.png");
+	handle[6]=image_Load("Data/image/exp_bar.png");
 	//HPbar 10-13
 	handle[10]=image_Load("Data/image/HP_bar_back.png");//下地B
 	handle[11]=image_Load("Data/image/HP_bar_back_Red.png");//下地R
@@ -153,12 +154,27 @@ void CanvasUI::Draw() {
 	image_DrawExRota(handle[12],1050+shakeX,50+shakeY,0,1);//ハイライト、質感
 	image_DrawExRota(handle[13],1050+shakeX,50+shakeY,0,1);//枠
 
-	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
+	image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
 
 	glColor3d(1.0*0.01*100*(1-get_player()->hp/get_player()->maxhp),1.0*0.01*100*get_player()->hp/get_player()->maxhp,0);//色指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
-	rect_Draw2D(handle[3],170+shakeX,650+shakeY,300*get_player()->hp/get_player()->maxhp,49);//ゲージ描画
-	image_DrawExRota(handle[4],320+shakeX,662+shakeY,0,1);//playerHP
+
+rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*get_player()->hp/get_player()->maxhp,40);//ゲージ描画
+	glColor3d(0.0,0.0,0.0);//黒指定
+	rect_Draw2D(handle[3],210+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	image_DrawExRota(handle[4],320+shakeX,680+shakeY,0,1);//playerHP
+
+	glColor3d(0.3,0.5,1.0);
+	rect_Draw2D(handle[3],510+shakeX,660+shakeY,260*0.01*a,40);//ゲージ描画
+	glColor3d(0.1,0.1,0.1);//黒指定
+	rect_Draw2D(handle[3],510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	image_DrawExRota(handle[5],620+shakeX,680+shakeY,0,1);//bullet
+
+	glColor3d(0.1,0.8,0.5);
+	rect_Draw2D(handle[6],210+shakeX,640+shakeY,260*0.01*a,20);//ゲージ描画
+	glColor3d(0.1,0.1,0.1);
+	rect_Draw2D(handle[6],210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
+	image_DrawExRota(handle[6],320+shakeX,650+shakeY,0,1);
 
 	int i;
 	for(i=0;i<4;i++){

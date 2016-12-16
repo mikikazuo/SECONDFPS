@@ -13,7 +13,7 @@
 
 #include "object.h"
 #include "map.h"
-#include "bullet.h"
+
 
 class bullet;
 
@@ -25,12 +25,21 @@ typedef struct {
 
 }Wall;
 
+typedef enum{
+	Crossbow,
+	Rifle,
+	Gatling,
+	Spear,
+	Magicstick,
+	Magic,
+	Mob,
+	nonemode
+}Role;
+
 
 class player
 {
 private:
-
-	int bulletnum;
 	int atktime;
 	bool atkok;
 	int atkcount;
@@ -60,7 +69,7 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,int setspeed,float sethp,int setatk,int setbulletspeed,int setatktime,int setlifetime,int setreloadmax,Team setteam);
+	void Initialize(vec3 pos,float ra,Role setrole,Team setteam);
 	void DrawInitialize();
 	void DrawFinalize();
 	void Draw();
@@ -75,7 +84,8 @@ public:
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
 	virtual ~player();
-	bullet get_playerbullet();
+
 };
+bullet get_playerbullet();
 
 #endif /* PLAYER_H_ */

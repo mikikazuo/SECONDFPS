@@ -205,10 +205,11 @@ void image_DrawExRota(int no,GLfloat CenterX,GLfloat CenterY,double rota,double 
 }
 
 //原寸大拡大縮小
-void image_DrawExRota3D(int no,GLfloat CenterX,GLfloat CenterY,double rota,double exp){
+//ini dir face is z+
+void image_DrawExRota3D(int no,vec3 Center,double rota,vec3 nvec,double exp){
 	glPushMatrix();
-	glTranslated(CenterX,CenterY,0);
-	glRotated(rota,0,0,1);
+	glTranslated(Center.x,Center.y,Center.z);
+	glRotated(rota,nvec.x,nvec.y,nvec.z);
 	img_zoomDraw_C3D(no, 0,0, exp);
 	glPopMatrix();
 

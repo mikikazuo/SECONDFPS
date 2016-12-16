@@ -24,6 +24,7 @@ public:
 	vec3 lookat;	//視点
 
 	enemyPlayer();
+	void Initialize();
 	void DrawInitialize(MQO_MODEL setmodel);
 	void set_enemyposition();
     void Draw();

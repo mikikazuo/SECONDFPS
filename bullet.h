@@ -15,9 +15,11 @@
 #include "fps.h"
 #include "OBB.h"
 #include "map.h"
-#include "player.h"
+#include "GLMetaseq.h"
+
 
 class player;
+#include "player.h"
 
 #define MAXBULLET 300
 
@@ -26,35 +28,33 @@ typedef struct {
 	int count;
 	vec3 position;
 	vec3 dir;
+	vec3 angles;
 }Shot;
 
-typedef enum{
-	Crossbow,
-	Rifle,
-	Gatling,
-	Spear,
-	Magicstick,
-	Magic,
-	Mob,
-	nonemode
-}bulletmode;
 
 
+
+class player;
+#include "player.h"
 
 class bullet : public OBB{
 private:
-	Shot bullet_info[MAXBULLET];
+
 
 	int lifetime;
 
 	int reloadtime;
 	int speed;
-	bulletmode mode;
-	int modemovecount;
+	Role mode;
+
 	float bulletradi;
+	MQO_MODEL bulletmodel;
 public:
+	Shot bullet_info[MAXBULLET];
+
 	bullet();
-	void bullet_Initialize(bulletmode setbulletmode);
+	void bullet_Initialize(Role setbulletmode);
+	void bullet_DrawInitialize();
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
 	void PlayerToMob();
