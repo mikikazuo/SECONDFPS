@@ -17,6 +17,7 @@ private:
 	int shakeY;
 	int dam;
 	int wall_info[5];
+	int level;
 public:
 	CanvasUI();
 	virtual ~CanvasUI();
