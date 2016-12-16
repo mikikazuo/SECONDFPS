@@ -21,7 +21,7 @@
 //壁の厚み
 #define WALL_THICKNESS 2
 //壁の高さ
-#define WALL_HEIGHT 2
+#define WALL_HEIGHT 30
 
 //拠点のx座標の長さ(縦)
 #define BASE_X_LENGTH 2
