@@ -284,7 +284,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//printf("pc.x = %lf pc.y = %lf pc.z = %lf\n",player_collider.x,player_collider.y,player_collider.z);
 
 	//オブジェクトとの当たり判定
-	for(int i=0;i<mapn;i++)
+	for(int i=0;i<mapn;i++){
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
 		//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
 			upflag = true;
@@ -295,6 +295,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 		//else
 			//hitnum = 0;
+	}
 
 	//プレイヤーが生成した壁との当たり判定
 	for(int j=0;j<WALLMAX;j++){
@@ -375,7 +376,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//オブジェクト降下時
 	else if(mapobject[hitnum].type == MOVE
 				&& mapobject[hitnum].speed.y < 0){
-				//&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+					//&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
 		printf("衝突処理 分岐3:オブジェクト降下\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
