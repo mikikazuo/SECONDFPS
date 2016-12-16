@@ -15,37 +15,61 @@
 #include "map.h"
 
 
-#define WALLMAX 5
+class bullet;
+
+#define WALLMAX 3
 
 typedef struct {
 	int count;
 	object wall;
+
 }Wall;
+
+typedef enum{
+	Crossbow,
+	Rifle,
+	Gatling,
+	Spear,
+	Magicstick,
+	Magic,
+	Mob,
+	nonemode
+}Role;
 
 
 class player
 {
 private:
-
-	int bulletnum;
+	int atktime;
+	bool atkok;
+	int atkcount;
+	int speed;
+	double pers;
 public:
-	int hp;			//体力
-	vec3 position;	//座標
-	vec3 angles;	//角度
-	vec3 lookat;	//視点
-	float dx,dy;	//??
-	int atk;		//攻撃力
-	int radi;		//当たり判定の半径
 
-	//プレイヤーの頭のあたり判定で使用
+	int myid;    //my server id
+	float maxhp;
+	float hp;
+	vec3 position;
+	vec3 angles;
+	vec3 lookat;
+	float dx,dy;
+	float atk;
+	int radi;
+
+	Team myteam;
+
+	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;
-	//プレイヤーの身体のあたり判定で使用
+	//プレイヤーの身体のあたり判定
 	vec3 player_collider;
-
+	//プレイヤーの足元のあたり判定
+	vec3 playerfoot_collider;
+	Wall mywall[WALLMAX];
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,int sethp,int setatk);
+	void Initialize(vec3 pos,float ra,Role setrole,Team setteam);
 	void DrawInitialize();
 	void DrawFinalize();
 	void Draw();
@@ -58,7 +82,10 @@ public:
 	void launchBullet();
 	void Action();
 	void MakeCamAndLightMatrix();
+	void set_Pers(double next);
 	virtual ~player();
+
 };
+bullet get_playerbullet();
 
 #endif /* PLAYER_H_ */

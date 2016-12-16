@@ -18,11 +18,13 @@
 #include "checkObjectHit.h"
 #include "object.h"
 #include "bullet.h"
-//#include <X11/Xlib.h>
 #include "Game.h"
 #include <SDL/SDL.h>
 #include "image.h"
 #include "sound.h"
+#include "GLMetaseq.h"
+#include "bullet.h"
+
 
 #define HP 100
 #define BULLETNUM 10
@@ -31,11 +33,16 @@ static int count = 0;
 static bool wrap = false;
 
 
-Wall mywall[WALLMAX];
+
 
 SDL_Thread *thr;
 
 int wallhandle;
+
+
+bullet playerbullet;
+
+static bool testcursol=false;  //カーソルの固定外し
 
 ///ここから//////
 //#include <opencv/cv.h>
@@ -122,8 +129,7 @@ int wallhandle;
 //}
 
 //////////////////////////////////
-
-#define LOOK_DISTANT 150           //見える距離
+#define LOOK_DISTANT 1200           //見える距離
 
 checkObjectHit movechecker;
 
@@ -132,12 +138,12 @@ checkObjectHit movechecker;
 //		{ 0.3, 0.3, 0.3, 1.0 }
 //};
 
-bullet playerbullet;
+
 GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納するFramebuffer object
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
-double m_fDepthSize[2];   //!< デプスを格納するテクスチャのサイズ
+double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
 
-
+MQO_MODEL handmodel;
 
 Wall *player::get_mywall(){
 	return mywall;
@@ -146,33 +152,78 @@ Wall *player::get_mywall(){
 
 player::player() {
 	// TODO 自動生成されたコンストラクター・スタブ
-	dx = 0;
-	dy = 0;
+	dx=0;
+	dy=0;
 
 }
-void player::Initialize(vec3 pos,float ra,int sethp,int setatk){
 
-	playerbullet.bullet_Initialize();
+void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
+
+
+
+	playerbullet.bullet_Initialize(setrole);
+	switch(setrole){
+	case Crossbow:
+		break;
+	case Rifle:
+		break;
+	case Gatling:
+	case Spear:
+		break;
+	case Magicstick:
+		break;
+	case Magic:
+		break;
+	default:
+		break;
+	}
+
 	position=pos;
-	hp=sethp;
-	atk=setatk;
-	bulletnum=BULLETNUM;
+	speed=7;
+	hp=maxhp=100;
+	atk=100;
+	atktime=60;
+atkok=true;
+
+
 	radi=ra;
-	//	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
-	//		mywall[i].count=0;
+	myteam=setteam;
+
+	pers=60.0;
+	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
+		mywall[i].count=0;
+
+	reset_Scroll();
+	reset_ScrollLimit();
+	set_ScrollMax(18);
+	set_ScrollMin(0);
+
 }
 void player::DrawInitialize(){
+	playerbullet.bullet_DrawInitialize();
+
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
+	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
+	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
+	handmodel=mqoCreateModel(flname,0.0035);
+//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
 void player::DrawFinalize(){
 	image_free(wallhandle);
 }
 
+void player::set_Pers(double next){
+	pers=next;
+}
+
 void player::Draw(){
+
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -184,20 +235,30 @@ void player::Draw(){
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	gluPerspective(60.0, (double)w / (double)h,0.1,LOOK_DISTANT);/*view volume 注意*/
-	gluLookAt( position.x,position.y,position.z, // 視点の位置x,y,z;
-			position.x+lookat.x, position.y+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
+	gluPerspective(pers, (double)w / (double)h,0.1,LOOK_DISTANT);/*view volume 注意*/
+	gluLookAt( position.x,position.y+0.5f,position.z, // 視点の位置x,y,z;
+			position.x+lookat.x, position.y+0.5f+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
 			0,1,0);
 
 
-
-	//glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
-	//glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+	//	glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
+	//	glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
+	//	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 
 
 	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	//glTranslatef(position.x-0.1,position.y+0.48f,position.z+0.3);
+	glTranslatef(position.x,position.y+0.5f,position.z);
+	glRotated(angles.x* 180 /M_PI ,0,1,0);
+	glRotated(-angles.y* 180 /M_PI ,1,0,0);
+
+
+	mqoCallModel(handmodel);
+	glPopMatrix();
+
 	playerbullet.Draw();
 	DrawMyWall();
 
@@ -205,48 +266,44 @@ void player::Draw(){
 
 void player::Update(){
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
+	playerbullet.Update();
 	launchBullet();
-	playerbullet.HitObj();
+	if(myteam==RedTeam)
+		playerbullet.HitObj(BlueTeam,atk);
+	else
+		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
 	MouseMove();
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();
 	remove_wall();
-}
 
-//obj:オブジェクト
-//mapn:オブジェクトの個数
-//playerwall:プレイヤーが生成した壁
+
+
+	if(key_getmove(Test)==3)
+		testcursol=!testcursol;
+
+	set_Pers(60-3*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
+}
+//プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
-	//キャラクターの移動速度
-	const float movespeed = 7;
+	const float movespeed = speed;
 
-	//Calculate movement vectors
+
+	// Calculate movement vectors
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-	vec3 right_dir   = vec3(-forward_dir.z, 0, forward_dir.x);
+	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
-	static bool jumpflag    = false;
-	static bool hitheadflag = false;
+	static bool jumpflag=false;
+	static bool hitheadflag=false;
 
-	//坂道登るフラグ
-	bool upflag  = false;
-	//キャラクターが生成した壁に上るフラグ
-	bool upwall  = false;
-	//オブジェクトとの当たり判定フラグ
-	bool hitmap  = false;
-	//プレイヤーが生成した壁との当たり判定フラグ
-	bool hitwall = false;
 
-	static float gravity;	//重力
+	static float gravity;
 
-	static int hitnum = 0;	//プレイヤーと接触しているオブジェクトの番号(接触してないときは0(本来0は地面だが，不動であるので問題なし))
-
-	//キャラクターの座標を格納
 	vec3 sampposition;
-	sampposition = position;
+	sampposition=position;
 
-	//移動
 	if(key_getmove(Left))
 		sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
 	if(key_getmove(Right) )
@@ -256,56 +313,62 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	if(key_getmove(Backward))
 		sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 
-	//ジャンプ許可判定
-	if((key_getmove(Jump)) && !jumpflag && !hitheadflag){
-		jumpflag = true;
-		gravity  = 0;
+	playerfoot_collider=position;
+	playerfoot_collider.y-=0.7;
+
+	bool foothit;
+	foothit=movechecker.sethitcheck(mapn, mapobject,playerfoot_collider,0.5f);
+
+	if((key_getmove(Jump))&&!jumpflag&&!hitheadflag){
+		jumpflag=true;
+		gravity=0;
+
 	}
 
-	//ジャンプ実行(初期値8)
-	//上下に移動するオブジェクトに乗ってる際のジャンプ力に，オブジェクトの移動速度を加えるよう修正
-	if(jumpflag && !hitheadflag){
-		//sampposition.y += (8 * get_mainfps().fps_getDeltaTime());
-		sampposition.y += ((8 + mapobject[hitnum].speed.y) * get_mainfps().fps_getDeltaTime());
-	}
 
-	//頭部の当たり判定(y座標は+1)
-	playerhead_collider	   = position;
-	playerhead_collider.y += 1;
+	//ジャンプ
+	if(jumpflag&&!hitheadflag)
+		sampposition.y += (8 * get_mainfps().fps_getDeltaTime());
 
-	//動作確認
-	//printf("pc.x = %lf pc.y = %lf pc.z = %lf\n",player_collider.x,player_collider.y,player_collider.z);
+	playerhead_collider=position;
+	playerhead_collider.y+=1;
+
+
 
 	//x座標における補正
-	player_collider   = position;
-	player_collider.x = sampposition.x;
+	player_collider=position;
+	player_collider.x=sampposition.x;
 
-	//動作確認
-	//printf("pc.x = %lf pc.y = %lf pc.z = %lf\n",player_collider.x,player_collider.y,player_collider.z);
+	//坂道登るフラグ
+	bool upflag=false;
+	bool upwall=false;
+	bool hitmap=false;
+	bool hitwall=false;
 
+int hitnum=0;
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
-		//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
+			//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
 			upflag = true;
 			hitmap = true;
 			hitnum = i;			//衝突したオブジェクトを判定
 			break;
 		}
 
-		//else
+		else
 			//hitnum = 0;
 
-	//プレイヤーが生成した壁との当たり判定
-	for(int j=0;j<WALLMAX;j++){
-		if(playerwall[j].count > 0){
-			if(movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
-				upwall  = true;
-				hitwall = true;
-				break;
+			//プレイヤーが生成した壁との当たり判定
+			for(int j=0;j<WALLMAX;j++){
+				if(playerwall[j].count > 0){
+					if(movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
+						upwall  = true;
+						hitwall = true;
+						break;
+					}
+				}
 			}
-		}
-	}
 
 	//動作確認??
 	//printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
@@ -331,33 +394,63 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//printf("player_collider.z = %lf\n",player_collider.z);
 
 	//オブジェクトとの当たり判定
+
 	for(int i=0;i<mapn;i++)
 		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-			upflag = true;
-			hitmap = true;
-			hitnum = i;
+			upflag=true;
+			hitmap=true;
 			break;
 		}
 
-	//プレイヤーが生成した壁との当たり判定
+	for(int j=0;j<WALLMAX;j++){
+		if(playerwall[j].count>0){
+			if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+				upwall=true;
+				hitwall=true;
+				break;
+			}
+		}
+	}
+
+
+
+	if(!hitmap&&!hitwall)
+		position.x=player_collider.x;
+	else{
+		hitmap=false;
+		hitwall=false;
+	}
+
+	//z座標における補正
+
+	player_collider=position;
+	player_collider.z=sampposition.z;
+
+	for(int i=0;i<mapn;i++)
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+			upflag=true;
+			hitmap=true;
+			break;
+		}
+
 	for(int j=0;j<WALLMAX;j++)
 		if(playerwall[j].count>0)
-			if(movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
-				hitwall = true;
-				upwall  = true;
+			if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
+				hitwall=true;
+				upwall=true;
 				break;
 			}
 
-	//オブジェクトにも壁にも当たっていなとき
-	if(!hitmap && !hitwall)
-		position.z = player_collider.z;
+	if(!hitmap&&!hitwall)
+		position.z=player_collider.z;
 	else{
-		hitmap  = false;
-		hitwall = false;
+		hitmap=false;
+		hitwall=false;
 	}
 
+
 	//if(!hitmap)
-		//hitnum = -1;
+	//hitnum = -1;
 
 	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
 	mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
@@ -368,15 +461,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
 	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
 			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-		printf("衝突処理 分岐1:ノーマル\n");
-		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	}
-
-	//オブジェクト降下時
-	else if(mapobject[hitnum].type == MOVE
-				&& mapobject[hitnum].speed.y < 0){
-				//&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("衝突処理 分岐3:オブジェクト降下\n");
+		printf("ABCDE\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
 
@@ -384,14 +469,13 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
 	//else if(mapobject[hitnum].type == MOVE){
 	else if(mapobject[hitnum].type == MOVE
-				&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("衝突処理 分岐2:オブジェクト乗り上げ\n");
+			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+		printf("12345\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	}
 
-	//動作確認
 	//衝突したオブジェクトの番号
-	printf("hitnum = %d\n",hitnum);
+	//printf("hitnum = %d\n",hitnum);
 	//オブジェクトの位置
 	//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
 	//移動後のオブジェクトの位置
@@ -399,113 +483,176 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//オブジェクトの進行速度
 	//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
 	//オブジェクトのタイプ
-	printf("type = %d\n",mapobject[hitnum].type);
-
-
-	//	//頭衝突時
-	//	for(int i=0;i<mapn;i++){
-	//		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=1    ){
-	//			upflag=false;
-	//			break;
-	//		}
-	//	}
+	//printf("type = %d\n",mapobject[hitnum].type);
 
 
 	int i;
-	if(upflag && !upwall){
-		//なぜ700回ループ??
-		for(int j=0;j<700;j++){
-			player_collider	  = position;
-			player_collider.x = sampposition.x;
-			player_collider.z = sampposition.z;
-			//object 斜面約60°まで
-			player_collider.y = sampposition.y + 0.001f*j;//0.01f;
-			for(i=0;i<mapn;i++){
-				if(	movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
+	if(foothit){
+		if(upflag&&!upwall)
+			for(int j=0;j<100;j++){
+				player_collider=position;
+				player_collider.x=sampposition.x;
+				player_collider.z=sampposition.z;
+				//object 斜面約40°まで
+				player_collider.y=sampposition.y+0.001f*j;//0.01f;
+				for(i=0;i<mapn;i++){
+					if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+						break;
+					}
+					if(i==mapn-1)
+						position=player_collider;
+				}
+				//for文の最後で++されてしまうため==
+				if(i==mapn)
+					break;
+			}
+
+	}else if(upflag){
+		for(int i=0;i<500;i++)
+			for(int j=0;j<8;j++){
+				player_collider=position;
+
+				switch(i){
+				case 0:
+					player_collider.x+=0.001f*i;
+					break;
+				case 1:
+					player_collider.x-=0.001f*i;
+					break;
+				case 2:
+					player_collider.z+=0.001f*i;
+					break;
+				case 3:
+					player_collider.z-=0.001f*i;
+					break;
+				case 4:
+					player_collider.x+=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 5:
+					player_collider.x-=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 6:
+					player_collider.x-=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+				case 7:
+					player_collider.x+=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+
+				}
+				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
+					position=player_collider;
 					break;
 				}
-				if(i == mapn-1)
-					position = player_collider;
 			}
-			//for文の最後で++(インクリメント)されてしまうため条件式に"=="を使用
-			if(i == mapn)
-				break;
-		}
+	}else if(upwall){
+		for(int i=0;i<500;i++)
+			for(int j=0;j<8;j++){
+				player_collider=position;
+
+				switch(i){
+				case 0:
+					player_collider.x+=0.001f*i;
+					break;
+				case 1:
+					player_collider.x-=0.001f*i;
+					break;
+				case 2:
+					player_collider.z+=0.001f*i;
+					break;
+				case 3:
+					player_collider.z-=0.001f*i;
+					break;
+				case 4:
+					player_collider.x+=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 5:
+					player_collider.x-=0.001f*i;
+					player_collider.z+=0.001f*i;
+					break;
+				case 6:
+					player_collider.x-=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+				case 7:
+					player_collider.x+=0.001f*i;
+					player_collider.z-=0.001f*i;
+					break;
+
+				}
+				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
+					position=player_collider;
+					break;
+				}
+			}
 	}
 
-	gravity += 0.3f;
-	//重力による下降処理
-	//if(mapobject[hitnum].type != MOVE)
-		sampposition.y -= (gravity*get_mainfps().fps_getDeltaTime());
+	gravity+=0.3f;
+	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
 
 
 	//y座標の補正
-	player_collider	  = position;
-	player_collider.y = sampposition.y;
+	player_collider=position;
+	player_collider.y=sampposition.y;
 
-	//頭部
+	//頭部分
 	for(int i=0;i<mapn;i++){
-		//キャラクターの頭部とオブジェクトとの当たり判定
-		if(movechecker.LenOBBToPoint(mapobject[i],playerhead_collider) <= radi){
-			hitheadflag = true;
+		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=radi    ){
+			hitheadflag=true;
 		}
 
-		//キャラクターの頭部と生成された壁との当たり判定
-		if(movechecker.LenOBBToPoint(mapobject[i],player_collider) <= radi){
-			jumpflag 	= false;
-			hitheadflag = false;
-			hitmap 		= true;
-			gravity 	= 0;
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+			jumpflag=false;
+			hitheadflag=false;
+			hitmap=true;
+			gravity=0;
 			break;
 		}
-		//最後のループ時
-		if(i == mapn-1){
+		if(i==mapn-1){
+
 			for(int j=0;j<WALLMAX;j++){
-				if(playerwall[j].count == 0)
+				if(playerwall[j].count==0)
 					continue;
 
-				//生成された壁と頭部との当たり判定
-				if(	movechecker.LenOBBToPoint(playerwall[j].wall,playerhead_collider) <= radi){
-					hitheadflag = true;
+				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi    ){
+					hitheadflag=true;
 				}
 
-				//生成された壁との当たり判定
-				if(	movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
-					jumpflag	= false;
-					hitheadflag	= false;
-					hitmap		= true;
-					gravity		= 0;
+				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+					jumpflag=false;
+					hitheadflag=false;
+					hitmap=true;
+					gravity=0;
 					break;
 				}
-
-				//最後のループ時
-				if(j == WALLMAX-1){
-					hitmap = false;
-				}
+				if(j==WALLMAX-1)
+					hitmap=false;
 			}
 		}
 	}
 
-	//オブジェクトに当たっていないとき
-	if(hitmap == false)
-		position.y = player_collider.y;
-	else
-		hitmap = true;
 
-	//何の処理??
-	if(position.y < radi){
-		position.y = 1;
-		jumpflag   = false;
+
+
+
+	if(hitmap==false)
+		position.y=player_collider.y;
+	else
+		hitmap=true;
+
+	if(position.y<radi){
+		position.y=1;
+		jumpflag=false;
 	}
 
-	//動作確認??
-	//printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
 
-	//なぜfalseを返す??
 	return false;
 
 }
-
 void player::set_wall(){
 	if(key_getmove(Setwall)==2)
 		for(int i=0;i<WALLMAX;i++)
@@ -523,7 +670,7 @@ void player::remove_wall(){
 	if(key_getmove(Removewall)==2)
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count!=0)
-				if(	movechecker.LenOBBToPoint(mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
+				if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
 					mywall[i].count=0;
 				}
 
@@ -539,7 +686,12 @@ int thread(void *data){
 
 	player *info=(player*)data;
 	while(1){
-		if(!wrap) {
+
+		if(testcursol){
+
+		}
+
+		else if(!wrap) {
 			float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
 			float wh = 700;//glutGet(GLUT_WINDOW_HEIGHT);
 
@@ -554,7 +706,7 @@ int thread(void *data){
 			wrap = true;
 
 
-			//この値で初期視野に影響あり
+			//このあたいで初期視野に影響あり
 			const float mousespeed = 0.1f;
 
 			info->angles.x -= info->dx * mousespeed*get_mainfps().fps_getDeltaTime();
@@ -565,10 +717,10 @@ int thread(void *data){
 			else if(info->angles.x > M_PI)
 				info->angles.x -= M_PI * 2;
 
-			if(info->angles.y < -M_PI / 2)
-				info->angles.y = -M_PI / 2;
-			if(info->angles.y > M_PI / 2)
-				info->angles.y = M_PI / 2;
+			if(info->angles.y < -M_PI / 2+0.01f)
+				info->angles.y = -M_PI / 2+0.01f;
+			if(info->angles.y > M_PI / 2-0.01f)
+				info->angles.y = M_PI / 2-0.01f;
 
 			info->lookat.x = sinf(info->angles.x) * cosf(info->angles.y);
 			info->lookat.y = sinf(info->angles.y);
@@ -577,7 +729,7 @@ int thread(void *data){
 			count++;
 
 
-			if(count%5 == 0)
+			if(count%5==0)
 				glutWarpPointer(1200 / 2, 700 / 2);
 		}
 
@@ -604,12 +756,41 @@ void player::Action()
 }
 
 void player::launchBullet(){
-	//連射速度
-	if(get_mousebutton_count(LEFT_BUTTON)%10==1){
-		playerbullet.setInfo(position+vec3(lookat.x, lookat.y, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
-		ChangeSE(1);
+	if(!atkok)
+	atkcount++;
+
+	static bool lastbullet=false;
+
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
+		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
+
+		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
+				lastbullet=false;
+
+		if(playerbullet.launchbulletcount<=playerbullet.reloadmax&&lastbullet==false)
+			ChangeSE(1);
+
+		if(playerbullet.launchbulletcount==playerbullet.reloadmax&& lastbullet==false){
+				lastbullet=true;
+			}
+
+
+
+		atkok=false;
 	}
-		playerbullet.Update();
+
+
+	if(atkcount>atktime){
+		atkok=true;
+		atkcount=0;
+	}
+
+//	playerbullet.Update();
+}
+//TODO
+//ポインタなし？
+bullet get_playerbullet(){
+	return playerbullet;
 }
 
 player::~player() {

@@ -27,6 +27,12 @@ void normal(unsigned char key , int x, int y){
 		keycount[Setwall]++;
 	if(key == 'q')
 		keycount[Removewall]++;
+	if(key == 'r')
+		keycount[Reload]++;
+
+	if(key == 't')
+		keycount[Test]++;
+
 	//  if(key == KEY_PAGEUP)
 	//    move |= up;
 	//  if(key == KEY_PAGEDOWN)
@@ -49,6 +55,13 @@ void normalup(unsigned char key , int x, int y){
 		keycount[Setwall]=0;
 	if(key == 'q')
 		keycount[Removewall]=0;
+
+	if(key == 'r')
+		keycount[Reload]=0;
+
+	if(key == 't')
+			keycount[Test]=0;
+
 
 }
 

@@ -15,6 +15,8 @@ MousePosition mouseinfo;
 static Mouse counter[4];
 
 static int counta;
+static int scrollmax,scrollmin;
+
 //ドラッグ
 void motion(int x, int y) {
 	mouseinfo.x = x;
@@ -24,6 +26,20 @@ void motion(int x, int y) {
 void reset_Scroll(){
 	counter[MIDDLE_BUTTON_SCROLL].mousebutton_count=0;
 }
+
+void reset_ScrollLimit(){
+	scrollmax=0;
+	scrollmin=0;
+}
+
+void set_ScrollMax(int nextcount){
+	scrollmax=nextcount;
+}
+void set_ScrollMin(int nextcount){
+	scrollmin=nextcount;
+}
+
+
 void mouse(int button , int state , int x , int y) {
 	switch(button){
 	case LEFT_BUTTON:
@@ -35,10 +51,12 @@ void mouse(int button , int state , int x , int y) {
 			counter[button].mousebutton_flag=0;
 		break;
 	case 3:
-		counter[MIDDLE_BUTTON_SCROLL].mousebutton_count++;
+		if(counter[MIDDLE_BUTTON_SCROLL].mousebutton_count<scrollmax)
+			counter[MIDDLE_BUTTON_SCROLL].mousebutton_count++;
 		break;
 	case 4:
-		counter[MIDDLE_BUTTON_SCROLL].mousebutton_count--;
+		if(counter[MIDDLE_BUTTON_SCROLL].mousebutton_count>scrollmin)
+			counter[MIDDLE_BUTTON_SCROLL].mousebutton_count--;
 		break;
 	}
 

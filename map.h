@@ -8,6 +8,8 @@
 #ifndef MAP_H_
 #define MAP_H_
 
+#define BASENUM 6			//拠点の当たり判定の数
+#define BASEHP 100
 #include "object.h"
 
 //追加??
@@ -30,21 +32,39 @@
 //拠点のz座標の長さ(横)
 #define BASE_Z_LENGTH 6
 
+typedef enum{
+	RedTeam,
+	BlueTeam,
+	NoneTeam
+}Team;
+
 class map {
 private:
 	int handle[50];
 public:
+	float basehp[NoneTeam];
+	float basemaxhp[NoneTeam];
+	int baseno[NoneTeam][BASENUM];			//object配列の何番目が拠点かどうかを保存
+
+	float serverminushp[2];          //sa-ba- red adn blue
 	map();
 	virtual ~map();
 	object *get_obj();
 	int get_objnum();
 
+	void set_Base(Team team,int objectno);
+	int *get_Base(Team enemyteam);
+	void minus_BaseHp(Team attacedteam,float atk);
+	void resetminushp();
 	void Initialize();
 	void DrawInitialize();
 	void DrawFinalize();
-
 	void Update();
 	void Draw();
+
+
+
+
 };
 
 #endif /* MAP_H_ */

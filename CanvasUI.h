@@ -27,7 +27,7 @@ public:
 
 	void Update();
 	void Draw();
-
+	void shake(float nowhp);
 };
 
 #endif /* CANVASUI_H_ */

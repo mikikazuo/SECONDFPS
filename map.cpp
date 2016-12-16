@@ -9,7 +9,9 @@
 
 #include "image.h"
 
+
 //多人数戦用obj
+int img[6];
 object obj[]={
 		//関数objectの引数:
 		//座標・各座標におけるサイズ・回転・色(テクスチャを貼らない場合)
@@ -91,6 +93,10 @@ object obj[]={
 		//エレベーターへの足場 33
 		,object(vec3(3,14,-6.25),vec3(2,0.1,8.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//天空足場へ登るエレベーター 34
+
+		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
 		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
@@ -230,6 +236,7 @@ object obj[]={
 		//後
 		//右
 		//左
+
 
 		//テンプレート
 		//,object(vec3(0,0,0),vec3(0,0,0),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -402,12 +409,45 @@ int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
 
-void map::Initialize(){
+//拠点にするobjectの添字を設定
+void map::set_Base(Team team,int objectno){
+	for(int j=0;j<BASENUM;j++){
+		if(baseno[team][j]==-1)
+			baseno[team][j]=objectno;
+	}
+}
 
+//拠点のhpminusリセット
+void map::resetminushp(){
+	serverminushp[0]=0;          //sa-ba-=0;
+	serverminushp[1]=0;          //sa-ba-=0;
+}
+
+
+int *map::get_Base(Team enemyteam){
+	return baseno[enemyteam];
+}
+
+void map::minus_BaseHp(Team attacedteam,float atk){
+	basehp[attacedteam]-=atk;
+}
+
+void map::Initialize(){
+	for(int i=0;i<NoneTeam;i++)
+		basehp[i]=basemaxhp[i]=BASEHP;
+
+	for(int i=0;i<NoneTeam;i++)
+		for(int j=0;j<BASENUM;j++)
+			baseno[i][j]=-1;
+
+	set_Base(RedTeam,13);
+	set_Base(BlueTeam,14);
 }
 
 void map::DrawInitialize(){
-//描画初期化関数
+
+
+	//描画初期化関数
 	handle[0] = image_Load("Data/image/capture2.png");
 	handle[1] = image_Load("Data/image/2079.jpg");
 	handle[2] = image_Load("Data/image/20791.jpg");
@@ -416,6 +456,13 @@ void map::DrawInitialize(){
 	handle[5] = image_Load("Data/image/12.jpg");
 	handle[6] = image_Load("Data/image/13.jpg");
 	handle[7] = image_Load("Data/image/14.jpg");
+
+	img[0]=image_Load("Data/skybox/skyX53+x.png");
+	img[1]=image_Load("Data/skybox/skyX53-x.png");
+	img[2]=image_Load("Data/skybox/skyX53+y.png");
+	img[3]=image_Load("Data/skybox/skyX53-y.png");
+	img[4]=image_Load("Data/skybox/skyX53+z.png");
+	img[5]=image_Load("Data/skybox/skyX53-z.png");
 
 	obj[0].set_imgno(handle[1],50);
 	obj[1].set_imgno(handle[1],100);
@@ -485,7 +532,7 @@ void map::DrawFinalize(){
 }
 
 void map::Update(){
-//オブジェクトの移動・回転
+	//オブジェクトの移動・回転
 
 	static int dir = 1;
 
@@ -505,8 +552,8 @@ void map::Update(){
 
 	//周期7秒
 	if(counts[1] % 420 == 0){
-			dirs[1] *= -1;
-		}
+		dirs[1] *= -1;
+	}
 
 	/*** 周期一覧 ***/
 	//4秒 count
@@ -523,6 +570,12 @@ void map::Update(){
 	//obj[4].move(2*dir,0,0);
 	//obj[4].move(0,2*dir,0);
 
+
+	obj[35].move(3.5*dirs[1],0,0);
+
+	//天空足場へのエレベーター
+	obj[34].move(0,2.0*dirs[1],0);
+
 	//動作確認
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 
@@ -537,12 +590,21 @@ void map::Update(){
 	obj[35].x_side_move(2.0,15,20,1);
 	obj[36].z_side_move(2.0,13,15,1);
 
+
 }
 
 void map::Draw(){
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
 
+	image_DrawExRota3D(img[0],vec3(-512,0,0),90,vec3(0,1,0),1);
+	image_DrawExRota3D(img[1],vec3(512,0,0),-90,vec3(0,1,0),1);
+
+	image_DrawExRota3D(img[2],vec3(0,512,0),90,vec3(1,0,0),1);
+	image_DrawExRota3D(img[3],vec3(0,-512,0),-90,vec3(1,0,0),1);
+
+	image_DrawExRota3D(img[4],vec3(0,0,512),180,vec3(0,1,0),1);
+	image_DrawExRota3D(img[5],vec3(0,0,-512),0,vec3(0,1,0),1);
 	//フィールド内に3D画像表示
 	//image_DrawExRota3D(handle[0],0,9,0,0.1);
 }

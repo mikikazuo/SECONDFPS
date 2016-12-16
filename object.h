@@ -38,6 +38,10 @@ public:
 	vec3 get_m_Pos();
 	//オブジェクトの座標を変更する関数
 	void set_m_Pos(vec3 Pos);
+	//オブジェクトの回転を取得する関数
+	vec3 get_m_Rot();
+	//オブジェクトの回転を変更する関数
+	void set_m_Rot(vec3 Rot);
 	//オブジェクトの各軸方向の長さを取得する関数
 	vec3 get_Radius();
 	//特定の高さまでオブジェクトを上下させる関数
