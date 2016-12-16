@@ -25,6 +25,7 @@ void CanvasUI::Initialize(){
 	time = 0;
 	shakeX = 0;
 	shakeY = 0;
+	level = 0;
 
 	int i;
 	for(i=0;i<5;i++){
@@ -38,8 +39,10 @@ void CanvasUI::DrawInitialize(){
 	handle[0]=image_Load("Data/image/assist.png");
 	handle[1]=image_Load("Data/image/man.png");
 	handle[2]=image_Load("Data/image/man_B.png");
-	handle[3]=image_Load("Data/image/level.png");
-	handle[4]=image_Load("Data/image/player_HP_bar.png");
+	handle[3]=image_Load("Data/image/num/level.png");
+	handle[4]=image_Load("Data/image/pHP_bar2.png");
+	handle[5]=image_Load("Data/image/BULLET_bar2.png");
+	handle[6]=image_Load("Data/image/exp_bar.png");
 
 	//HPbar 10-13
 	handle[10]=image_Load("Data/image/HP_bar_back.png");//下地B
@@ -49,6 +52,20 @@ void CanvasUI::DrawInitialize(){
 
 	//Wallinfo
 	handle[14]=image_Load("Data/image/wall_info.png");//壁情報
+
+
+	//数字　30-40
+	handle[30]=image_Load("Data/image/num/0.png");
+	handle[31]=image_Load("Data/image/num/1.png");
+	handle[32]=image_Load("Data/image/num/2.png");
+	handle[33]=image_Load("Data/image/num/3.png");
+	handle[34]=image_Load("Data/image/num/4.png");
+	handle[35]=image_Load("Data/image/num/5.png");
+	handle[36]=image_Load("Data/image/num/6.png");
+	handle[37]=image_Load("Data/image/num/7.png");
+	handle[38]=image_Load("Data/image/num/8.png");
+	handle[39]=image_Load("Data/image/num/9.png");
+	handle[40]=image_Load("Data/image/num/Lv.png");
 
 }
 
@@ -81,6 +98,9 @@ void CanvasUI::Update() {
 	if(time % 150 >= 149){//一定時間ごとに自動ダメージ
 		dam = time;
 		a -= 5+rand()%20;
+
+		level = rand()%100;
+
 		if(a<0) a=100;
 
 		int i;
@@ -128,12 +148,38 @@ void CanvasUI::Draw() {
 	image_DrawExRota(handle[12],1050+shakeX,50+shakeY,0,1);//ハイライト、質感
 	image_DrawExRota(handle[13],1050+shakeX,50+shakeY,0,1);//枠
 
-	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
+
+	//レベル表示
+	image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
+
+	int number1,number10;
+	number1 = level%10;//ひとけため
+	number10 = (level/10)%10;//ふたけため
+	//printf("lv.%d,%d,%d\n",level,number1,number10);
+	image_DrawExRota(handle[40],50+shakeX,660+shakeY,0,1);
+	image_DrawExRota(handle[30+number1],125+shakeX,660+shakeY,0,1);//1
+	image_DrawExRota(handle[30+number10],100+shakeX,660+shakeY,0,1);//10
+
+
 
 	glColor3d(1.0*0.01*(100-a),1.0*0.01*a,0);//色指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
-	rect_Draw2D(handle[3],170+shakeX,650+shakeY,300*0.01*a,49);//ゲージ描画
-	image_DrawExRota(handle[4],320+shakeX,662+shakeY,0,1);//playerHP
+	rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*0.01*a,40);//ゲージ描画
+	glColor3d(0.0,0.0,0.0);//黒指定
+	rect_Draw2D(handle[3],210+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	image_DrawExRota(handle[4],320+shakeX,680+shakeY,0,1);//playerHP
+
+	glColor3d(0.3,0.5,1.0);
+	rect_Draw2D(handle[3],510+shakeX,660+shakeY,260*0.01*a,40);//ゲージ描画
+	glColor3d(0.1,0.1,0.1);//黒指定
+	rect_Draw2D(handle[3],510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	image_DrawExRota(handle[5],620+shakeX,680+shakeY,0,1);//bullet
+
+	glColor3d(0.1,0.8,0.5);
+	rect_Draw2D(handle[6],210+shakeX,640+shakeY,260*0.01*a,20);//ゲージ描画
+	glColor3d(0.1,0.1,0.1);
+	rect_Draw2D(handle[6],210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
+	image_DrawExRota(handle[6],320+shakeX,650+shakeY,0,1);
 
 	int i;
 	for(i=0;i<4;i++){
