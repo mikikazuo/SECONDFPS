@@ -26,6 +26,7 @@ void CanvasUI::Initialize(){
 	time = 0;
 	shakeX = 0;
 	shakeY = 0;
+	level = 0;
 
 	int i;
 	for(i=0;i<5;i++){
@@ -39,7 +40,7 @@ void CanvasUI::DrawInitialize(){
 	handle[0]=image_Load("Data/image/assist.png");
 	handle[1]=image_Load("Data/image/man.png");
 	handle[2]=image_Load("Data/image/man_B.png");
-	handle[3]=image_Load("Data/image/level.png");
+	handle[3]=image_Load("Data/image/num/level.png");
 	handle[4]=image_Load("Data/image/pHP_bar2.png");
 	handle[5]=image_Load("Data/image/BULLET_bar2.png");
 	handle[6]=image_Load("Data/image/exp_bar.png");
@@ -49,8 +50,23 @@ void CanvasUI::DrawInitialize(){
 	handle[12]=image_Load("Data/image/HP_bar_tex.png");//質感
 	handle[13]=image_Load("Data/image/HP_bar_frame.png");//枠
 
-	//Wallinfo
-	handle[14]=image_Load("Data/image/3wall_info.png");//壁情報
+
+	handle[14]=image_Load("Data/image/wall_info.png");//壁情報
+
+
+	//数字　30-40
+	handle[30]=image_Load("Data/image/num/0.png");
+	handle[31]=image_Load("Data/image/num/1.png");
+	handle[32]=image_Load("Data/image/num/2.png");
+	handle[33]=image_Load("Data/image/num/3.png");
+	handle[34]=image_Load("Data/image/num/4.png");
+	handle[35]=image_Load("Data/image/num/5.png");
+	handle[36]=image_Load("Data/image/num/6.png");
+	handle[37]=image_Load("Data/image/num/7.png");
+	handle[38]=image_Load("Data/image/num/8.png");
+	handle[39]=image_Load("Data/image/num/9.png");
+	handle[40]=image_Load("Data/image/num/Lv.png");
+
 
 }
 
@@ -94,6 +110,7 @@ void CanvasUI::Update() {
 	//	}else{
 	//		//dam = 0;
 	//	}
+
 
 	//	if((time-dam)<30){
 	//		if((time-dam)%3 == 0){
@@ -154,9 +171,25 @@ void CanvasUI::Draw() {
 	image_DrawExRota(handle[12],1050+shakeX,50+shakeY,0,1);//ハイライト、質感
 	image_DrawExRota(handle[13],1050+shakeX,50+shakeY,0,1);//枠
 
+
+	//レベル表示
 	image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
 
+
 	glColor3d(1.0*0.01*100*(1-get_player()->hp/get_player()->maxhp),1.0*0.01*100*get_player()->hp/get_player()->maxhp,0);//色指定
+
+	int number1,number10;
+	number1 = level%10;//ひとけため
+	number10 = (level/10)%10;//ふたけため
+	//printf("lv.%d,%d,%d\n",level,number1,number10);
+	image_DrawExRota(handle[40],50+shakeX,660+shakeY,0,1);
+	image_DrawExRota(handle[30+number1],125+shakeX,660+shakeY,0,1);//1
+	image_DrawExRota(handle[30+number10],100+shakeX,660+shakeY,0,1);//10
+
+
+
+	glColor3d(1.0*0.01*(100-a),1.0*0.01*a,0);//色指定
+
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
 
 rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*get_player()->hp/get_player()->maxhp,40);//ゲージ描画
