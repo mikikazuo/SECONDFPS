@@ -63,9 +63,7 @@ typedef struct{
 	vec3 position;//位置
 	vec3 rotation;//回転
 }Mapobj;
-typedef struct{
-	int basehp;
-}Basehp;
+
 typedef struct{
 	int cid;//ID
 	char name[MAX_LEN_NAME];//名前
@@ -76,7 +74,7 @@ typedef struct{
 
 
 typedef struct{
-	int hp;//HP
+	float hp;//HP
 	int atk;//攻撃力
 	v3 position;//位置
 	v3 angles;//向き
@@ -90,8 +88,11 @@ typedef struct{
 	int shooter;
 	//int num;
 	shot2 bullet_info[300];
+	//TODO   要素数の設定
+	//弾によるhpマイナス値
 	float minusmobhp[10];
 	float minusbasehp[2];
+	float minusplayerhp;		//クライアント数-1の配列予定
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ
@@ -101,7 +102,7 @@ typedef struct{
 	BULLET_DATA bullets[MAX_CLIENTS];
 	Mapobj movablemapobj[50];
 	mob2 mob[10];
-	Basehp hp[2];
+	float basehp[2];
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
@@ -109,7 +110,6 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
-	Basehp minusbasehp[2];
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */

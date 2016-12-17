@@ -24,6 +24,7 @@ int get_bulletdata(S_CONTAINER sdata){
 
 			}
 		}else{
+			get_player()->hp-=sdata.bullets[i].minusplayerhp;
 			for(int j=0;j<MAXBULLET;j++){
 				if(sdata.bullets[i].bullet_info[j].count>0){
 					get_enemy()->enemybullet.bullet_info[j].count=sdata.bullets[i].bullet_info[j].count;
@@ -94,7 +95,7 @@ int get_MapData(S_CONTAINER sdata){
 	}
 
 	for(int i=0;i<2;i++)
-		get_mapobj()->basehp[i]=sdata.hp[i].basehp;
+		get_mapobj()->basehp[i]=sdata.basehp[i];
 
 	return 0;
 }

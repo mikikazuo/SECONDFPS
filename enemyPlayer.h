@@ -23,11 +23,14 @@ public:
 	vec3 angles;	//角度
 	vec3 lookat;	//視点
 
+	float serverminushp;          //sa-ba-
+
 	enemyPlayer();
 	void Initialize();
 	void DrawInitialize(MQO_MODEL setmodel);
 	void set_enemyposition();
     void Draw();
+    void resetminushp();
 
 	virtual ~enemyPlayer();
 };

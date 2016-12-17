@@ -41,6 +41,12 @@ void enemyPlayer::Draw() {
 
 	enemybullet.Draw();
 }
+
+void enemyPlayer::resetminushp(){
+	serverminushp=0;
+}
+
+
 enemyPlayer::~enemyPlayer() {
 	// TODO Auto-generated destructor stub
 }

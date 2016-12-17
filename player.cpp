@@ -181,7 +181,7 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 	position=pos;
 	speed=7;
 	hp=maxhp=100;
-	atk=100;
+	atk=50;
 	atktime=60;
 atkok=true;
 
@@ -267,12 +267,15 @@ void player::Draw(){
 void player::Update(){
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
+	playerbullet.PlayerToEnemy();
+
 	launchBullet();
 	if(myteam==RedTeam)
 		playerbullet.HitObj(BlueTeam,atk);
 	else
 		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
+
 	MouseMove();
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
 	set_wall();

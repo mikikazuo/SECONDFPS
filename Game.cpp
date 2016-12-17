@@ -20,7 +20,7 @@
 #include "sound.h"
 
 #include "enemyPlayer.h"
-
+#include "charaanimation.h"
 #define PLAYERNUM 5
 
 
@@ -40,7 +40,7 @@ checkObjectHit hitChecker;
 
 
 enemyPlayer enemy;
-
+chara_animation chara;
 
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -64,9 +64,10 @@ void Game::Initialize(){
 	mapobj.Initialize();
 
 	player1.Initialize(vec3(30,10,-10),1,Crossbow,RedTeam);
-//TODO
-//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
+	chara.Initialize();
+	//TODO
+	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
+	//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 
 	enemy.Initialize();
 }
@@ -79,8 +80,8 @@ void Game::DrawInitialize(){
 	mapobj.DrawInitialize();
 	player1.DrawInitialize();
 
-
-	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+	chara.DrawInitialize();
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
 	flname=(char*)"Data/charamodel/char2/一人称/char2_firstside_shoot.mqo";
@@ -127,6 +128,7 @@ void Game::DrawFinalize(){
 	player1.DrawFinalize();
 	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
+	chara.DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {
@@ -139,16 +141,17 @@ void Game::Update(){
 
 	//追加??
 	//キャラクターの座標表示
-//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
-
+	//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+	chara.Update();
 	player1.Update();
 	gamecanvas.Update();
 	mapobj.Update();
-//TODO
-//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
-//		mober[i].Update();
-//		setMobSound(i,mober[i].position);
-//	}
+//	enemy.enemybullet.EnemyPlayerToPlayer();
+	//TODO
+	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
+	//		mober[i].Update();
+	//		setMobSound(i,mober[i].position);
+	//	}
 }
 
 
@@ -170,7 +173,7 @@ void Game::Draw(){
 	player1.Draw();
 	enemy.Draw();
 	mapobj.Draw();
-
+	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();
 
