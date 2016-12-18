@@ -35,9 +35,8 @@ typedef struct{
 
 typedef struct{
 	int count;
-	vec3 obj_pos;
-	vec3 obj_size;
-	vec3 obj_rot;
+	vec3 pos;
+	vec3 angles;
 }wall2;//Wall互換
 
 typedef struct{
@@ -46,6 +45,7 @@ typedef struct{
 	vec3 pos;
 	//v3 dir;
 	vec3 angles;
+
 }shot2;//Shot互換
 
 typedef struct{
@@ -76,23 +76,21 @@ typedef struct{
 typedef struct{
 	float hp;//HP
 	int atk;//攻撃力
-	v3 position;//位置
-	v3 angles;//向き
-	v3 lookat;//視点
-	v3 playerhead_collider;//プレイヤー頭当たり判定？
-	v3 player_colider;//プレイヤー当たり判定？
+	vec3 position;//位置
+	vec3 angles;//向き
+	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
 }PLAYER_DATA;
 
 typedef struct{
 	int shooter;
 	//int num;
-	shot2 bullet_info[300];
+	shot2 bullet_info[MAXBULLET];
 	//TODO   要素数の設定
 	//弾によるhpマイナス値
 	float minusmobhp[10];
 	float minusbasehp[2];
-	float minusplayerhp;		//クライアント数-1の配列予定
+	float minusplayerhp[MAX_CLIENTS];		//クライアント数-1の配列予定
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ
@@ -100,7 +98,8 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA players[MAX_CLIENTS];
 	BULLET_DATA bullets[MAX_CLIENTS];
-	Mapobj movablemapobj[50];
+	wall2 walls[MAX_CLIENTS][WALLMAX];
+	Mapobj movablemapobj[MOVABLE];
 	mob2 mob[10];
 	float basehp[2];
 }S_CONTAINER;
@@ -110,6 +109,7 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
+	wall2 my_wall[WALLMAX];
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */

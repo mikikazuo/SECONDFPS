@@ -21,7 +21,7 @@
 class player;
 #include "player.h"
 
-#define MAXBULLET 300
+#define MAXBULLET 100
 
 
 typedef struct {

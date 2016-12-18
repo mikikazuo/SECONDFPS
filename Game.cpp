@@ -18,7 +18,7 @@
 #include "GLMetaseq.h"
 #include "CanvasUI.h"
 #include "sound.h"
-
+#include "net_common.h"
 #include "enemyPlayer.h"
 #include "charaanimation.h"
 #define PLAYERNUM 5
@@ -33,13 +33,13 @@ CanvasUI gamecanvas;
 map mapobj;
 
 
-Wall *allplayerwall [PLAYERNUM];
+
 
 bool che=false;
 checkObjectHit hitChecker;
 
 
-enemyPlayer enemy;
+enemyPlayer enemy[MAX_CLIENTS];
 chara_animation chara;
 
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
@@ -49,7 +49,7 @@ GLfloat shininess = 65.0;
 
 
 void Game::setInfoPlayerWall(){
-	allplayerwall[0]=player1.get_mywall();
+
 	for(int i=1;i<PLAYERNUM;i++)
 		for(int j=0;j<WALLMAX;j++){
 
@@ -69,7 +69,8 @@ void Game::Initialize(){
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 	//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 
-	enemy.Initialize();
+	for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].Initialize();
 }
 
 void Game::DrawInitialize(){
@@ -117,8 +118,8 @@ void Game::DrawInitialize(){
 		mober[i].DrawInitialize((char*)"Data/charamodel/enemy1/enemy2_exp.mqo");
 
 
-
-	enemy.DrawInitialize(mqomodel[0]);
+for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].DrawInitialize(mqomodel[0]);
 
 }
 
@@ -145,7 +146,7 @@ void Game::Update(){
 	chara.Update();
 	player1.Update();
 	gamecanvas.Update();
-	mapobj.Update();
+	//mapobj.Update();
 //	enemy.enemybullet.EnemyPlayerToPlayer();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
@@ -171,7 +172,9 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-	enemy.Draw();
+	for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].Draw();
+
 	mapobj.Draw();
 	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -217,9 +220,7 @@ map *get_mapobj(){
 	return &mapobj;
 }
 
-Wall **get_allplayerwall(){
-	return allplayerwall;
-}
+
 player *get_player(){
 	return &player1;
 }
@@ -232,6 +233,6 @@ int get_mobernum(){
 
 
 enemyPlayer *get_enemy(){
-	return &enemy;
+	return enemy;
 }
 

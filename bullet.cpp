@@ -12,7 +12,7 @@
 #include "checkObjectHit.h"
 #include <stdio.h>
 #include "Game.h"
-
+#include "net_common.h"
 #include "key.h"
 #include "math.h"
 
@@ -180,7 +180,7 @@ void bullet::reload(){
 void bullet::HitObj(){
 	object *mapobject=get_mapobj()->get_obj();
 	int mapn=get_mapobj()->get_objnum();
-	Wall *playerwall=get_allplayerwall()[0];
+	Wall *playerwall=get_player()->get_mywall();
 
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
@@ -207,7 +207,7 @@ void bullet::HitObj(){
 void bullet::HitObj(Team enemyteam,float atk){
 	object *mapobject=get_mapobj()->get_obj();
 	int mapn=get_mapobj()->get_objnum();
-	Wall *playerwall=get_allplayerwall()[0];
+	Wall *playerwall=get_player()->get_mywall();
 
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
@@ -254,13 +254,17 @@ void bullet::EnemyPlayerToPlayer(){
 
 //
 void bullet::PlayerToEnemy(){
-	for(int j=0;j<MAXBULLET;j++)
-		if(bullet_info[j].count)
-			if(	bulletmovechecker.pointVsPoint(get_enemy()->position,  bullet_info[j].position,1)){
-				get_enemy()->serverminushp+=10;
-				bullet_info[j].count=0;
-				break;
-			}
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(i==get_player()->myid)
+			continue;
+		for(int j=0;j<MAXBULLET;j++)
+			if(bullet_info[j].count)
+				if(	bulletmovechecker.pointVsPoint(get_enemy()[i].position,  bullet_info[j].position,1)){
+					get_enemy()[i].serverminushp+=10;
+					bullet_info[j].count=0;
+					break;
+				}
+	}
 
 }
 

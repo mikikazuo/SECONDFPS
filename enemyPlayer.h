@@ -24,6 +24,7 @@ public:
 	vec3 lookat;	//視点
 
 	float serverminushp;          //sa-ba-
+	Wall mywall[WALLMAX];
 
 	enemyPlayer();
 	void Initialize();
@@ -31,7 +32,7 @@ public:
 	void set_enemyposition();
     void Draw();
     void resetminushp();
-
+    void DrawMyWall();
 	virtual ~enemyPlayer();
 };
 
