@@ -1,0 +1,70 @@
+//============================================================================
+// Name        : server.cpp
+// Author      : 
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C++, Ansi-style
+//============================================================================
+
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include "net_common.h"//クライアント側のやつと同一
+#include <SDL/SDL.h>
+using namespace std;
+
+extern void setup_server(int, u_short);
+extern int control_requests();
+extern void terminate_server();
+
+static SDL_Thread *update;  //ゲーム書利用スレッド
+fps mainfps;
+map mapobj;
+
+void Update(){
+	mapobj.Update();
+}
+int thread_Update(void *arg){
+	mapobj.Initialize();
+	while(1){
+		mainfps.UpdateUpDatefps();
+		mainfps.fps_UpdateDeltaTime();
+		Update();  //更新
+		mainfps.wait_Update();
+
+	}
+
+	return 0;
+}
+
+int main() {
+	int num_cl = 2;
+	u_short port = PORT;
+
+	fprintf(stderr, "Number of clients = %d\n", num_cl);
+	fprintf(stderr, "Port number = %d\n", port);
+
+	setup_server(num_cl, port);
+
+	update= SDL_CreateThread(thread_Update,NULL);
+	int cond = 1;
+
+	while(cond) {
+		cond = control_requests();
+
+	}
+
+	terminate_server();
+
+	return 0;
+
+}
+
+fps get_mainfps(){
+	return mainfps;
+}
+map *get_mapobj(){
+	return &mapobj;
+}
+
+

@@ -1,0 +1,6 @@
+18:19:31 **** インクリメンタル・ビルド of configuration Debug for project server ****
+make all 
+make: `all' に対して行うべき事はありません.
+
+18:19:31 Build Finished (took 64ms)
+
