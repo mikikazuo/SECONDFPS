@@ -1,0 +1,17 @@
+/*
+ * get_data.h
+ *
+ *  Created on: 2016/12/02
+ *      Author: c501506026
+ */
+
+#ifndef GET_DATA_H_
+#define GET_DATA_H_
+
+#include "net_common.h"
+
+int get_bulletdata(int,C_CONTAINER,S_CONTAINER*);
+int get_playerdata(int,C_CONTAINER,S_CONTAINER*);
+void set_MapData(int id,S_CONTAINER* sdata);
+
+#endif /* GET_DATA_H_ */

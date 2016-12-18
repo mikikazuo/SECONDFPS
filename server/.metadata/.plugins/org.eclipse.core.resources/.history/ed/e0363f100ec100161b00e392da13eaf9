@@ -1,0 +1,14 @@
+/*
+ * server.h
+ *
+ *  Created on: 2016/12/02
+ *      Author: c501506026
+ */
+
+#ifndef SERVER_H_
+#define SERVER_H_
+
+extern int get_bulletdata(int,C_CONTAINER,S_CONTAINER *);
+extern int get_playerdata(int,C_CONTAINER,S_CONTAINER *);
+
+#endif /* SERVER_H_ */

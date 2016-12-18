@@ -1,0 +1,18 @@
+/*
+ * map.cpp
+ *
+ *  Created on: 2016/12/17
+ *      Author: c501506022
+ */
+
+#include "map.h"
+
+map::map() {
+	// TODO 自動生成されたコンストラクター・スタブ
+
+}
+
+map::~map() {
+	// TODO Auto-generated destructor stub
+}
+
