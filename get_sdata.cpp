@@ -47,6 +47,8 @@ int get_playerdata(S_CONTAINER sdata){
 			get_enemy()[i].mywall[j].count=sdata.walls[i][j].count;
 			get_enemy()[i].mywall[j].wall.set_m_Pos(sdata.walls[i][j].pos);
 			get_enemy()[i].mywall[j].wall.set_m_Rot(sdata.walls[i][j].angles);
+			get_enemy()[i].mywall[j].wall.UpdateAxisAll();
+
 		}
 		//printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
 	}

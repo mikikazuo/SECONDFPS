@@ -209,6 +209,7 @@ void bullet::HitObj(Team enemyteam,float atk){
 	int mapn=get_mapobj()->get_objnum();
 	Wall *playerwall=get_player()->get_mywall();
 
+
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
@@ -227,17 +228,27 @@ void bullet::HitObj(Team enemyteam,float atk){
 				}
 	}
 
-	for(int i=0;i<WALLMAX;i++){
-		for(int j=0;j<MAXBULLET;j++)
-			if(playerwall[i].count)
-				if(bullet_info[j].count)
-					if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
-						bullet_info[j].count=0;
-						break;
-					}
+	for(int k=0;k<MAX_CLIENTS;k++)
+		for(int i=0;i<WALLMAX;i++)
+			for(int j=0;j<MAXBULLET;j++){
+				if(k==get_player()->myid){
+					if(playerwall[i].count>0)
+						if(bullet_info[j].count)
+							if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)<0.2f    ){
+								bullet_info[j].count=0;
+								break;
+							}
+				}else{
+					if(get_enemy()[k].mywall[i].count>0)
+						if(bullet_info[j].count)
+							if(	bulletmovechecker.LenOBBToPoint(get_enemy()[k].mywall[i].wall,  bullet_info[j].position)<0.2f   ){
+								bullet_info[j].count=0;
+								break;
+							}
+				}
 
+			}
 
-	}
 }
 
 //

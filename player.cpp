@@ -356,7 +356,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			upflag = true;
 			hitmap = true;
 			hitnum = i;			//衝突したオブジェクトを判定
-			break;
+			goto brex;
 		}
 
 
@@ -412,7 +412,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			upflag=true;
 			hitmap=true;
-			break;
+			goto brez;
 		}
 
 
