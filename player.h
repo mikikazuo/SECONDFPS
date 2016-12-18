@@ -57,6 +57,8 @@ public:
 	float atk;
 	int radi;
 
+	float minushp;
+
 	Team myteam;
 
 	//プレイヤーの頭のあたり判定

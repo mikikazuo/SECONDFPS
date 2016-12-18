@@ -12,33 +12,21 @@
 int get_bulletdata(S_CONTAINER sdata){
 
 	for(int i=0;i<MAX_CLIENTS;i++){
-		if(i==get_player()->myid){
-			for(int j=0;j<MAXBULLET;j++){
-				if(sdata.bullets[i].bullet_info[j].count>0){
-					get_playerbullet().bullet_info[j].count=sdata.bullets[i].bullet_info[j].count;
-					get_playerbullet().bullet_info[j].position=sdata.bullets[i].bullet_info[j].pos;
-					get_playerbullet().bullet_info[j].angles=sdata.bullets[i].bullet_info[j].angles;
+		if(i==get_player()->myid)
+			continue;
 
-				}else
-					get_playerbullet().bullet_info[j].count=0;
 
-			}
-		}else{
-			for(int j=0;j<MAXBULLET;j++){
-				if(sdata.bullets[i].bullet_info[j].count>0){
-					get_enemy()->enemybullet.bullet_info[j].count=sdata.bullets[i].bullet_info[j].count;
-					get_enemy()->enemybullet.bullet_info[j].position.x=sdata.bullets[i].bullet_info[j].pos.x;
-					get_enemy()->enemybullet.bullet_info[j].position.y=sdata.bullets[i].bullet_info[j].pos.y;
-					get_enemy()->enemybullet.bullet_info[j].position.z=sdata.bullets[i].bullet_info[j].pos.z;
-					get_enemy()->enemybullet.bullet_info[j].angles.x=sdata.bullets[i].bullet_info[j].angles.x;
-					get_enemy()->enemybullet.bullet_info[j].angles.y=sdata.bullets[i].bullet_info[j].angles.y;
-					get_enemy()->enemybullet.bullet_info[j].angles.z=sdata.bullets[i].bullet_info[j].angles.z;
+		get_player()->hp-=sdata.bullets[i].minusplayerhp[get_player()->myid];
+		for(int j=0;j<MAXBULLET;j++){
+			if(sdata.bullets[i].bullet_info[j].count>0){
+				get_enemy()[i].enemybullet.bullet_info[j].count=sdata.bullets[i].bullet_info[j].count;
+				get_enemy()[i].enemybullet.bullet_info[j].position=sdata.bullets[i].bullet_info[j].pos;
+				get_enemy()[i].enemybullet.bullet_info[j].angles=sdata.bullets[i].bullet_info[j].angles;
+			}else
+				get_enemy()[i].enemybullet.bullet_info[j].count=0;
+			//弾の数の表示
+			//	printf("bullets number = %d\n",j);
 
-				}else
-					get_enemy()->enemybullet.bullet_info[j].count=0;
-				//弾の数の表示
-				//	printf("bullets number = %d\n",j);
-			}
 		}
 	}
 
@@ -47,43 +35,26 @@ int get_bulletdata(S_CONTAINER sdata){
 }
 
 int get_playerdata(S_CONTAINER sdata){
-	float x,y,z;
 	int i;
-	for(i=0;i<2;i++){
+	for(i=0;i<MAX_CLIENTS;i++){
 		if(i==get_player()->myid)
 			continue;
-		x=sdata.players[i].position.x;
-		y=sdata.players[i].position.y;
-		z=sdata.players[i].position.z;
+		get_enemy()[i].position=sdata.players[i].position;
+		get_enemy()[i].angles=sdata.players[i].angles;
+		get_enemy()[i].lookat=sdata.players[i].lookat;
 
-		get_enemy()->position.x=x;
-		get_enemy()->position.y=y;
-		get_enemy()->position.z=z;
-
-		get_enemy()->angles.x=sdata.players[i].angles.x;
-		get_enemy()->angles.y=sdata.players[i].angles.y;
-		get_enemy()->angles.z=sdata.players[i].angles.z;
-
-		get_enemy()->lookat.x=sdata.players[i].lookat.x;
-		get_enemy()->lookat.y=sdata.players[i].lookat.y;
-		get_enemy()->lookat.z=sdata.players[i].lookat.z;
-
-		//		get_enemy()->position.x=sdata.players[i].angles.;
-		//		get_enemy()->position.y=sdata.players[i].angles.;
-		//		get_enemy()->position.z=sdata.players[i].angles.;
-
-
-		get_enemy()->position.x=x;
-		get_enemy()->position.y=y;
-		get_enemy()->position.z=z;
-
+		for(int j=0;j<WALLMAX;j++){
+			get_enemy()[i].mywall[j].count=sdata.walls[i][j].count;
+			get_enemy()[i].mywall[j].wall.set_m_Pos(sdata.walls[i][j].pos);
+			get_enemy()[i].mywall[j].wall.set_m_Rot(sdata.walls[i][j].angles);
+		}
 		//printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
 	}
 	return 0;
 }
 
 int get_MapData(S_CONTAINER sdata){
-	for(int i=0;i<50;i++){
+	for(int i=0;i<MOVABLE;i++){
 		if(sdata.movablemapobj[i].objno==-1)
 			break;
 		vec3 pos=vec3(sdata.movablemapobj[i].position.x,sdata.movablemapobj[i].position.y,sdata.movablemapobj[i].position.z);
@@ -94,7 +65,7 @@ int get_MapData(S_CONTAINER sdata){
 	}
 
 	for(int i=0;i<2;i++)
-		get_mapobj()->basehp[i]=sdata.hp[i].basehp;
+		get_mapobj()->basehp[i]=sdata.basehp[i];
 
 	return 0;
 }

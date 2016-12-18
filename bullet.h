@@ -21,7 +21,7 @@
 class player;
 #include "player.h"
 
-#define MAXBULLET 300
+#define MAXBULLET 100
 
 
 typedef struct {
@@ -57,6 +57,8 @@ public:
 	void bullet_DrawInitialize();
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
+	void EnemyPlayerToPlayer();
+	void PlayerToEnemy();
 	void PlayerToMob();
 	void MobToPlayer(int atk);
 	void reload();

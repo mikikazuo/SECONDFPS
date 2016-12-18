@@ -139,7 +139,7 @@ void mob::move(){
 
 		//マップに衝突時向きを反転
 		if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
-				mobhitobj.sethitcheck(WALLMAX,get_allplayerwall()[0],sampposition,radi))	){
+				mobhitobj.sethitcheck(WALLMAX,get_player()->get_mywall(),sampposition,radi))	){
 			angles.x -= M_PI;
 			if(angles.x < -M_PI)
 				angles.x += M_PI * 2;

@@ -18,9 +18,9 @@
 #include "GLMetaseq.h"
 #include "CanvasUI.h"
 #include "sound.h"
-
+#include "net_common.h"
 #include "enemyPlayer.h"
-
+#include "charaanimation.h"
 #define PLAYERNUM 5
 
 
@@ -33,14 +33,14 @@ CanvasUI gamecanvas;
 map mapobj;
 
 
-Wall *allplayerwall [PLAYERNUM];
+
 
 bool che=false;
 checkObjectHit hitChecker;
 
 
-enemyPlayer enemy;
-
+enemyPlayer enemy[MAX_CLIENTS];
+chara_animation chara;
 
 GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -49,7 +49,7 @@ GLfloat shininess = 65.0;
 
 
 void Game::setInfoPlayerWall(){
-	allplayerwall[0]=player1.get_mywall();
+
 	for(int i=1;i<PLAYERNUM;i++)
 		for(int j=0;j<WALLMAX;j++){
 
@@ -64,11 +64,13 @@ void Game::Initialize(){
 	mapobj.Initialize();
 
 	player1.Initialize(vec3(30,10,-10),1,Crossbow,RedTeam);
-//TODO
-//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
+	chara.Initialize();
+	//TODO
+	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
+	//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 
-	enemy.Initialize();
+	for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].Initialize();
 }
 
 void Game::DrawInitialize(){
@@ -79,8 +81,8 @@ void Game::DrawInitialize(){
 	mapobj.DrawInitialize();
 	player1.DrawInitialize();
 
-
-	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+	chara.DrawInitialize();
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
 	flname=(char*)"Data/charamodel/char2/一人称/char2_firstside_shoot.mqo";
@@ -116,8 +118,8 @@ void Game::DrawInitialize(){
 		mober[i].DrawInitialize((char*)"Data/charamodel/enemy1/enemy2_exp.mqo");
 
 
-
-	enemy.DrawInitialize(mqomodel[0]);
+for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].DrawInitialize(mqomodel[0]);
 
 }
 
@@ -127,6 +129,7 @@ void Game::DrawFinalize(){
 	player1.DrawFinalize();
 	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
+	chara.DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {
@@ -139,16 +142,17 @@ void Game::Update(){
 
 	//追加??
 	//キャラクターの座標表示
-//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
-
+	//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+	chara.Update();
 	player1.Update();
 	gamecanvas.Update();
-	mapobj.Update();
-//TODO
-//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
-//		mober[i].Update();
-//		setMobSound(i,mober[i].position);
-//	}
+	//mapobj.Update();
+//	enemy.enemybullet.EnemyPlayerToPlayer();
+	//TODO
+	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
+	//		mober[i].Update();
+	//		setMobSound(i,mober[i].position);
+	//	}
 }
 
 
@@ -168,9 +172,11 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-	enemy.Draw();
-	mapobj.Draw();
+	for(int i=0;i<MAX_CLIENTS;i++)
+	enemy[i].Draw();
 
+	mapobj.Draw();
+	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();
 
@@ -214,9 +220,7 @@ map *get_mapobj(){
 	return &mapobj;
 }
 
-Wall **get_allplayerwall(){
-	return allplayerwall;
-}
+
 player *get_player(){
 	return &player1;
 }
@@ -229,6 +233,6 @@ int get_mobernum(){
 
 
 enemyPlayer *get_enemy(){
-	return &enemy;
+	return enemy;
 }
 
