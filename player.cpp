@@ -24,7 +24,7 @@
 #include "sound.h"
 #include "GLMetaseq.h"
 #include "bullet.h"
-
+#include "net_common.h"
 
 #define HP 100
 #define BULLETNUM 10
@@ -181,9 +181,9 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 	position=pos;
 	speed=7;
 	hp=maxhp=100;
-	atk=100;
+	atk=50;
 	atktime=60;
-atkok=true;
+	atkok=true;
 
 
 	radi=ra;
@@ -207,11 +207,11 @@ void player::DrawInitialize(){
 		mywall[i].wall.set_imgno(wallhandle,100);
 
 	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+	//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
 	handmodel=mqoCreateModel(flname,0.0035);
-//	handmodel=mqoCreateModel(flname,0.0010);
+	//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
 void player::DrawFinalize(){
@@ -267,14 +267,17 @@ void player::Draw(){
 void player::Update(){
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
+	playerbullet.PlayerToEnemy();
+
 	launchBullet();
 	if(myteam==RedTeam)
 		playerbullet.HitObj(BlueTeam,atk);
 	else
 		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
+
 	MouseMove();
-	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_allplayerwall()[0]);
+	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_mywall());
 	set_wall();
 	remove_wall();
 
@@ -345,7 +348,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	bool hitmap=false;
 	bool hitwall=false;
 
-int hitnum=0;
+	int hitnum=0;
 	//オブジェクトとの当たり判定
 	for(int i=0;i<mapn;i++)
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
@@ -356,19 +359,32 @@ int hitnum=0;
 			break;
 		}
 
-		else
-			//hitnum = 0;
 
-			//プレイヤーが生成した壁との当たり判定
-			for(int j=0;j<WALLMAX;j++){
-				if(playerwall[j].count > 0){
-					if(movechecker.LenOBBToPoint(playerwall[j].wall,player_collider) <= radi){
-						upwall  = true;
-						hitwall = true;
-						break;
+	//hitnum = 0;
+	for(int k=0;k<MAX_CLIENTS;k++)
+		//プレイヤーが生成した壁との当たり判定
+		for(int j=0;j<WALLMAX;j++){
+
+			if(k==myid){
+				if(playerwall[j].count>0)
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
+						hitwall=true;
+						upwall=true;
+						goto brex;
 					}
-				}
+			}else{
+				if(get_enemy()[k].mywall[j].count>0)
+					if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall, player_collider)<=radi){
+						hitwall=true;
+						upwall=true;
+						goto brex;
+
+					}
 			}
+
+		}
+	brex:
+
 
 	//動作確認??
 	//printf("upflag = %d hitmap = %d upwall = %d hitwall = %d\n",upflag,hitmap,upwall,hitwall);
@@ -386,40 +402,6 @@ int hitnum=0;
 	//動作確認??
 	//printf("player_collider.z = %lf\n",player_collider.z);
 
-	//z座標における補正
-	player_collider	  = position;
-	player_collider.z = sampposition.z;
-
-	//動作確認??
-	//printf("player_collider.z = %lf\n",player_collider.z);
-
-	//オブジェクトとの当たり判定
-
-	for(int i=0;i<mapn;i++)
-		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-			upflag=true;
-			hitmap=true;
-			break;
-		}
-
-	for(int j=0;j<WALLMAX;j++){
-		if(playerwall[j].count>0){
-			if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
-				upwall=true;
-				hitwall=true;
-				break;
-			}
-		}
-	}
-
-
-
-	if(!hitmap&&!hitwall)
-		position.x=player_collider.x;
-	else{
-		hitmap=false;
-		hitwall=false;
-	}
 
 	//z座標における補正
 
@@ -433,13 +415,28 @@ int hitnum=0;
 			break;
 		}
 
-	for(int j=0;j<WALLMAX;j++)
-		if(playerwall[j].count>0)
-			if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
-				hitwall=true;
-				upwall=true;
-				break;
-			}
+
+
+	for(int k=0;k<MAX_CLIENTS;k++)
+		for(int j=0;j<WALLMAX;j++){
+
+			if(k==myid){
+				if(playerwall[j].count>0)
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall, player_collider)<=radi){
+						hitwall=true;
+						upwall=true;
+						goto brez;
+					}
+			}else
+				if(get_enemy()[k].mywall[j].count>0)
+					if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall, player_collider)<=radi){
+						hitwall=true;
+						upwall=true;
+						goto brez;
+					}
+		}
+
+	brez:
 
 	if(!hitmap&&!hitwall)
 		position.z=player_collider.z;
@@ -507,88 +504,88 @@ int hitnum=0;
 					break;
 			}
 
-	}else if(upflag){
-		for(int i=0;i<500;i++)
-			for(int j=0;j<8;j++){
-				player_collider=position;
-
-				switch(i){
-				case 0:
-					player_collider.x+=0.001f*i;
-					break;
-				case 1:
-					player_collider.x-=0.001f*i;
-					break;
-				case 2:
-					player_collider.z+=0.001f*i;
-					break;
-				case 3:
-					player_collider.z-=0.001f*i;
-					break;
-				case 4:
-					player_collider.x+=0.001f*i;
-					player_collider.z+=0.001f*i;
-					break;
-				case 5:
-					player_collider.x-=0.001f*i;
-					player_collider.z+=0.001f*i;
-					break;
-				case 6:
-					player_collider.x-=0.001f*i;
-					player_collider.z-=0.001f*i;
-					break;
-				case 7:
-					player_collider.x+=0.001f*i;
-					player_collider.z-=0.001f*i;
-					break;
-
-				}
-				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
-					position=player_collider;
-					break;
-				}
-			}
-	}else if(upwall){
-		for(int i=0;i<500;i++)
-			for(int j=0;j<8;j++){
-				player_collider=position;
-
-				switch(i){
-				case 0:
-					player_collider.x+=0.001f*i;
-					break;
-				case 1:
-					player_collider.x-=0.001f*i;
-					break;
-				case 2:
-					player_collider.z+=0.001f*i;
-					break;
-				case 3:
-					player_collider.z-=0.001f*i;
-					break;
-				case 4:
-					player_collider.x+=0.001f*i;
-					player_collider.z+=0.001f*i;
-					break;
-				case 5:
-					player_collider.x-=0.001f*i;
-					player_collider.z+=0.001f*i;
-					break;
-				case 6:
-					player_collider.x-=0.001f*i;
-					player_collider.z-=0.001f*i;
-					break;
-				case 7:
-					player_collider.x+=0.001f*i;
-					player_collider.z-=0.001f*i;
-					break;
-
-				}
-				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
-					position=player_collider;
-					break;
-				}
-			}
+		//	}else if(upflag){
+		//		for(int i=0;i<500;i++)
+		//			for(int j=0;j<8;j++){
+		//				player_collider=position;
+		//
+		//				switch(i){
+		//				case 0:
+		//					player_collider.x+=0.001f*i;
+		//					break;
+		//				case 1:
+		//					player_collider.x-=0.001f*i;
+		//					break;
+		//				case 2:
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 3:
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 4:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 5:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 6:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 7:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//
+		//				}
+		//				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
+		//					position=player_collider;
+		//					break;
+		//				}
+		//			}
+		//	}else if(upwall){
+		//		for(int i=0;i<500;i++)
+		//			for(int j=0;j<8;j++){
+		//				player_collider=position;
+		//
+		//				switch(i){
+		//				case 0:
+		//					player_collider.x+=0.001f*i;
+		//					break;
+		//				case 1:
+		//					player_collider.x-=0.001f*i;
+		//					break;
+		//				case 2:
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 3:
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 4:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 5:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 6:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 7:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//
+		//				}
+		//				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
+		//					position=player_collider;
+		//					break;
+		//				}
+		//			}
 	}
 
 	gravity+=0.3f;
@@ -615,24 +612,49 @@ int hitnum=0;
 		if(i==mapn-1){
 
 			for(int j=0;j<WALLMAX;j++){
-				if(playerwall[j].count==0)
-					continue;
+				if(playerwall[j].count>0){
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi    ){
-					hitheadflag=true;
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi){
+						hitheadflag=true;
+					}
+
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+						jumpflag=false;
+						hitheadflag=false;
+						hitmap=true;
+						gravity=0;
+						break;
+					}
+
 				}
 
-				if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
-					jumpflag=false;
-					hitheadflag=false;
-					hitmap=true;
-					gravity=0;
-					break;
+				for(int k=0;k<MAX_CLIENTS;k++){
+					if(k==myid)
+						continue;
+					if(get_enemy()[k].mywall[j].count>0){
+						if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  playerhead_collider)<=radi){
+							hitheadflag=true;
+						}
+
+						if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  player_collider)<=radi){
+							jumpflag=false;
+							hitheadflag=false;
+							hitmap=true;
+							gravity=0;
+							goto label;
+						}
+					}
+
 				}
+
 				if(j==WALLMAX-1)
 					hitmap=false;
 			}
+			label: ;
 		}
+
+
+
 	}
 
 
@@ -757,7 +779,7 @@ void player::Action()
 
 void player::launchBullet(){
 	if(!atkok)
-	atkcount++;
+		atkcount++;
 
 	static bool lastbullet=false;
 
@@ -765,14 +787,14 @@ void player::launchBullet(){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
-				lastbullet=false;
+			lastbullet=false;
 
 		if(playerbullet.launchbulletcount<=playerbullet.reloadmax&&lastbullet==false)
 			ChangeSE(1);
 
 		if(playerbullet.launchbulletcount==playerbullet.reloadmax&& lastbullet==false){
-				lastbullet=true;
-			}
+			lastbullet=true;
+		}
 
 
 
@@ -785,7 +807,7 @@ void player::launchBullet(){
 		atkcount=0;
 	}
 
-//	playerbullet.Update();
+	//	playerbullet.Update();
 }
 //TODO
 //ポインタなし？

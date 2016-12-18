@@ -97,7 +97,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc019");
+	sprintf(server_name,"clpc106");
 
 	setup_client(server_name,port);
 }
@@ -163,11 +163,21 @@ int control_requests () {
 		get_mober()[i].resetminushp();
 	}
 
-	for(int i=0;i<2;i++){
-		cdata.minusbasehp[i].basehp=get_mapobj()->serverminushp[i];
-		get_mapobj()->resetminushp();
+	for(int i=0;i<2;i++)
+		cdata.my_bullet.minusbasehp[i]=get_mapobj()->serverminushp[i];
+	//because two block reset
+	get_mapobj()->resetminushp();
+
+	for(int i=0;i<MAX_CLIENTS;i++){
+	cdata.my_bullet.minusplayerhp[i]=get_enemy()[i].serverminushp;
+	get_enemy()[i].resetminushp();
 	}
 
+	for(int i=0;i<WALLMAX;i++){
+	cdata.my_wall[i].count=get_player()->mywall[i].count;
+	cdata.my_wall[i].pos=get_player()->mywall[i].wall.get_m_Pos();
+	cdata.my_wall[i].angles=get_player()->mywall[i].wall.get_m_Rot();
+	}
 	//printf("x=%f\n",me.position.x);
 	send_data(&cdata,sizeof(cdata));
 

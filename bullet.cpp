@@ -12,7 +12,7 @@
 #include "checkObjectHit.h"
 #include <stdio.h>
 #include "Game.h"
-
+#include "net_common.h"
 #include "key.h"
 #include "math.h"
 
@@ -43,7 +43,7 @@ void bullet::bullet_Initialize(Role setbulletmode){
 		speed=50;
 
 
-				break;
+		break;
 	case Rifle:
 		reloadmax=10;
 		speed=50;
@@ -79,31 +79,31 @@ void bullet::bullet_DrawInitialize(){
 
 
 	switch(mode){
-		case Crossbow:
-			bulletmodel=mqoCreateModel(flname,0.02);
+	case Crossbow:
+		bulletmodel=mqoCreateModel(flname,0.02);
 
-					break;
-		case Rifle:
+		break;
+	case Rifle:
 
-			break;
-		case Gatling:
+		break;
+	case Gatling:
 
-			break;
-		case Spear:
+		break;
+	case Spear:
 
-			break;
-		case Magicstick:
+		break;
+	case Magicstick:
 
-			break;
-		case Magic:
+		break;
+	case Magic:
 
-			break;
-		case Mob:
+		break;
+	case Mob:
 
-			break;
-		default:
-			break;
-		}
+		break;
+	default:
+		break;
+	}
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
@@ -148,8 +148,8 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 					}
 
 					bullet_info[i].angles=vec3(atan2(bullet_info[i].dir.x,bullet_info[i].dir.z),
-										atan2(bullet_info[i].dir.y,bullet_info[i].dir.x*bullet_info[i].dir.x+bullet_info[i].dir.z*bullet_info[i].dir.z),
-										atan2(bullet_info[i].dir.z,bullet_info[i].dir.x));
+							atan2(bullet_info[i].dir.y,bullet_info[i].dir.x*bullet_info[i].dir.x+bullet_info[i].dir.z*bullet_info[i].dir.z),
+							atan2(bullet_info[i].dir.z,bullet_info[i].dir.x));
 					launchbulletcount++;
 					bullet_info[i].count++;
 					break;
@@ -180,7 +180,7 @@ void bullet::reload(){
 void bullet::HitObj(){
 	object *mapobject=get_mapobj()->get_obj();
 	int mapn=get_mapobj()->get_objnum();
-	Wall *playerwall=get_allplayerwall()[0];
+	Wall *playerwall=get_player()->get_mywall();
 
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
@@ -207,7 +207,7 @@ void bullet::HitObj(){
 void bullet::HitObj(Team enemyteam,float atk){
 	object *mapobject=get_mapobj()->get_obj();
 	int mapn=get_mapobj()->get_objnum();
-	Wall *playerwall=get_allplayerwall()[0];
+	Wall *playerwall=get_player()->get_mywall();
 
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
@@ -216,8 +216,9 @@ void bullet::HitObj(Team enemyteam,float atk){
 					for(int k=0;k<BASENUM;k++){
 						if(get_mapobj()->get_Base(enemyteam)[k]==i){
 							//printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
-						//	get_mapobj()->minus_BaseHp(enemyteam,atk);
-							get_mapobj()->serverminushp[enemyteam]=get_player()->atk;
+							//	get_mapobj()->minus_BaseHp(enemyteam,atk);
+							get_mapobj()->serverminushp[enemyteam]+=get_player()->atk;
+
 							break;
 						}
 					}
@@ -237,16 +238,42 @@ void bullet::HitObj(Team enemyteam,float atk){
 
 
 	}
+}
 
+//
+void bullet::EnemyPlayerToPlayer(){
+	for(int j=0;j<MAXBULLET;j++)
+		if(bullet_info[j].count)
+			if(	bulletmovechecker.pointVsPoint(get_player()->position,  bullet_info[j].position,1)){
+				get_player()->hp-=20;
+				bullet_info[j].count=0;
+				break;
+			}
 
 }
+
+//
+void bullet::PlayerToEnemy(){
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(i==get_player()->myid)
+			continue;
+		for(int j=0;j<MAXBULLET;j++)
+			if(bullet_info[j].count)
+				if(	bulletmovechecker.pointVsPoint(get_enemy()[i].position,  bullet_info[j].position,1)){
+					get_enemy()[i].serverminushp+=10;
+					bullet_info[j].count=0;
+					break;
+				}
+	}
+
+}
+
 void bullet::PlayerToMob(){
 	for(int i=0;i<get_mobernum();i++){
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
 				if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
-					get_mober()[i].serverminushp=get_player()->atk;
-					printf("%f\n",get_mober()[i].serverminushp);
+					get_mober()[i].serverminushp+=get_player()->atk;
 					bullet_info[j].count=0;
 					break;
 				}

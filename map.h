@@ -32,6 +32,7 @@
 //拠点のz座標の長さ(横)
 #define BASE_Z_LENGTH 6
 
+#define MOVABLE 20
 typedef enum{
 	RedTeam,
 	BlueTeam,

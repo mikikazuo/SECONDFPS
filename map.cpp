@@ -41,13 +41,13 @@ object obj[]={
 		//フィールドの大きさ，壁の厚みによる自動入力
 		//四隅での被りをさせないために前後の壁を左右の壁をより少し(壁の厚みだけ)長くしている
 		//前
-		object(vec3((MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3((MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//後
-		object(vec3(-(MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(-(MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//右
-		object(vec3(0,WALL_HEIGHT/2,(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,WALL_HEIGHT/2,(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//左
-		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 
 		//拠点1(前方:赤) 13
 		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
@@ -476,10 +476,10 @@ void map::DrawInitialize(){
 	obj[7].set_imgno(handle[1],100);
 
 	//壁
-	obj[9].set_imgno(handle[2],50);
-	obj[10].set_imgno(handle[2],50);
-	obj[11].set_imgno(handle[2],50);
-	obj[12].set_imgno(handle[2],50);
+//	obj[9].set_imgno(handle[2],50);
+//	obj[10].set_imgno(handle[2],50);
+//	obj[11].set_imgno(handle[2],50);
+//	obj[12].set_imgno(handle[2],50);
 
 	//拠点横の高台
 	obj[17].set_imgno(handle[5],100);
@@ -594,9 +594,6 @@ void map::Update(){
 }
 
 void map::Draw(){
-	for(int i=0;get_objnum()>i;i++)
-		obj[i].Draw();
-
 	image_DrawExRota3D(img[0],vec3(-512,0,0),90,vec3(0,1,0),1);
 	image_DrawExRota3D(img[1],vec3(512,0,0),-90,vec3(0,1,0),1);
 
@@ -605,6 +602,10 @@ void map::Draw(){
 
 	image_DrawExRota3D(img[4],vec3(0,0,512),180,vec3(0,1,0),1);
 	image_DrawExRota3D(img[5],vec3(0,0,-512),0,vec3(0,1,0),1);
+	for(int i=0;get_objnum()>i;i++)
+		obj[i].Draw();
+
+
 	//フィールド内に3D画像表示
 	//image_DrawExRota3D(handle[0],0,9,0,0.1);
 }
