@@ -39,10 +39,13 @@ void CanvasUI::DrawInitialize(){
 	handle[0]=image_Load("Data/image/assist.png");
 	handle[1]=image_Load("Data/image/man.png");
 	handle[2]=image_Load("Data/image/man_B.png");
-	handle[3]=image_Load("Data/image/num/level.png");
+	//handle[3]=image_Load("Data/image/num/level.png");
 	handle[4]=image_Load("Data/image/pHP_bar2.png");
 	handle[5]=image_Load("Data/image/BULLET_bar2.png");
 	handle[6]=image_Load("Data/image/exp_bar.png");
+
+	handle[7]=image_Load("Data/image/level_R.png");
+	handle[8]=image_Load("Data/image/level_B.png");
 
 	//HPbar 10-13
 	handle[10]=image_Load("Data/image/HP_bar_B.png");//Blue
@@ -154,8 +157,9 @@ void CanvasUI::Draw() {
 
 
 	//レベル表示
-	image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
-
+	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
+	//image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
+	image_DrawExRota(handle[8],75+shakeX,680+shakeY,0,2);//Blue
 	int number1,number10;
 	number1 = level%10;//ひとけため
 	number10 = (level/10)%10;//ふたけため
