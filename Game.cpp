@@ -21,6 +21,8 @@
 #include "net_common.h"
 #include "enemyPlayer.h"
 #include "charaanimation.h"
+#include "main.h"
+
 #define PLAYERNUM 5
 
 
@@ -63,14 +65,17 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
-	player1.Initialize(vec3(30,10,-10),1,Crossbow,RedTeam);
+	player1.Initialize(vec3(30,10,-10),1,Crossbow,(*get_argc()==2)?RedTeam:BlueTeam);
 	chara.Initialize();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 	//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
 
-	for(int i=0;i<MAX_CLIENTS;i++)
-	enemy[i].Initialize();
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(get_player()->myid==i)
+			continue;
+		enemy[i].Initialize();
+	}
 }
 
 void Game::DrawInitialize(){
@@ -119,8 +124,11 @@ void Game::DrawInitialize(){
 		mober[i].DrawInitialize((char*)"Data/charamodel/enemy1/enemy2_exp.mqo");
 
 
-for(int i=0;i<MAX_CLIENTS;i++)
-	enemy[i].DrawInitialize(mqomodel[0]);
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(get_player()->myid==i)
+			continue;
+		enemy[i].DrawInitialize(mqomodel[0]);
+	}
 
 }
 
@@ -148,7 +156,7 @@ void Game::Update(){
 	player1.Update();
 	gamecanvas.Update();
 	//mapobj.Update();
-//	enemy.enemybullet.EnemyPlayerToPlayer();
+	//	enemy.enemybullet.EnemyPlayerToPlayer();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
 	//		mober[i].Update();
@@ -173,8 +181,11 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
-	for(int i=0;i<MAX_CLIENTS;i++)
-	enemy[i].Draw();
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(get_player()->myid==i)
+			continue;
+		enemy[i].Draw();
+	}
 
 	mapobj.Draw();
 	chara.Draw();

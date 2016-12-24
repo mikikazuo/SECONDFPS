@@ -8,13 +8,10 @@
 #include "net_common.h"
 #include "net_client.h"
 #include "Game.h"
-
+#include "sound.h"
 int get_bulletdata(S_CONTAINER sdata){
 
 	for(int i=0;i<MAX_CLIENTS;i++){
-		if(i==get_player()->myid)
-			continue;
-
 
 		get_player()->hp-=sdata.bullets[i].minusplayerhp[get_player()->myid];
 		for(int j=0;j<MAXBULLET;j++){
@@ -37,9 +34,14 @@ int get_bulletdata(S_CONTAINER sdata){
 int get_playerdata(S_CONTAINER sdata){
 	int i;
 	for(i=0;i<MAX_CLIENTS;i++){
-		if(i==get_player()->myid)
+		if(i==get_player()->myid){
+			get_player()->delmove+=sdata.players[i].delmove;
 			continue;
+		}
+		get_enemy()[i].myteam=sdata.players[i].myteam;
+
 		get_enemy()[i].position=sdata.players[i].position;
+
 		get_enemy()[i].angles=sdata.players[i].angles;
 		get_enemy()[i].lookat=sdata.players[i].lookat;
 
@@ -47,8 +49,6 @@ int get_playerdata(S_CONTAINER sdata){
 			get_enemy()[i].mywall[j].count=sdata.walls[i][j].count;
 			get_enemy()[i].mywall[j].wall.set_m_Pos(sdata.walls[i][j].pos);
 			get_enemy()[i].mywall[j].wall.set_m_Rot(sdata.walls[i][j].angles);
-			get_enemy()[i].mywall[j].wall.UpdateAxisAll();
-
 		}
 		//printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
 	}
@@ -75,10 +75,23 @@ int get_MapData(S_CONTAINER sdata){
 int get_MobData(S_CONTAINER sdata){
 	for(int i=0;i<10;i++){
 		get_mober()[i].position=sdata.mob[i].position;
+		setMobSound(i,	get_mober()[i].position);
 		get_mober()[i].angles=sdata.mob[i].angles;
 		get_mober()[i].hp=sdata.mob[i].hp;
 		get_mober()[i].maxhp=sdata.mob[i].maxhp;
 		get_mober()[i].atk=sdata.mob[i].atk;
+		for(int j=0;j<MOBMAXBULLET;j++){
+			if(sdata.mob[i].mobbullet[j].count>0){
+
+				//TODO　時間調整
+				if(1<sdata.mob[i].mobbullet[j].count&&3>sdata.mob[i].mobbullet[j].count)
+				PlayMobMusic(i);
+				get_mober()[i].mobbullet.bullet_info[j].count=sdata.mob[i].mobbullet[j].count;
+				get_mober()[i].mobbullet.bullet_info[j].position=sdata.mob[i].mobbullet[j].pos;
+				get_mober()[i].mobbullet.bullet_info[j].angles=sdata.mob[i].mobbullet[j].angles;
+			}else
+				get_mober()[i].mobbullet.bullet_info[j].count=0;
+		}
 	}
 	return 0;
 }

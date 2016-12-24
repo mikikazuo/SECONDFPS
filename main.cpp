@@ -135,8 +135,7 @@ int thread_Update(void *arg){
 		key_Update();
 
 		if(!debug)
-		control_requests ();
-
+			control_requests ();
 
 	}
 	sceneMgr.Finalize();
@@ -149,10 +148,10 @@ int main (int argc, char** argv)
 	argvi = argv;
 
 
-if(!debug)
-	client_start();//ネットワークの始まり
+	if(!debug)
+		client_start();//ネットワークの始まり
 
-    XInitThreads();
+	XInitThreads();
 	glutInit(&argc,argv);
 
 	myInit(argv[0]);

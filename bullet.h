@@ -21,8 +21,8 @@
 class player;
 #include "player.h"
 
-#define MAXBULLET 100
-
+#define MAXBULLET 50
+#define MOBMAXBULLET 3
 
 typedef struct {
 	int count;
@@ -43,13 +43,14 @@ private:
 
 	int lifetime;
 
-	int reloadtime;
+
 	int speed;
 	Role mode;
 
 	float bulletradi;
 	MQO_MODEL bulletmodel;
 public:
+	int reloadtime;
 	Shot bullet_info[MAXBULLET];
 
 	bullet();

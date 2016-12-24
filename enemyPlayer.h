@@ -22,7 +22,7 @@ public:
 	vec3 position;	//座標
 	vec3 angles;	//角度
 	vec3 lookat;	//視点
-
+	Team myteam;
 	float serverminushp;          //sa-ba-
 	Wall mywall[WALLMAX];
 
@@ -30,9 +30,9 @@ public:
 	void Initialize();
 	void DrawInitialize(MQO_MODEL setmodel);
 	void set_enemyposition();
-    void Draw();
-    void resetminushp();
-    void DrawMyWall();
+	void Draw();
+	void resetminushp();
+	void DrawMyWall();
 	virtual ~enemyPlayer();
 };
 

@@ -97,7 +97,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc106");
+	sprintf(server_name,"clpc040");
 
 	setup_client(server_name,port);
 }
@@ -147,6 +147,14 @@ int control_requests () {
 	cdata.my_player.lookat.y = me.lookat.y;
 	cdata.my_player.lookat.z = me.lookat.z;
 
+	cdata.my_player.myteam = me.myteam;
+
+	for(int i=0;i<WALLMAX;i++){
+	cdata.my_player.mywall[i].count=get_player()->mywall[i].count;
+	cdata.my_player.mywall[i].pos=get_player()->mywall[i].wall.get_m_Pos();
+	cdata.my_player.mywall[i].angles=get_player()->mywall[i].wall.get_m_Rot();
+	}
+
 	cdata.my_bullet.shooter=get_player()->myid;
 
 	for(int i=0;i<MAXBULLET;i++){
@@ -173,11 +181,7 @@ int control_requests () {
 	get_enemy()[i].resetminushp();
 	}
 
-	for(int i=0;i<WALLMAX;i++){
-	cdata.my_wall[i].count=get_player()->mywall[i].count;
-	cdata.my_wall[i].pos=get_player()->mywall[i].wall.get_m_Pos();
-	cdata.my_wall[i].angles=get_player()->mywall[i].wall.get_m_Rot();
-	}
+
 	//printf("x=%f\n",me.position.x);
 	send_data(&cdata,sizeof(cdata));
 
