@@ -27,6 +27,8 @@
 
 #define BROADCAST -1//全送信
 
+
+
 typedef struct{
 	float x;
 	float y;
@@ -45,14 +47,12 @@ typedef struct{
 	vec3 pos;
 	//v3 dir;
 	vec3 angles;
-
 }shot2;//Shot互換
 
 typedef struct{
-	shot2 mobbullet;
+	shot2 mobbullet[MOBMAXBULLET];
 	vec3 position;//位置
 	vec3 angles;//向き
-	int myno;//３次元定位オーディオ用の番付
 	float hp;
 	float maxhp;
 	float atk;
@@ -80,6 +80,8 @@ typedef struct{
 	vec3 angles;//向き
 	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
+	Team myteam;
+	vec3 delmove;//慣性による移動
 }PLAYER_DATA;
 
 typedef struct{
@@ -109,7 +111,6 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
-	wall2 my_wall[WALLMAX];
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */

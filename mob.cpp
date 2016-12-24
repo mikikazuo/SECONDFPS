@@ -80,6 +80,7 @@ void mob::DrawInitialize(char *filename){
 		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
 		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
 	}
+	mobbullet.bullet_DrawInitialize();
 }
 
 void mob::DrawFinalize(){
@@ -89,119 +90,119 @@ void mob::DrawFinalize(){
 			pre_mobmqo[i]=NULL;
 		}
 }
-void mob::Update(){
-	movecount++;
-	move();
-	launchBullet();
-	mobbullet.HitObj();
-	mobbullet.MobToPlayer(this->atk);
-
-}
-void mob::move(){
-	const float mousespeed = 10;
-	const float movespeed = 4;
-
-	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
-	vec3 toplayer_dir = vec3((get_player()->position.x-position.x), (get_player()->position.y-position.y), (get_player()->position.z-position.z));
-
-	if(!vsinfo.findplayer){
-		angles.y=0;
-		if(movecount%(60*1)==0)
-			dx=GetRandom(-10,10);
-
-		angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
-
-
-
-		dx=0;
-		if(angles.x < -M_PI)
-			angles.x += M_PI * 2;
-		else if(angles.x > M_PI)
-			angles.x -= M_PI * 2;
-
-
-
-
-
-		vec3 sampposition;
-		sampposition=position;
-
-
-		if(flag>10)
-			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-		else{
-			sampposition += forward_dir * 0* get_mainfps().fps_getDeltaTime();
-			flag++;
-		}
-
-
-
-		//マップに衝突時向きを反転
-		if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
-				mobhitobj.sethitcheck(WALLMAX,get_player()->get_mywall(),sampposition,radi))	){
-			angles.x -= M_PI;
-			if(angles.x < -M_PI)
-				angles.x += M_PI * 2;
-			else if(angles.x > M_PI)
-				angles.x -= M_PI * 2;
-
-			vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
-			//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
-
-			this->hitmap=true;
-
-			vec3 sampposition;
-			sampposition=position;
-			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-
-		}else{
-			this->hitmap=false;
-
-		}
-
-
-		//	static float gravity;
-		//	gravity+=0.3f;
-		//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
-		//
-
-		position=sampposition;
-
-		//	float x=pow(position.x-playerinfo->position.x,2);
-		//	float y=pow(position.y-playerinfo->position.y,2);
-		//	float z=pow(position.z-playerinfo->position.z,2);
-
-		//	if(x+y+z<pow(5,2))
-	}else{
-		switch(vsinfo.mobmode){
-		case sidestep:
-			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
-					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
-			break;
-		case sidestephard:
-			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
-					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
-			break;
-		case runaway:
-			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
-					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-
-			position.x-=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z-=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
-			break;
-		case noneaction:
-
-			break;
-		}
-
-
-	}
-}
+//void mob::Update(){
+//	movecount++;
+//	move();
+//	launchBullet();
+//	mobbullet.HitObj();
+//	mobbullet.MobToPlayer(this->atk);
+//
+//}
+//void mob::move(){
+//	const float mousespeed = 10;
+//	const float movespeed = 4;
+//
+//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+//	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+//	vec3 toplayer_dir = vec3((get_player()->position.x-position.x), (get_player()->position.y-position.y), (get_player()->position.z-position.z));
+//
+//	if(!vsinfo.findplayer){
+//		angles.y=0;
+//		if(movecount%(60*1)==0)
+//			dx=GetRandom(-10,10);
+//
+//		angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
+//
+//
+//
+//		dx=0;
+//		if(angles.x < -M_PI)
+//			angles.x += M_PI * 2;
+//		else if(angles.x > M_PI)
+//			angles.x -= M_PI * 2;
+//
+//
+//
+//
+//
+//		vec3 sampposition;
+//		sampposition=position;
+//
+//
+//		if(flag>10)
+//			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+//		else{
+//			sampposition += forward_dir * 0* get_mainfps().fps_getDeltaTime();
+//			flag++;
+//		}
+//
+//
+//
+//		//マップに衝突時向きを反転
+//		if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+//				mobhitobj.sethitcheck(WALLMAX,get_player()->get_mywall(),sampposition,radi))	){
+//			angles.x -= M_PI;
+//			if(angles.x < -M_PI)
+//				angles.x += M_PI * 2;
+//			else if(angles.x > M_PI)
+//				angles.x -= M_PI * 2;
+//
+//			vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+//			//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+//
+//			this->hitmap=true;
+//
+//			vec3 sampposition;
+//			sampposition=position;
+//			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+//
+//		}else{
+//			this->hitmap=false;
+//
+//		}
+//
+//
+//		//	static float gravity;
+//		//	gravity+=0.3f;
+//		//	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+//		//
+//
+//		position=sampposition;
+//
+//		//	float x=pow(position.x-playerinfo->position.x,2);
+//		//	float y=pow(position.y-playerinfo->position.y,2);
+//		//	float z=pow(position.z-playerinfo->position.z,2);
+//
+//		//	if(x+y+z<pow(5,2))
+//	}else{
+//		switch(vsinfo.mobmode){
+//		case sidestep:
+//			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+//					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+//			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+//			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+//			break;
+//		case sidestephard:
+//			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+//					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+//			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+//			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+//			break;
+//		case runaway:
+//			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+//					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+//
+//			position.x-=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+//			position.z-=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+//			break;
+//		case noneaction:
+//
+//			break;
+//		}
+//
+//
+//	}
+//}
 
 void mob::Draw(){
 	if(hp<=0)
@@ -238,7 +239,7 @@ void mob::launchBullet(){
 			if(movecount%atktime==0){
 				//mobbullet.setInfo(position,vec3(0, 1, 0));
 				mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
-				PlayMobMusic(myno);
+				//PlayMobMusic(myno);
 
 			}
 			if(!vsinfo.findplayer){

@@ -377,6 +377,7 @@ vec3 object::get_m_Rot(){
 //オブジェクトの回転を変更する関数
 void object::set_m_Rot(vec3 Rot){
 	this->m_Rota=Rot;
+	UpdateAxisAll();
 }
 
 //オブジェクトの各軸方向の長さを取得する関数

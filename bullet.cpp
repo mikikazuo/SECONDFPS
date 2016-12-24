@@ -66,7 +66,7 @@ void bullet::bullet_Initialize(Role setbulletmode){
 		break;
 	case Mob:
 		reloadmax=30;
-		speed=3;
+		speed=10;
 		break;
 	default:
 		break;
@@ -80,7 +80,7 @@ void bullet::bullet_DrawInitialize(){
 
 	switch(mode){
 	case Crossbow:
-		bulletmodel=mqoCreateModel(flname,0.02);
+		bulletmodel=mqoCreateModel(flname,0.01);
 
 		break;
 	case Rifle:
@@ -209,10 +209,11 @@ void bullet::HitObj(Team enemyteam,float atk){
 	int mapn=get_mapobj()->get_objnum();
 	Wall *playerwall=get_player()->get_mywall();
 
+
 	for(int i=0;i<mapn;i++){
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
-				if(bulletmovechecker.LenOBBToPoint( mapobject[i],  bullet_info[j].position)==0    ){
+				if(bulletmovechecker.LenOBBToPoint( mapobject[i],  bullet_info[j].position)<0.3f ){
 					for(int k=0;k<BASENUM;k++){
 						if(get_mapobj()->get_Base(enemyteam)[k]==i){
 							//printf("%f\n",get_mapobj()->basehp[(int)enemyteam]);
@@ -227,17 +228,27 @@ void bullet::HitObj(Team enemyteam,float atk){
 				}
 	}
 
-	for(int i=0;i<WALLMAX;i++){
-		for(int j=0;j<MAXBULLET;j++)
-			if(playerwall[i].count)
-				if(bullet_info[j].count)
-					if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)==0    ){
-						bullet_info[j].count=0;
-						break;
-					}
+	for(int k=0;k<MAX_CLIENTS;k++)
+		for(int i=0;i<WALLMAX;i++)
+			for(int j=0;j<MAXBULLET;j++){
+				if(k==get_player()->myid){
+					if(playerwall[i].count>0)
+						if(bullet_info[j].count)
+							if(	bulletmovechecker.LenOBBToPoint(playerwall[i].wall,  bullet_info[j].position)<0.3f    ){
+								bullet_info[j].count=0;
+								break;
+							}
+				}else{
+					if(get_enemy()[k].mywall[i].count>0)
+						if(bullet_info[j].count)
+							if(	bulletmovechecker.LenOBBToPoint(get_enemy()[k].mywall[i].wall,  bullet_info[j].position)<0.3f  ){
+								bullet_info[j].count=0;
+								break;
+							}
+				}
 
+			}
 
-	}
 }
 
 //
@@ -255,7 +266,7 @@ void bullet::EnemyPlayerToPlayer(){
 //
 void bullet::PlayerToEnemy(){
 	for(int i=0;i<MAX_CLIENTS;i++){
-		if(i==get_player()->myid)
+		if(i==get_player()->myid||get_enemy()[i].myteam==get_player()->myteam)
 			continue;
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
@@ -272,11 +283,14 @@ void bullet::PlayerToMob(){
 	for(int i=0;i<get_mobernum();i++){
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
-				if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
-					get_mober()[i].serverminushp+=get_player()->atk;
-					bullet_info[j].count=0;
-					break;
-				}
+				if(get_mober()[i].hp>0)
+					if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
+						get_mober()[i].serverminushp+=get_player()->atk;
+						if(get_mober()[i].hp-get_player()->atk<=0)
+							printf("dead mob!!\n");
+						bullet_info[j].count=0;
+						break;
+					}
 	}
 }
 
@@ -360,7 +374,7 @@ void bullet::Draw(){
 
 
 	for(int i=0;i<MAXBULLET;i++)
-		if(bullet_info[i].count){
+		if(bullet_info[i].count>0){
 			glPushMatrix();
 			float x=bullet_info[i].position.x;
 			float y=bullet_info[i].position.y;

@@ -1,4 +1,4 @@
-/*
+	/*
  * CanvasUI.cpp
  *
  *  Created on: 2016/11/09
@@ -155,7 +155,7 @@ void CanvasUI::Draw() {
 	//自陣HP
 	glColor3d(1.0,0.2,0.2);//赤指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
-	rect_Draw2D(handle[11],10+shakeX,10+shakeY,280*0.01*a,60);//ゲージ描画
+	rect_Draw2D(handle[11],10+shakeX,10+shakeY,280*(get_mapobj()->basehp[RedTeam]/get_mapobj()->basemaxhp[RedTeam]),60);//ゲージ描画
 	image_DrawExRota(handle[11],150+shakeX,50+shakeY,0,1);//背景
 
 	image_DrawExRota(handle[12],150+shakeX,50+shakeY,0,1);//ハイライト,質感

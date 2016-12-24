@@ -56,6 +56,7 @@ public:
 	float dx,dy;
 	float atk;
 	int radi;
+	vec3 delmove;
 
 	float minushp;
 

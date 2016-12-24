@@ -29,7 +29,7 @@ typedef struct {
 int GetRandom(int min,int max);
 class mob {
 private:
-	bullet mobbullet;
+
 	float radi;
 	int myno;
 	float dx;
@@ -41,6 +41,7 @@ private:
 	vsplayer vsinfo;
 
 public:
+	bullet mobbullet;
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;

@@ -270,8 +270,9 @@ void player::Update(){
 	playerbullet.PlayerToEnemy();
 
 	launchBullet();
-	if(myteam==RedTeam)
+	if(myteam==RedTeam){
 		playerbullet.HitObj(BlueTeam,atk);
+	}
 	else
 		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
@@ -280,7 +281,9 @@ void player::Update(){
 	Move(get_mapobj()->get_obj(),get_mapobj()->get_objnum(),get_mywall());
 	set_wall();
 	remove_wall();
-
+	static vec3 nowdel;
+	nowdel=get_player()->delmove;
+	get_player()->position+=nowdel*get_mainfps().fps_getDeltaTime();
 
 
 	if(key_getmove(Test)==3)
@@ -356,7 +359,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			upflag = true;
 			hitmap = true;
 			hitnum = i;			//衝突したオブジェクトを判定
-			break;
+			goto brex;
 		}
 
 
@@ -412,7 +415,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 			upflag=true;
 			hitmap=true;
-			break;
+			goto brez;
 		}
 
 
@@ -780,10 +783,10 @@ void player::Action()
 void player::launchBullet(){
 	if(!atkok)
 		atkcount++;
-
+	//最後の弾だけ音がならないため
 	static bool lastbullet=false;
 
-	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok){
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
@@ -801,7 +804,7 @@ void player::launchBullet(){
 		atkok=false;
 	}
 
-
+	//攻撃間隔
 	if(atkcount>atktime){
 		atkok=true;
 		atkcount=0;
