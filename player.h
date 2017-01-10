@@ -45,6 +45,7 @@ private:
 	int atkcount;
 	int speed;
 	double pers;
+	Role myrole;
 public:
 
 	int myid;    //my server id
@@ -73,7 +74,7 @@ public:
 	Wall *get_mywall();
 	player();
 	void Initialize(vec3 pos,float ra,Role setrole,Team setteam);
-	void DrawInitialize();
+	void DrawInitialize(Role setrole);
 	void DrawFinalize();
 	void Draw();
 	void Update();

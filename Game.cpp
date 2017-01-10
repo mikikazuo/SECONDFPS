@@ -65,7 +65,7 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
-	player1.Initialize(vec3(30,10,-10),1,Crossbow,(*get_argc()==2)?RedTeam:BlueTeam);
+	player1.Initialize(vec3(30,10,-10),1,Rifle,(*get_argc()==2)?RedTeam:BlueTeam);
 	chara.Initialize();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -84,7 +84,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize();
+	player1.DrawInitialize(Rifle);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";

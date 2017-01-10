@@ -160,7 +160,7 @@ player::player() {
 void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 
 
-
+	myrole=setrole;
 	playerbullet.bullet_Initialize(setrole);
 	switch(setrole){
 	case Crossbow:
@@ -199,18 +199,46 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 	set_ScrollMin(0);
 
 }
-void player::DrawInitialize(){
+void player::DrawInitialize(Role setrole){
 	playerbullet.bullet_DrawInitialize();
 
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
+	char *flname;
+	switch(setrole){
+	case Crossbow:
+		flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	case Rifle:
+		flname=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	case Gatling:
+		flname=(char*)"Data/charamodel/char3/一人称/char3_firstside_shoot.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	case Spear:
+		flname=(char*)"Data/charamodel/char4/一人称/char4_firstside_defalt.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	case Magicstick:
+		flname=(char*)"Data/charamodel/char5/一人称/char5_firstside_shoot.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	case Magic:
+		flname=(char*)"Data/charamodel/char6/一人称/char6_firstside_shoot.mqo";
+		handmodel=mqoCreateModel(flname,0.0035);
+		break;
+	default:
+		break;
+	}
 
-	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 	//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
-	handmodel=mqoCreateModel(flname,0.0035);
+
 	//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
@@ -705,7 +733,6 @@ void player::DrawMyWall(){
 		if(mywall[i].count>0)
 			mywall[i].wall.Draw();
 }
-
 int thread(void *data){
 
 
