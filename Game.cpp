@@ -103,6 +103,7 @@ void Game::DrawInitialize(){
 	mqomodel[7]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 	mqomodel[8]=mqoCreateModel(flname,0.0035);
+	//エラー表示の原因↓
 	flname=(char*)"Data/charamodel/char2/char2_ene_head.mqo";
 	mqomodel[9]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char2/char2_ene_leg1.mqo";
