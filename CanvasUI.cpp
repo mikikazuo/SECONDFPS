@@ -70,6 +70,7 @@ void CanvasUI::DrawInitialize(){
 	handle[39]=image_Load("Data/image/num/9.png");
 	handle[40]=image_Load("Data/image/num/Lv.png");
 
+	handle[41]=image_Load("Data/image/sousa.png");
 }
 
 
@@ -215,6 +216,9 @@ void CanvasUI::Draw() {
 		rect_Draw2D(handle[14],850+(50*i)+shakeX,650+shakeY,34,34);//壁情報ランプ
 	}
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
+
+
+	image_DrawExRota(handle[41],105,540,0,1.0);//Blue
 
 }
 
