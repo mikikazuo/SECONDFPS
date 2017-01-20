@@ -525,7 +525,6 @@ void player::set_wall(){
 	if(key_getmove(Setwall)==2)
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
-
 				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
 				mywall[i].count++;
 				break;

@@ -23,6 +23,8 @@ private:
 	int level;
 	double 	progress_time;	//経過時間
 	double progress_per;	//進捗率
+	int set;	//設置状況
+	int del;	//除去状況
 public:
 	CanvasUI();
 	virtual ~CanvasUI();
