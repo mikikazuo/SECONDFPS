@@ -51,23 +51,23 @@ mob::~mob() {
 	// TODO Auto-generated destructor stub
 }
 
-//位置、当たり半径、HP,攻撃力
-void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange){
-	dx=GetRandom(1,100);
-	movecount=0;
-	myno=no;
-	flag=0;
-	position=pos;
-	mobbullet.bullet_Initialize(Mob);
-	radi=ra;
-	hp=maxhp=sethp;
-	atk=setatk;
-	atkrange=setatkrange;
-	atktime=setatktime;
-	vsinfo.findplayer=false;
-	vsinfo.mobmode=noneaction;
-
-}
+////位置、当たり半径、HP,攻撃力
+//void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange){
+//	dx=GetRandom(1,100);
+//	movecount=0;
+//	myno=no;
+//	flag=0;
+//	position=pos;
+//	mobbullet.bullet_Initialize();
+//	radi=ra;
+//	hp=maxhp=sethp;
+//	atk=setatk;
+//	atkrange=setatkrange;
+//	atktime=setatktime;
+//	vsinfo.findplayer=false;
+//	vsinfo.mobmode=noneaction;
+//
+//}
 
 void mob::resetminushp(){
 	serverminushp=0;
@@ -80,7 +80,7 @@ void mob::DrawInitialize(char *filename){
 		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
 		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
 	}
-	mobbullet.bullet_DrawInitialize();
+	mobbullet.bullet_DrawInitialize(Mob);
 }
 
 void mob::DrawFinalize(){
@@ -215,13 +215,18 @@ void mob::Draw(){
 	float y=position.y;
 	float z=position.z;
 
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	glTranslatef(x,y,z);
 
 	//glutSolidSphere( 1, 50, 50 );
 
 	glRotated(angles.x * 180 /M_PI ,0,1,0);
 	glRotated(-angles.y * 180 /M_PI ,1,0,0);
-	mqoCallModel(mobmqo);
+
+
+	  mqoCallModelRed(mobmqo);
+
 
 	glPopMatrix();
 	mobbullet.Draw();
@@ -234,13 +239,13 @@ void mob::launchBullet(){
 	float z=pow(position.z-get_player()->position.z,2);
 	float big=sqrt(x+y+z);
 	float radi=atkrange*atkrange;
+
 	if(hp>0){
 		if(radi>=x+y+z){
 			if(movecount%atktime==0){
 				//mobbullet.setInfo(position,vec3(0, 1, 0));
 				mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
-				//PlayMobMusic(myno);
-
+				PlayMobMusic(myno);
 			}
 			if(!vsinfo.findplayer){
 				vsinfo.findplayer=true;
@@ -254,6 +259,7 @@ void mob::launchBullet(){
 
 		mobbullet.Update();
 	}
+
 }
 
 

@@ -35,7 +35,7 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=false;    //sever connect
+static bool debug=true;    //sever connect
 
 
 
@@ -81,12 +81,12 @@ void myInit(char *progname)
 	glutInitWindowSize(width,height);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
 	glutCreateWindow(progname);
-	glClearColor(0.0,0.2,0.5,1.0);
+	glClearColor(1.0,1.0,1.0,1.0);//glClearColor(0.0,0.2,0.5,1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60.0,aspect,0.1,LOOK_DISTANT);//view volume 注意
 	glMatrixMode(GL_MODELVIEW);
-	glutSetCursor(GLUT_CURSOR_NONE);
+	//glutSetCursor(GLUT_CURSOR_NONE);
 
 	glutMouseFunc(mouse);
 
@@ -175,6 +175,10 @@ int *get_argc(){
 char** get_argv(){
 	return argvi;
 };
+
+SceneMgr get_SceneMgr(){
+	return sceneMgr;
+}
 
 
 

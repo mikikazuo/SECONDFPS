@@ -48,7 +48,7 @@ Copyright (c) 2009 Sunao Hashimoto and Keisuke Konishi
 ����Đ������؂̐����A���Q�A���̑��̋`���ɂ��ĉ���̐ӔC������Ȃ�����
 �Ƃ��܂��B
 
-*/
+ */
 
 /*=========================================================================
 �y���̃\�[�X���ł̂ݗL��ȃO���[�o���ϐ��z
@@ -90,15 +90,15 @@ void mqoReadFace(FILE *fp, MQO_FACE F[]);
 void mqoReadObject(FILE *fp, MQO_OBJDATA *obj);
 
 void mqoMakeArray(MQO_MATERIAL *mat, int matpos,MQO_FACE F[], int fnum,glPOINT3f V[],
-				  glPOINT3f N[], double facet, glCOLOR4f *mcol, double scale, unsigned char alpha );
+		glPOINT3f N[], double facet, glCOLOR4f *mcol, double scale, unsigned char alpha );
 
 glPOINT3f *mqoVertexNormal(MQO_OBJDATA *obj);
 
 void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
-					glPOINT3f N[], MQO_MATDATA M[], int n_mat, double scale, unsigned char alpha);
+		glPOINT3f N[], MQO_MATDATA M[], int n_mat, double scale, unsigned char alpha);
 
 void mqoMakeObjectsEx(MQO_OBJECT *mqoobj, MQO_OBJDATA obj[], int n_obj, MQO_MATDATA M[],int n_mat,
-					  double scale,unsigned char alpha);
+		double scale,unsigned char alpha);
 
 #ifdef __cplusplus
 }
@@ -179,11 +179,25 @@ int IsExtensionSupported( char* szTargetExtension )
 			break;
 		pszTerminator = pszWhere + strlen( szTargetExtension );
 		if ( pszWhere == pszStart || *( pszWhere - 1 ) == ' ' )
-		if ( *pszTerminator == ' ' || *pszTerminator == (char)NULL )
-			return 1;
+			if ( *pszTerminator == ' ' || *pszTerminator == (char)NULL )
+				return 1;
 		pszStart = pszTerminator;
 	}
-	return 0;
+	return 0;int i, n = 200;						// 分割数n
+	double x, y, r = 0.5;				// 円周上の座標(x,y)と半径r
+	glClearColor(0.0, 0.0, 0.0, 0.0);	// 画面のクリア色(背景色)
+	glClear(GL_COLOR_BUFFER_BIT);		// バッファのクリア
+	glEnable(GL_LINE_STIPPLE);
+	glLineStipple(1, 0xACF3);
+	glBegin(GL_POLYGON);				// ポリゴンの頂点記述開始
+		glColor4f(0.7, 0.2, 0.2, 0.0);  // 円の色(RGBA)
+		// 円周上の座標(x,y)を計算して円を描画
+		for (i = 0; i < n; i++) {
+			x = r * cos(2.0 * 3.14 * ((double)i/n) );
+			y = r * sin(2.0 * 3.14 * ((double)i/n) );
+			glVertex3f(x, y, 0.0);		// 頂点の座標
+		}
+	glEnd();
 }
 
 
@@ -202,7 +216,7 @@ void mqoInit(void)
 
 	// ���_�o�b�t�@�̃T�|�[�g�̃`�F�b�N
 	g_isVBOSupported = IsExtensionSupported("GL_ARB_vertex_buffer_object");
-//	g_isVBOSupported = 0;
+	//	g_isVBOSupported = 0;
 
 #ifdef WIN32
 	glGenBuffersARB = NULL;
@@ -296,7 +310,7 @@ GLuint mqoSetTexturePool(char *texfile, char *alpfile, unsigned char alpha )
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, l_texPool[pos].texsize, l_texPool[pos].texsize,
-					0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	l_texPoolnum = pos+1;
 
 	//�o�^����΁A�ǂݍ��񂾃o�b�t�@�͕s�v
@@ -443,8 +457,8 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 				//�𓀃f�[�^�ǂݍ���
 				while( cinfo.output_scanline < cinfo.output_height ) {
 					jpeg_read_scanlines( &cinfo,
-						jpegimage + cinfo.output_scanline,
-						cinfo.output_height - cinfo.output_scanline
+							jpegimage + cinfo.output_scanline,
+							cinfo.output_height - cinfo.output_scanline
 					);
 				}
 				size = width[fl] = cinfo.output_width;
@@ -468,13 +482,13 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 			unsigned int             i;
 			int j,k;
 			png_ptr = png_create_read_struct(                       // png_ptr�\���̂��m�ہE�����܂�
-							PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+					PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 			info_ptr = png_create_info_struct(png_ptr);             // info_ptr�\���̂��m�ہE�����܂�
 			png_init_io(png_ptr, fp);                               // libpng��fp��m�点�܂�
 			png_read_info(png_ptr, info_ptr);                       // PNG�t�@�C���̃w�b�_��ǂݍ��݂܂�
 			png_get_IHDR(png_ptr, info_ptr, &pngwidth, &pngheight,        // IHDR�`�����N�����擾���܂�
-							&bit_depth, &color_type, &interlace_type,
-							&j,&k);
+					&bit_depth, &color_type, &interlace_type,
+					&j,&k);
 			if ( pngimage != NULL ) {
 				for (i = 0; i < pngheight; i++) free(pngimage[i]);            // �ȉ��Q�s�͂Q�����z������܂�
 				free(pngimage);
@@ -483,11 +497,11 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 			i = png_get_rowbytes(png_ptr, info_ptr);
 			pngdepth = i / pngwidth;
 			for (i = 0; i < pngheight; i++)
-					pngimage[i] = (png_bytep)malloc(png_get_rowbytes(png_ptr, info_ptr));
+				pngimage[i] = (png_bytep)malloc(png_get_rowbytes(png_ptr, info_ptr));
 			png_read_image(png_ptr, pngimage);                         // �摜�f�[�^��ǂݍ��݂܂�
 
 			png_destroy_read_struct(                                // �Q�̍\���̂̃����������܂�
-	        &png_ptr, &info_ptr, (png_infopp)NULL);
+					&png_ptr, &info_ptr, (png_infopp)NULL);
 			size = width[fl] = pngwidth;
 #else
 			printf("���̃e�N�X�`���͑Ή��ł��Ȃ��t�H�[�}�b�g��%s\n",filename[fl]);
@@ -513,18 +527,18 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 		}
 		if ( fl == 1 && isTGA ) { //�A���t�@�̓ǂݍ��݂͂s�f�`�̂W�r�b�g���m�N�������R�Q�r�b�g�t��
 			if ( !(
-				(tgah.depth == 8 && tgah.type == DEF_TGA_TYPE_MONO) ||
-				(tgah.depth == 32 && tgah.type == DEF_TGA_TYPE_FULL)
-				) ) {
+					(tgah.depth == 8 && tgah.type == DEF_TGA_TYPE_MONO) ||
+					(tgah.depth == 32 && tgah.type == DEF_TGA_TYPE_FULL)
+			) ) {
 				break;
 			}
 		}
 		if ( fl == 1 && isPNG ) { //�A���t�@�̓ǂݍ��݂͂o�m�f�̃g�D���[�J���[�{�A���t�@�����O���[�X�P�[���{�A���t�@
 #if DEF_USE_LIBPNG
 			if ( !(
-				(color_type== 6 ) ||
-				(color_type== 4 )
-				) ) {
+					(color_type== 6 ) ||
+					(color_type== 4 )
+			) ) {
 				break;
 			}
 #endif
@@ -799,152 +813,317 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 	if ( mqoobj == NULL) return;
 
 	glPushMatrix();
-		//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���
-		glGetIntegerv(GL_FRONT_FACE,&intFrontFace);
-		glFrontFace(GL_CW);
-		dalpha = (double)mqoobj[num].alpha/(double)255;
+	//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���
+	glGetIntegerv(GL_FRONT_FACE,&intFrontFace);
+	glFrontFace(GL_CW);
+	dalpha = (double)mqoobj[num].alpha/(double)255;
 
-		for ( o=0; o<mqoobj[num].objnum; o++ ) {	// �����I�u�W�F�N�g���[�v
+	for ( o=0; o<mqoobj[num].objnum; o++ ) {	// �����I�u�W�F�N�g���[�v
 
-			obj = &mqoobj[num].obj[o];
-			if ( ! obj->isVisible ) continue;
-			glShadeModel(((obj->isShadingFlat))?GL_FLAT:GL_SMOOTH);
+		obj = &mqoobj[num].obj[o];
+		if ( ! obj->isVisible ) continue;
+		glShadeModel(((obj->isShadingFlat))?GL_FLAT:GL_SMOOTH);
 
-			for ( m = 0; m < obj->matnum; m++ ) {	//�}�e���A�����[�v
+		for ( m = 0; m < obj->matnum; m++ ) {	//�}�e���A�����[�v
 
-				mat = &obj->mat[m];
-				if ( mat->datanum == 0 ) continue;
+			mat = &obj->mat[m];
+			if ( mat->datanum == 0 ) continue;
 
-				if ( mat->isValidMaterialInfo ) {	// �}�e���A���̏��ݒ�
-					memcpy(matenv,mat->dif,sizeof(matenv));
-					matenv[3] *= dalpha;
-					glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, matenv);
-					memcpy(matenv,mat->amb,sizeof(matenv));
-					matenv[3] *= dalpha;
-					glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, matenv);
-					memcpy(matenv,mat->spc,sizeof(matenv));
-					matenv[3] *= dalpha;
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matenv);
-					memcpy(matenv,mat->emi,sizeof(matenv));
-					matenv[3] *= dalpha;
-					glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, matenv);
-					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat->power);
+			if ( mat->isValidMaterialInfo ) {	// �}�e���A���̏��ݒ�
+				memcpy(matenv,mat->dif,sizeof(matenv));
+				matenv[3] *= dalpha;
+
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, matenv);
+				memcpy(matenv,mat->amb,sizeof(matenv));
+				matenv[3] *= dalpha;
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, matenv);
+				memcpy(matenv,mat->spc,sizeof(matenv));
+				matenv[3] *= dalpha;
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matenv);
+				memcpy(matenv,mat->emi,sizeof(matenv));
+				matenv[3] *= dalpha;
+				glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, matenv);
+				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat->power);
+			}
+
+			if ( mat->isUseTexture) {	// �e�N�X�`��������ꍇ
+				glEnableClientState( GL_VERTEX_ARRAY );
+				glEnableClientState( GL_NORMAL_ARRAY );
+				glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+				isGL_TEXTURE_2D = glIsEnabled(GL_TEXTURE_2D);
+				isGL_BLEND = glIsEnabled(GL_BLEND);
+				glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindGL_TEXTURE_2D);
+				//					glGetIntegerv(GL_BLEND_SRC_ALPHA,&blendGL_SRC_ALPHA);
+
+				glEnable(GL_TEXTURE_2D);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+				glBindTexture(GL_TEXTURE_2D,mat->texture_id);
+
+				if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
+					base = (char *)NULL;	// �A�h���X��NULL���擪
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id ); // ���_�o�b�t�@�����т���
+				}
+				else {
+					// ���_�z��̎��́A�A�h���X�����̂܂ܓ���
+					base = (char *)mat->vertex_t[0].point;
 				}
 
-				if ( mat->isUseTexture) {	// �e�N�X�`��������ꍇ
-					glEnableClientState( GL_VERTEX_ARRAY );
-					glEnableClientState( GL_NORMAL_ARRAY );
-					glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+				// ���_�z���ݒ�
+				offset = (int)( (char *)mat->vertex_t[0].point - (char *)mat->vertex_t[0].point );
+				glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
 
-					isGL_TEXTURE_2D = glIsEnabled(GL_TEXTURE_2D);
-					isGL_BLEND = glIsEnabled(GL_BLEND);
-					glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindGL_TEXTURE_2D);
-//					glGetIntegerv(GL_BLEND_SRC_ALPHA,&blendGL_SRC_ALPHA);
+				// �e�N�X�`�����W�z���ݒ�
+				offset = (int)((char *)mat->vertex_t[0].uv-(char *)mat->vertex_t[0].point);
+				glTexCoordPointer( 2, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
 
-					glEnable(GL_TEXTURE_2D);
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+				// �@��z���ݒ�
+				offset = (int)((char *)mat->vertex_t[0].normal-(char *)mat->vertex_t[0].point);
+				glNormalPointer( GL_FLOAT, sizeof(VERTEX_TEXUSE) , base+offset );
 
-					glBindTexture(GL_TEXTURE_2D,mat->texture_id);
+				// �F�ݒ�
+				glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
 
-					if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
-						base = (char *)NULL;	// �A�h���X��NULL���擪
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id ); // ���_�o�b�t�@�����т���
-					}
-					else {
-						// ���_�z��̎��́A�A�h���X�����̂܂ܓ���
-						base = (char *)mat->vertex_t[0].point;
-					}
+				// �`����s
+				glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
 
-					// ���_�z���ݒ�
-					offset = (int)( (char *)mat->vertex_t[0].point - (char *)mat->vertex_t[0].point );
-					glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
+				glBindTexture(GL_TEXTURE_2D,bindGL_TEXTURE_2D);
+				if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
+				if( isGL_TEXTURE_2D == GL_FALSE ) glDisable(GL_TEXTURE_2D);
 
-					// �e�N�X�`�����W�z���ݒ�
-					offset = (int)((char *)mat->vertex_t[0].uv-(char *)mat->vertex_t[0].point);
-					glTexCoordPointer( 2, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
-
-					// �@��z���ݒ�
-					offset = (int)((char *)mat->vertex_t[0].normal-(char *)mat->vertex_t[0].point);
-					glNormalPointer( GL_FLOAT, sizeof(VERTEX_TEXUSE) , base+offset );
-
-					// �F�ݒ�
-					glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
-
-					// �`����s
-					glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
-
-					glBindTexture(GL_TEXTURE_2D,bindGL_TEXTURE_2D);
-					if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
-					if( isGL_TEXTURE_2D == GL_FALSE ) glDisable(GL_TEXTURE_2D);
-
-					if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
-					}
-
-					glDisableClientState( GL_VERTEX_ARRAY );
-					glDisableClientState( GL_NORMAL_ARRAY );
-					glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+				if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
 				}
-				else {	// �e�N�X�`�����Ȃ��ꍇ
 
-					glEnableClientState( GL_VERTEX_ARRAY );
-					glEnableClientState( GL_NORMAL_ARRAY );
+				glDisableClientState( GL_VERTEX_ARRAY );
+				glDisableClientState( GL_NORMAL_ARRAY );
+				glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+			}
+			else {	// �e�N�X�`�����Ȃ��ꍇ
+
+				glEnableClientState( GL_VERTEX_ARRAY );
+				glEnableClientState( GL_NORMAL_ARRAY );
 				//	glEnableClientState( GL_COLOR_ARRAY );
 
-					isGL_BLEND = glIsEnabled(GL_BLEND);
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+				isGL_BLEND = glIsEnabled(GL_BLEND);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-					if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
-						base = (char *)NULL;
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id );
-					}
-					else {
-						base = (char *)mat->vertex_p[0].point;
-					}
+				if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
+					base = (char *)NULL;
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id );
+				}
+				else {
+					base = (char *)mat->vertex_p[0].point;
+				}
 
-					// ���_�z���ݒ�
-					offset = (int)((char *)mat->vertex_p[0].point-(char *)mat->vertex_p[0].point);
-					glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
+				// ���_�z���ݒ�
+				offset = (int)((char *)mat->vertex_p[0].point-(char *)mat->vertex_p[0].point);
+				glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
 
-					// �@��z���ݒ�
-					offset = (int)((char *)mat->vertex_p[0].normal-(char *)mat->vertex_p[0].point);
-					glNormalPointer( GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
+				// �@��z���ݒ�
+				offset = (int)((char *)mat->vertex_p[0].normal-(char *)mat->vertex_p[0].point);
+				glNormalPointer( GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
 
-					// �F�ݒ�
-					glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
+				// �F�ݒ�
+				glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
 				//	offset = (int)((char *)mat->vertex_p[0].color-(char *)mat->vertex_p[0].point);
 				//	glColorPointer(4,GL_FLOAT,sizeof(VERTEX_NOTEX),base+offset);
 
-					// �`����s
-					glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
+				// �`����s
+				glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
 
-					if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
-					if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
-					}
+				if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
+				if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
+				}
 
 				//	glDisableClientState( GL_COLOR_ARRAY );
-					glDisableClientState( GL_VERTEX_ARRAY );
-					glDisableClientState( GL_NORMAL_ARRAY );
+				glDisableClientState( GL_VERTEX_ARRAY );
+				glDisableClientState( GL_NORMAL_ARRAY );
 
-				}
 			}
 		}
+	}
 
-		//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���i���̐ݒ�ɂ��ǂ��j
-		glFrontFace(intFrontFace);
+	//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���i���̐ݒ�ɂ��ǂ��j
+	glFrontFace(intFrontFace);
 	glPopMatrix();
 }
 
+void mqoCallListObjectRed(MQO_OBJECT mqoobj[],int num)
+{
+
+	MQO_INNER_OBJECT	*obj;
+	MQO_MATERIAL		*mat;
+	GLfloat				matenv[4];
+	GLint				bindGL_TEXTURE_2D	= 0;
+	GLboolean			isGL_TEXTURE_2D		= GL_FALSE;
+	GLboolean			isGL_BLEND			= GL_FALSE;
+	GLint				blendGL_SRC_ALPHA	= 0;
+	GLint				intFrontFace;
+
+	int		o, m, offset;
+	double	dalpha;
+	char	*base;
+
+	if ( mqoobj == NULL) return;
+
+	glPushMatrix();
+	//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���
+	glGetIntegerv(GL_FRONT_FACE,&intFrontFace);
+	glFrontFace(GL_CW);
+	dalpha = (double)mqoobj[num].alpha/(double)255;
+
+	for ( o=0; o<mqoobj[num].objnum; o++ ) {	// �����I�u�W�F�N�g���[�v
+
+		obj = &mqoobj[num].obj[o];
+		if ( ! obj->isVisible ) continue;
+		glShadeModel(((obj->isShadingFlat))?GL_FLAT:GL_SMOOTH);
+
+		for ( m = 0; m < obj->matnum; m++ ) {	//�}�e���A�����[�v
+
+			mat = &obj->mat[m];
+			if ( mat->datanum == 0 ) continue;
+
+			if ( mat->isValidMaterialInfo ) {	// �}�e���A���̏��ݒ�
+				memcpy(matenv,mat->dif,sizeof(matenv));
+				matenv[3] *= dalpha;
+				GLfloat red[] = { 0.8, 0.2, 0.2, 1.0 };
+				  /* 図形の色 (赤)  */
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, matenv);
+				memcpy(matenv,mat->amb,sizeof(matenv));
+				matenv[3] *= dalpha;
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, matenv);
+				memcpy(matenv,mat->spc,sizeof(matenv));
+				matenv[3] *= dalpha;
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matenv);
+				memcpy(matenv,mat->emi,sizeof(matenv));
+				matenv[3] *= dalpha;
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, matenv);
+				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat->power);
+			}
+
+			if ( mat->isUseTexture) {	// �e�N�X�`��������ꍇ
+				glEnableClientState( GL_VERTEX_ARRAY );
+				glEnableClientState( GL_NORMAL_ARRAY );
+				glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+				isGL_TEXTURE_2D = glIsEnabled(GL_TEXTURE_2D);
+				isGL_BLEND = glIsEnabled(GL_BLEND);
+				glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindGL_TEXTURE_2D);
+				//					glGetIntegerv(GL_BLEND_SRC_ALPHA,&blendGL_SRC_ALPHA);
+
+				glEnable(GL_TEXTURE_2D);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+				glBindTexture(GL_TEXTURE_2D,mat->texture_id);
+
+				if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
+					base = (char *)NULL;	// �A�h���X��NULL���擪
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id ); // ���_�o�b�t�@�����т���
+				}
+				else {
+					// ���_�z��̎��́A�A�h���X�����̂܂ܓ���
+					base = (char *)mat->vertex_t[0].point;
+				}
+
+				// ���_�z���ݒ�
+				offset = (int)( (char *)mat->vertex_t[0].point - (char *)mat->vertex_t[0].point );
+				glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
+
+				// �e�N�X�`�����W�z���ݒ�
+				offset = (int)((char *)mat->vertex_t[0].uv-(char *)mat->vertex_t[0].point);
+				glTexCoordPointer( 2, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
+
+				// �@��z���ݒ�
+				offset = (int)((char *)mat->vertex_t[0].normal-(char *)mat->vertex_t[0].point);
+				glNormalPointer( GL_FLOAT, sizeof(VERTEX_TEXUSE) , base+offset );
+
+				// �F�ݒ�
+				glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
+
+				// �`����s
+				glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
+
+				glBindTexture(GL_TEXTURE_2D,bindGL_TEXTURE_2D);
+				if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
+				if( isGL_TEXTURE_2D == GL_FALSE ) glDisable(GL_TEXTURE_2D);
+
+				if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
+				}
+
+				glDisableClientState( GL_VERTEX_ARRAY );
+				glDisableClientState( GL_NORMAL_ARRAY );
+				glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+			}
+			else {	// �e�N�X�`�����Ȃ��ꍇ
+
+				glEnableClientState( GL_VERTEX_ARRAY );
+				glEnableClientState( GL_NORMAL_ARRAY );
+				//	glEnableClientState( GL_COLOR_ARRAY );
+
+				isGL_BLEND = glIsEnabled(GL_BLEND);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+				if ( g_isVBOSupported ) {	// ���_�o�b�t�@�g�p
+					base = (char *)NULL;
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id );
+				}
+				else {
+					base = (char *)mat->vertex_p[0].point;
+				}
+
+				// ���_�z���ݒ�
+				offset = (int)((char *)mat->vertex_p[0].point-(char *)mat->vertex_p[0].point);
+				glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
+
+				// �@��z���ݒ�
+				offset = (int)((char *)mat->vertex_p[0].normal-(char *)mat->vertex_p[0].point);
+				glNormalPointer( GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
+
+				// �F�ݒ�
+				glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
+				//	offset = (int)((char *)mat->vertex_p[0].color-(char *)mat->vertex_p[0].point);
+				//	glColorPointer(4,GL_FLOAT,sizeof(VERTEX_NOTEX),base+offset);
+
+				// �`����s
+				glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
+
+				if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
+				if ( g_isVBOSupported ) {						// ���_�o�b�t�@�g�p
+					glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// ���_�o�b�t�@���f�t�H���g��
+				}
+
+				//	glDisableClientState( GL_COLOR_ARRAY );
+				glDisableClientState( GL_VERTEX_ARRAY );
+				glDisableClientState( GL_NORMAL_ARRAY );
+
+			}
+		}
+	}
+
+	//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���i���̐ݒ�ɂ��ǂ��j
+	glFrontFace(intFrontFace);
+	glPopMatrix();
+}
 
 /*=========================================================================
 �y�֐��zmqoGetDirectory
 �y�p�r�z�t�@�C�������܂ރp�X�����񂩂�f�B���N�g���̃p�X�݂̂𒊏o����
 �y��z
-		*path_file	�t�@�C�������܂ރp�X������i��́j
-		*path_dir	�t�@�C�������������p�X������i�o�́j
+ *path_file	�t�@�C�������܂ރp�X������i��́j
+ *path_dir	�t�@�C�������������p�X������i�o�́j
 
 �y�ߒl�z�Ȃ�
 �y�d�l�z��F
@@ -971,7 +1150,7 @@ void mqoGetDirectory(const char *path_file, char *path_dir)
 		A		3�������W��̓_A
 		B		3�������W��̓_B
 		C		3�������W��̓_C
-		*normal	�x�N�g��BA�ƃx�N�g��BC�̖@��x�N�g���i�E�˂����j
+ *normal	�x�N�g��BA�ƃx�N�g��BC�̖@��x�N�g���i�E�˂����j
 
 �y�ߒl�z�Ȃ�
 �y�d�l�z���^�Z�R�C�A�ɂ����Ėʂ��\�����钸�_�̔ԍ��́C�\���ʂ��猩��
@@ -1202,19 +1381,19 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 		// ���_(V)�̓ǂݍ���
 		if ( (pStr = strstr(buf,"V(")) != NULL ) {
 			switch (F[i].n) {
-				case 3:
-//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���
-//�ǂݍ��ݎ��ɕ��בւ����@������B���ǁA�\�ʂ̐ݒ��
-//glFrontFace�ŕς���ق����X�}�[�g�H
-					sscanf(pStr,"V(%d %d %d)",&F[i].v[0],&F[i].v[1],&F[i].v[2]);
-//					sscanf(pStr,"V(%d %d %d)",&F[i].v[2],&F[i].v[1],&F[i].v[0]);
-					break;
-				case 4:
-					sscanf(pStr,"V(%d %d %d %d)",&F[i].v[0],&F[i].v[1],&F[i].v[2],&F[i].v[3]);
-//					sscanf(pStr,"V(%d %d %d %d)",&F[i].v[3],&F[i].v[2],&F[i].v[1],&F[i].v[0]);
-					break;
-				default:
-					break;
+			case 3:
+				//���^�Z�R�͒��_�̕��т��\�ʂ���݂ĉE���
+				//�ǂݍ��ݎ��ɕ��בւ����@������B���ǁA�\�ʂ̐ݒ��
+				//glFrontFace�ŕς���ق����X�}�[�g�H
+				sscanf(pStr,"V(%d %d %d)",&F[i].v[0],&F[i].v[1],&F[i].v[2]);
+				//					sscanf(pStr,"V(%d %d %d)",&F[i].v[2],&F[i].v[1],&F[i].v[0]);
+				break;
+			case 4:
+				sscanf(pStr,"V(%d %d %d %d)",&F[i].v[0],&F[i].v[1],&F[i].v[2],&F[i].v[3]);
+				//					sscanf(pStr,"V(%d %d %d %d)",&F[i].v[3],&F[i].v[2],&F[i].v[1],&F[i].v[0]);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -1230,24 +1409,24 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 		// UV�}�b�v(UV)�̓ǂݍ���
 		if ( (pStr = strstr(buf,"UV(")) != NULL ) {
 			switch (F[i].n) {
-				case 3:	// ���_��3
-					sscanf(pStr,"UV(%f %f %f %f %f %f)",
-									&F[i].uv[0].x, &F[i].uv[0].y,
-									&F[i].uv[1].x, &F[i].uv[1].y,
-									&F[i].uv[2].x, &F[i].uv[2].y
-									);
-					break;
+			case 3:	// ���_��3
+				sscanf(pStr,"UV(%f %f %f %f %f %f)",
+						&F[i].uv[0].x, &F[i].uv[0].y,
+						&F[i].uv[1].x, &F[i].uv[1].y,
+						&F[i].uv[2].x, &F[i].uv[2].y
+				);
+				break;
 
-				case 4:	// ���_��4
-					sscanf(pStr,"UV(%f %f %f %f %f %f %f %f)",
-									&F[i].uv[0].x, &F[i].uv[0].y,
-									&F[i].uv[1].x, &F[i].uv[1].y,
-									&F[i].uv[2].x, &F[i].uv[2].y,
-									&F[i].uv[3].x, &F[i].uv[3].y
-									);
-					break;
-				default:
-					break;
+			case 4:	// ���_��4
+				sscanf(pStr,"UV(%f %f %f %f %f %f %f %f)",
+						&F[i].uv[0].x, &F[i].uv[0].y,
+						&F[i].uv[1].x, &F[i].uv[1].y,
+						&F[i].uv[2].x, &F[i].uv[2].y,
+						&F[i].uv[3].x, &F[i].uv[3].y
+				);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -1339,7 +1518,7 @@ void mqoReadObject(FILE *fp, MQO_OBJDATA *obj)
 =========================================================================*/
 
 void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT3f V[],
-				   glPOINT3f N[], double facet, glCOLOR4f *mcol, double scale, unsigned char alpha )
+		glPOINT3f N[], double facet, glCOLOR4f *mcol, double scale, unsigned char alpha )
 {
 	int f;
 	int i;
@@ -1590,7 +1769,7 @@ glPOINT3f * mqoVertexNormal(MQO_OBJDATA *obj)
 =========================================================================*/
 
 void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
-					glPOINT3f N[], MQO_MATDATA M[], int n_mat, double scale, unsigned char alpha)
+		glPOINT3f N[], MQO_MATDATA M[], int n_mat, double scale, unsigned char alpha)
 {
 
 	MQO_INNER_OBJECT		*setObj;
@@ -1712,7 +1891,7 @@ void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
 =========================================================================*/
 
 void mqoMakeObjectsEx( MQO_OBJECT *mqoobj, MQO_OBJDATA obj[], int n_obj, MQO_MATDATA M[],int n_mat,
-					   double scale,unsigned char alpha)
+		double scale,unsigned char alpha)
 {
 	int i;
 	glPOINT3f *N;
@@ -1768,7 +1947,7 @@ MQO_MODEL mqoCreateModel(char *filename, double scale)
 =========================================================================*/
 
 MQO_SEQUENCE mqoCreateSequenceEx(const char *format, int n_file, double scale,
-								 int fade_inout, unsigned char alpha)
+		int fade_inout, unsigned char alpha)
 {
 	MQO_SEQUENCE retSeq;
 	int iret;
@@ -1853,9 +2032,18 @@ void mqoCallModel(MQO_MODEL model)
 	glColor3f(1.0, 1.0, 1.0);
 	GLfloat material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, material);
+
 }
 
+void mqoCallModelRed(MQO_MODEL model)
+{
+	mqoCallListObjectRed(model, 0);
 
+	glColor3f(1.0, 1.0, 1.0);
+	GLfloat material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, material);
+
+}
 /*=========================================================================
 �y�֐��zmqoCallSequence
 �y�p�r�zMQO�V�[�P���X��OpenGL�̉�ʂɌĂяo��

@@ -126,9 +126,9 @@ int image_Load(const char *name){
 	if(name==NULL) return -1;
 	SDL_Surface *sss=IMG_Load(name);
 	if(sss==NULL){
-	printf("%sがありません",name);
-	exit(-1);
-	return -1;
+		printf("%sがありません",name);
+		exit(-1);
+		return -1;
 	}
 	GLfloat a[4];
 	GLuint imageNo=SDL_GL_LoadTexture(sss,a);
@@ -247,7 +247,7 @@ void img_DrawXY(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
-//	glDisable(GL_BLEND);//
+	//	glDisable(GL_BLEND);//
 }
 
 //自由に縦横幅
@@ -327,8 +327,8 @@ void image_Drawrota_C(int no,GLfloat CenterX,GLfloat CenterY,int rota){
 	img_Ori_Rota(no,CenterX,CenterY,rota);
 }
 
-void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
-	if(!enableNo(no))return;
+void rect_Draw2D(GLfloat x,GLfloat y,GLfloat w,GLfloat h){
+
 	//glColor3d(1.0,0.2,0.2);
 
 	//glPushMatrix();
@@ -347,24 +347,33 @@ void rect_Draw2D(int no,GLfloat x,GLfloat y,GLfloat w,GLfloat h){
 	glEnd();
 }
 
-void Circle2DFill(float radius,int x,int y)
+//たぶんdraw内では計算できてないんじゃ
+void GLFunc_Circle(double X,double Y,int radi,int div,double r,double g,double b,double a,int Fill)
 {
- for (float th1 = 0.0;  th1 <= 360.0;  th1 = th1 + 1.0)
- {
-  float th2 = th1 + 10.0;
-  float th1_rad = th1 / 180.0 * PI;
-  float th2_rad = th2 / 180.0 * PI;
+	glBindTexture(GL_TEXTURE_2D,0);
+	int i, n = div;						// 分割数n
+	double local_x, local_y, ra =radi;				// 円周上の座標(x,y)と半径r
 
-  float x1 = radius * cos(th1_rad);
-  float y1 = radius * sin(th1_rad);
-  float x2 = radius * cos(th2_rad);
-  float y2 = radius * sin(th2_rad);
 
-  glBegin(GL_TRIANGLES);
-   glVertex2f( x, y );
-   glVertex2f( x1+x, y1+y );
-   glVertex2f( x2+x, y2+y );
-  glEnd();
- }
+	if(Fill==1){
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(1, 0xACF3);
+		glBegin(GL_POLYGON);
+	}
+	else
+		glBegin(GL_LINE_LOOP);
+	// ポリゴンの頂点記述開始
+	glColor4f(r, g, b, a);  // 円の色(RGBA)
+	// 円周上の座標(x,y)を計算して円を描画
+	for (i = 0; i < n; i++) {
+		local_x = ra * cos(2.0 * 3.14 * ((double)i/n) );
+		local_y = ra * sin(2.0 * 3.14 * ((double)i/n) );
+		int newx=X+local_x,newy=Y+local_y;
+		glVertex2d(newx, newy);		// 頂点の座標
+	}
+	glEnd();							// 頂点の記述終了
+	glDisable(GL_LINE_STIPPLE);
+
+
 }
 

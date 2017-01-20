@@ -155,7 +155,7 @@ void CanvasUI::Draw() {
 	//自陣HP
 	glColor3d(1.0,0.2,0.2);//赤指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
-	rect_Draw2D(handle[11],10+shakeX,10+shakeY,280*(get_mapobj()->basehp[RedTeam]/get_mapobj()->basemaxhp[RedTeam]),60);//ゲージ描画
+	rect_Draw2D(10+shakeX,10+shakeY,280*(get_mapobj()->basehp[RedTeam]/get_mapobj()->basemaxhp[RedTeam]),60);//ゲージ描画
 	image_DrawExRota(handle[11],150+shakeX,50+shakeY,0,1);//背景
 
 	image_DrawExRota(handle[12],150+shakeX,50+shakeY,0,1);//ハイライト,質感
@@ -164,7 +164,7 @@ void CanvasUI::Draw() {
 	//敵陣HP
 	glColor3d(0.2,0.2,1.0);//青指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
-	rect_Draw2D(handle[9],1190-280*0.01*100*(get_mapobj()->basehp[BlueTeam]/get_mapobj()->basemaxhp[BlueTeam])+shakeX,
+	rect_Draw2D(1190-280*0.01*100*(get_mapobj()->basehp[BlueTeam]/get_mapobj()->basemaxhp[BlueTeam])+shakeX,
 			10+shakeY,280*0.01*100*(get_mapobj()->basehp[BlueTeam]/get_mapobj()->basemaxhp[BlueTeam])+shakeX,60);//ゲージ描画
 	image_DrawExRota(handle[10],1050+shakeX,50+shakeY,0,1);//背景
 
@@ -178,6 +178,7 @@ void CanvasUI::Draw() {
 
 	glColor3d(1.0*0.01*100*(1-get_player()->hp/get_player()->maxhp),1.0*0.01*100*get_player()->hp/get_player()->maxhp,0);//色指定
 
+	level=get_player()->level;
 	int number1,number10;
 	number1 = level%10;//ひとけため
 	number10 = (level/10)%10;//ふたけため
@@ -192,21 +193,21 @@ void CanvasUI::Draw() {
 
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
 
-rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*get_player()->hp/get_player()->maxhp,40);//ゲージ描画
+rect_Draw2D(210+shakeX,660+shakeY,260*get_player()->hp/get_player()->maxhp,40);//ゲージ描画
 	glColor3d(0.0,0.0,0.0);//黒指定
-	rect_Draw2D(handle[3],210+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	rect_Draw2D(210+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
 	image_DrawExRota(handle[4],320+shakeX,680+shakeY,0,1);//playerHP
 
 	glColor3d(0.3,0.5,1.0);
-	rect_Draw2D(handle[3],510+shakeX,660+shakeY,260*0.01*a,40);//ゲージ描画
+	rect_Draw2D(510+shakeX,660+shakeY,260*((float)(get_playerbullet().reloadmax-get_playerbullet().launchbulletcount)/(float)get_playerbullet().reloadmax),40);//ゲージ描画
 	glColor3d(0.1,0.1,0.1);//黒指定
-	rect_Draw2D(handle[3],510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
+	rect_Draw2D(510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
 	image_DrawExRota(handle[5],620+shakeX,680+shakeY,0,1);//bullet
 
 	glColor3d(0.1,0.8,0.5);
-	rect_Draw2D(handle[6],210+shakeX,640+shakeY,260*0.01*a,20);//ゲージ描画
+	rect_Draw2D(210+shakeX,640+shakeY,260*0.01*get_player()->exp,20);//ゲージ描画
 	glColor3d(0.1,0.1,0.1);
-	rect_Draw2D(handle[6],210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
+	rect_Draw2D(210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
 	image_DrawExRota(handle[6],320+shakeX,650+shakeY,0,1);
 
 	int i;
@@ -247,7 +248,7 @@ rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*get_player()->hp/get_player()->m
 
 		glColor3d(R,G,B);//青指定
 
-		rect_Draw2D(handle[14],850+(50*i)+shakeX,650+shakeY,34,34);//壁情報ランプ
+		rect_Draw2D(850+(50*i)+shakeX,650+shakeY,34,34);//壁情報ランプ
 	}
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
 

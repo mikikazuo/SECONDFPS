@@ -73,7 +73,7 @@ void mouseCounter(){
 	}
 }
 
-
+//マウスポインタの位置
 MousePosition get_mouseinfo() {
 	return mouseinfo;
 }

@@ -525,7 +525,7 @@ MQO_SEQUENCE mqoCreateSequenceEx(const char *format, int n_file, double scale,
 
 // ���f���Ăяo��
 void mqoCallModel(MQO_MODEL model);
-
+void mqoCallModelRed(MQO_MODEL model);
 // �V�[�P���X�Ăяo��
 void mqoCallSequence(MQO_SEQUENCE seq, int i);
 

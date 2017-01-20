@@ -14,6 +14,7 @@
 class Game : public BaseScene {
 
 public :
+
     Game(ISceneChanger* changer);
     void Initialize();			//初期化処理をオーバーライド。
     //void Finalize() override;		//終了処理をオーバーライド。
@@ -25,7 +26,7 @@ public :
     void DrawFinalize();
 
 };
-
+void set_myteam(Team myt);
 map *get_mapobj();
 Wall **get_allplayerwall();
 player *get_player();

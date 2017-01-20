@@ -35,7 +35,7 @@ int get_playerdata(S_CONTAINER sdata){
 	int i;
 	for(i=0;i<MAX_CLIENTS;i++){
 		if(i==get_player()->myid){
-			get_player()->delmove+=sdata.players[i].delmove;
+		get_player()->delmove+=sdata.players[i].delmove;
 			continue;
 		}
 		get_enemy()[i].myteam=sdata.players[i].myteam;
@@ -73,7 +73,7 @@ int get_MapData(S_CONTAINER sdata){
 }
 
 int get_MobData(S_CONTAINER sdata){
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MOBNUM;i++){
 		get_mober()[i].position=sdata.mob[i].position;
 		setMobSound(i,	get_mober()[i].position);
 		get_mober()[i].angles=sdata.mob[i].angles;

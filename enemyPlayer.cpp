@@ -16,7 +16,7 @@ enemyPlayer::enemyPlayer() {
 }
 
 void enemyPlayer::Initialize(){
-	enemybullet.bullet_Initialize(Crossbow);
+	enemybullet.bullet_Initialize();
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++){
 		mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
 		mywall[i].count=0;
@@ -32,7 +32,7 @@ void enemyPlayer::DrawInitialize(MQO_MODEL setmodel){
 
 	enemymodel=setmodel;
 
-	enemybullet.bullet_DrawInitialize();
+	enemybullet.bullet_DrawInitialize(Crossbow);
 }
 
 void enemyPlayer::Draw() {

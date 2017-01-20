@@ -24,37 +24,35 @@ bullet::bullet() {
 		bullet_info[i].count=0;
 	lifetime=3;
 }
-void bullet::bullet_Initialize(Role setbulletmode){
+void bullet::bullet_Initialize(){
 	bulletradi=0.01f;
 
 	for(int i=0;i<MAXBULLET;i++)
 		bullet_info[i].count=0;
 	launchbulletcount=0;
 	reloadtime=0;
-	mode=setbulletmode;
+
 
 
 	lifetime=3;
 
 
-	switch(setbulletmode){
+	switch(mode){
 	case Crossbow:
 		reloadmax=5;
 		speed=50;
-
-
 		break;
 	case Rifle:
 		reloadmax=10;
 		speed=50;
 		break;
 	case Gatling:
-		reloadmax=150;
-		speed=8;
+		reloadmax=100;
+		speed=20;
 		break;
 	case Spear:
 		reloadmax=1;
-		speed=5;
+		speed=40;
 		break;
 	case Magicstick:
 		reloadmax=20;
@@ -74,32 +72,38 @@ void bullet::bullet_Initialize(Role setbulletmode){
 
 }
 
-void bullet::bullet_DrawInitialize(){
+void bullet::bullet_DrawInitialize(Role setbulletmode){
 	char *flname=(char*)"Data/charamodel/char1/char1_tama.mqo";
 
 
+	mode=setbulletmode;
 	switch(mode){
 	case Crossbow:
+		flname=(char*)"Data/charamodel/char1/char1_tama.mqo";
 		bulletmodel=mqoCreateModel(flname,0.01);
-
 		break;
 	case Rifle:
-
+		flname=(char*)"Data/charamodel/char2/char2_tama.mqo";
+		bulletmodel=mqoCreateModel(flname,0.005);
 		break;
 	case Gatling:
-
+		flname=(char*)"Data/charamodel/char2/char2_tama.mqo";
+		bulletmodel=mqoCreateModel(flname,0.002);
 		break;
 	case Spear:
-
+		flname=(char*)"Data/charamodel/char4/char4_tama.mqo";
+		bulletmodel=mqoCreateModel(flname,0.01);
 		break;
 	case Magicstick:
-
+		flname=(char*)"Data/charamodel/char5/char5_tama.mqo";
+		bulletmodel=mqoCreateModel(flname,0.01);
 		break;
 	case Magic:
-
+		flname=(char*)"Data/charamodel/char6/char6_tama.mqo";
+		bulletmodel=mqoCreateModel(flname,0.01);
 		break;
 	case Mob:
-
+		bulletmodel=mqoCreateModel(flname,0.01);
 		break;
 	default:
 		break;
@@ -286,8 +290,19 @@ void bullet::PlayerToMob(){
 				if(get_mober()[i].hp>0)
 					if(	bulletmovechecker.pointVsPoint(get_mober()[i].position,  bullet_info[j].position,1)){
 						get_mober()[i].serverminushp+=get_player()->atk;
-						if(get_mober()[i].hp-get_player()->atk<=0)
+						//あてるだけで手に入るexp
+						get_player()->exp+=10;
+						get_mober()[i].hitred++;
+
+						if(get_mober()[i].hp-get_player()->atk<=0){
 							printf("dead mob!!\n");
+							get_player()->exp+=GETEXP;
+
+
+						}
+						if(get_player()->exp+GETEXP>=100)
+							get_player()->level+=(get_player()->exp/100);
+						get_player()->exp%=100;
 						bullet_info[j].count=0;
 						break;
 					}
@@ -335,6 +350,7 @@ void bullet::Update(){
 				bullet_info[i].dir.y-=0.01f;
 				move_delta.y=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.y;
 				move_delta.z=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.z;
+				bullet_info[i].angles.y-=0.1f;
 				break;
 			case Magicstick:
 				move_delta.x=get_mainfps().fps_getDeltaTime()* movespeed*bullet_info[i].dir.x;

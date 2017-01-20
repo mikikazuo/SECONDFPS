@@ -43,6 +43,7 @@ class map {
 private:
 	int handle[50];
 public:
+
 	float basehp[NoneTeam];
 	float basemaxhp[NoneTeam];
 	int baseno[NoneTeam][BASENUM];			//object配列の何番目が拠点かどうかを保存

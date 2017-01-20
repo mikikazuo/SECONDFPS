@@ -227,14 +227,8 @@ void object::make_cuboid(float width,float height,float depth)
 }
 
 void object::Draw(){
-
-
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
-
-
-
-
 
 	glPushMatrix();
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
@@ -289,6 +283,77 @@ void object::Draw(){
 	glColor3d(1.0, 1.0, 1.0);
 }
 
+void object::DrawWire(vec3 position,vec3 size,vec3 rota){
+
+	float width=size.x;
+	float height=size.y;
+	float depth=size.z;
+
+	glPushMatrix();
+	glTranslatef(position.x,position.y,position.z);
+	glRotated(rota.x,1,0,0);
+	glRotated(rota.y,0,1,0);
+	glRotated(rota.z,0,0,1);
+
+	glLineWidth(10);
+    glColor3d(1.0, 1.0, 1.0);
+
+	//前
+	//法線も回転してる
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(0,0,1);
+	glVertex3f(width/2,height/2,depth/2);
+	glVertex3f(-width/2,height/2,depth/2);
+	glVertex3f(-width/2,-height/2,depth/2);
+	glVertex3f(width/2,-height/2,depth/2);
+	glEnd();
+
+	//右
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(1,0,0);
+	glVertex3f(width/2,height/2,-depth/2);
+	glVertex3f(width/2,height/2,depth/2);
+	glVertex3f(width/2,-height/2,depth/2);
+	glVertex3f(width/2,-height/2,-depth/2);
+	glEnd();
+
+	//左
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(-1,0,0);
+	glVertex3f(-width/2,height/2,depth/2);
+	glVertex3f(-width/2,height/2,-depth/2);
+	glVertex3f(-width/2,-height/2,-depth/2);
+	glVertex3f(-width/2,-height/2,depth/2);
+	glEnd();
+
+	//後
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(0,0,-1);
+	glVertex3f(-width/2,height/2,-depth/2);
+	glVertex3f(width/2,height/2,-depth/2);
+	glVertex3f(width/2,-height/2,-depth/2);
+	glVertex3f(-width/2,-height/2,-depth/2);
+	glEnd();
+
+	//上
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(0,1,0);
+	glVertex3f(width/2,height/2,-depth/2);
+	glVertex3f(-width/2,height/2,-depth/2);
+	glVertex3f(-width/2,height/2,depth/2);
+	glVertex3f(width/2,height/2,depth/2);
+	glEnd();
+	//下
+	glBegin(GL_LINE_LOOP);
+	glNormal3f(0,-1,0);
+	glVertex3f(width/2,-height/2,depth/2);
+	glVertex3f(-width/2,-height/2,depth/2);
+	glVertex3f(-width/2,-height/2,-depth/2);
+	glVertex3f(width/2,-height/2,-depth/2);
+	glEnd();
+	glPopMatrix();
+}
+
 //移動
 void object::move(float x,float y,float z){
 
@@ -299,33 +364,33 @@ void object::move(float x,float y,float z){
 	uppos.y+=1;
 	object ownup(uppos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
-//	vec3 underpos=this->m_Pos;
-//	underpos.y-=1;
-//	object ownunder(underpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 rightpos=this->m_Pos;
-//	rightpos.x+=1;
-//	object ownright(rightpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 leftpos=this->m_Pos;
-//	leftpos.x-=1;
-//	object ownleft(leftpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 forwardpos=this->m_Pos;
-//	forwardpos.z+=1;
-//	object ownforward(forwardpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 backpos=this->m_Pos;
-//	forwardpos.z-=1;
-//	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//	vec3 underpos=this->m_Pos;
+	//	underpos.y-=1;
+	//	object ownunder(underpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 rightpos=this->m_Pos;
+	//	rightpos.x+=1;
+	//	object ownright(rightpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 leftpos=this->m_Pos;
+	//	leftpos.x-=1;
+	//	object ownleft(leftpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 forwardpos=this->m_Pos;
+	//	forwardpos.z+=1;
+	//	object ownforward(forwardpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 backpos=this->m_Pos;
+	//	forwardpos.z-=1;
+	//	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
 
 
-		if(player.LenOBBToPoint(ownup,get_player()->playerfoot_collider)<=1){
-			get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
-			get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
-			get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();
-		}
+	if(player.LenOBBToPoint(ownup,get_player()->playerfoot_collider)<=1){
+		get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
+		get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
+		get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();
+	}
 
 
 
@@ -397,7 +462,7 @@ void object::x_side_move(float speed,float left,float right,int dir){
 
 	//進行方向方向を管理
 	if((x_dir == 1 && temp.x + rad.x/2 >= right) || (x_dir == -1 && temp.x + rad.x/2 <= left)){
-	//if((x_dir == 1 && rad.x/2 >= right) || (x_dir == -1 && rad.x/2 <= left)){
+		//if((x_dir == 1 && rad.x/2 >= right) || (x_dir == -1 && rad.x/2 <= left)){
 		x_dir *= -1;
 	}
 
@@ -420,7 +485,7 @@ void object::z_side_move(float speed,float left,float right,int dir){
 
 	//進行方向方向を管理
 	if((z_dir == 1 && temp.z + rad.z/2 >= right) || (z_dir == -1 && temp.z + rad.z/2 <= left)){
-	//if((z_dir == 1 && rad.z/2 >= right) || (z_dir == -1 && rad.z/2 <= left)){
+		//if((z_dir == 1 && rad.z/2 >= right) || (z_dir == -1 && rad.z/2 <= left)){
 		z_dir *= -1;
 	}
 
@@ -444,7 +509,7 @@ void object::y_ud_move(float speed,float down,float up,int dir){
 
 	//オブジェクトの上面で方向を管理
 	if((y_dir == 1 && temp.y + rad.y/2 >= up) || (y_dir == -1 && temp.y + rad.y/2 <= down)){
-			y_dir *= -1;
+		y_dir *= -1;
 	}
 
 	//オブジェクトの中心で方向を管理(不要)

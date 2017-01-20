@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <AL/al.h>
 #include <AL/alure.h>
-
+#include "net_common.h"
 
 #define MAXSE 20
 
@@ -20,7 +20,7 @@ static ALuint se_buf[MAXSE];
 static int se_now;
 
 
-ALuint mobsources[10];
+ALuint mobsources[MOBNUM];
 
 void setMobSound(int no,vec3 pos){
     alSource3f(mobsources[no], AL_POSITION,pos.x,pos.y,pos.z );
@@ -46,7 +46,7 @@ void SoundInit() {
 		alGenSources(1, &se_src[i]);
 	}
 
-	 alGenSources(10, mobsources); //空間に配置する数の分生成する.
+	 alGenSources(MOBNUM, mobsources); //空間に配置する数の分生成する.
 
 	//音量の設定
 	alSourcef(bgm_src, AL_GAIN, 1);

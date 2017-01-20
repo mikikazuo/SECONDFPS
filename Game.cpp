@@ -33,7 +33,7 @@ mob mober[10];
 
 CanvasUI gamecanvas;
 map mapobj;
-
+Team myteam;
 
 
 
@@ -50,6 +50,9 @@ GLfloat specular[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat shininess = 65.0;
 
 
+void set_myteam(Team myt){
+	myteam=myt;
+}
 void Game::setInfoPlayerWall(){
 
 	for(int i=1;i<PLAYERNUM;i++)
@@ -65,7 +68,7 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
-	player1.Initialize(vec3(30,10,-10),1,Rifle,(*get_argc()==2)?RedTeam:BlueTeam);
+	player1.Initialize(vec3(30,10,-10),1,myteam);//(*get_argc()==2)?RedTeam:BlueTeam);
 	chara.Initialize();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -84,7 +87,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Rifle);
+	player1.DrawInitialize(Magic);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
@@ -180,7 +183,10 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 //描画
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
+
+
 	player1.Draw();
+
 	for(int i=0;i<MAX_CLIENTS;i++){
 		if(get_player()->myid==i)
 			continue;
@@ -192,8 +198,7 @@ void Game::Draw(){
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+
 	glPushMatrix();
 
 

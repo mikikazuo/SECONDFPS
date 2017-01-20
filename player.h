@@ -62,6 +62,8 @@ public:
 	float minushp;
 
 	Team myteam;
+	int level;
+	int exp;
 
 	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;
@@ -73,7 +75,7 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,Role setrole,Team setteam);
+	void Initialize(vec3 pos,float ra,Team setteam);
 	void DrawInitialize(Role setrole);
 	void DrawFinalize();
 	void Draw();
@@ -82,14 +84,17 @@ public:
 	void set_wall();
 	void remove_wall();
 	void DrawMyWall();
+	void DrawMyWallWire();
 	void MouseMove();
 	void launchBullet();
 	void Action();
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
+
 	virtual ~player();
 
 };
 bullet get_playerbullet();
+void set_mousespeed(float set);
 
 #endif /* PLAYER_H_ */

@@ -41,9 +41,11 @@ int wallhandle;
 
 
 bullet playerbullet;
-
+object mywire;
+bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
 
+float mousespeed = 0.1f;
 ///ここから//////
 //#include <opencv/cv.h>
 //#if defined(WIN32)
@@ -157,17 +159,20 @@ player::player() {
 
 }
 
-void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
+void player::Initialize(vec3 pos,float ra,Team setteam){
 
-
-	myrole=setrole;
-	playerbullet.bullet_Initialize(setrole);
-	switch(setrole){
+	level=0;
+	exp=0;
+	playerbullet.bullet_Initialize();
+	atktime=60;
+	switch(myrole){
 	case Crossbow:
 		break;
 	case Rifle:
 		break;
 	case Gatling:
+		atktime=5;
+		break;
 	case Spear:
 		break;
 	case Magicstick:
@@ -181,8 +186,8 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 	position=pos;
 	speed=7;
 	hp=maxhp=100;
-	atk=50;
-	atktime=60;
+	atk=10;
+
 	atkok=true;
 
 
@@ -200,13 +205,14 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 
 }
 void player::DrawInitialize(Role setrole){
-	playerbullet.bullet_DrawInitialize();
+	playerbullet.bullet_DrawInitialize(setrole);
 
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 	char *flname;
-	switch(setrole){
+	myrole=setrole;
+	switch(myrole){
 	case Crossbow:
 		flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
@@ -216,19 +222,19 @@ void player::DrawInitialize(Role setrole){
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Gatling:
-		flname=(char*)"Data/charamodel/char3/一人称/char3_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Spear:
-		flname=(char*)"Data/charamodel/char4/一人称/char4_firstside_defalt.mqo";
+		flname=(char*)"Data/charamodel/char4/char4_firstside_shoot.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Magicstick:
-		flname=(char*)"Data/charamodel/char5/一人称/char5_firstside_shoot.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
+		handmodel=mqoCreateModel(flname,0.001);
 		break;
 	case Magic:
-		flname=(char*)"Data/charamodel/char6/一人称/char6_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char6/char6_firstside_shoot.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	default:
@@ -289,18 +295,19 @@ void player::Draw(){
 
 	playerbullet.Draw();
 	DrawMyWall();
-
+	DrawMyWallWire();
 }
 
 void player::Update(){
+	//atk=level*10+10;
+	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
 	playerbullet.PlayerToEnemy();
 
 	launchBullet();
-	if(myteam==RedTeam){
+	if(myteam==RedTeam)
 		playerbullet.HitObj(BlueTeam,atk);
-	}
 	else
 		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
@@ -311,8 +318,8 @@ void player::Update(){
 	remove_wall();
 	static vec3 nowdel;
 	nowdel=get_player()->delmove;
-	get_player()->position+=nowdel*get_mainfps().fps_getDeltaTime();
-
+	get_player()->position+=nowdel;
+	get_player()->delmove=vec3(0,0,0);
 
 	if(key_getmove(Test)==3)
 		testcursol=!testcursol;
@@ -707,7 +714,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 }
 void player::set_wall(){
-	if(key_getmove(Setwall)==2)
+	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2)
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 
@@ -733,6 +740,14 @@ void player::DrawMyWall(){
 		if(mywall[i].count>0)
 			mywall[i].wall.Draw();
 }
+
+void player::DrawMyWallWire(){
+	if(key_getmove(Setwall)==2)
+		drawmywire=!drawmywire;
+	if(drawmywire)
+	mywire.DrawWire(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
+}
+
 int thread(void *data){
 
 
@@ -759,7 +774,7 @@ int thread(void *data){
 
 
 			//このあたいで初期視野に影響あり
-			const float mousespeed = 0.1f;
+
 
 			info->angles.x -= info->dx * mousespeed*get_mainfps().fps_getDeltaTime();
 			info->angles.y -= info->dy * mousespeed*get_mainfps().fps_getDeltaTime();
@@ -847,5 +862,9 @@ bullet get_playerbullet(){
 
 player::~player() {
 	// TODO Auto-generated destructor stub
+}
+
+void set_mousespeed(float set){
+	mousespeed=set;
 }
 
