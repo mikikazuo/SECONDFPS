@@ -4,7 +4,7 @@
 
 
 Request_flag stop_flag=STOP_REQUEST_OFF;
-eScene mNextScene;    //次のシーン管理変数
+eScene mNextScene=eScene_None;    //次のシーン管理変数
 
 Request_flag SceneMgr::get_stop_falag(){
 	return stop_flag;
@@ -16,12 +16,12 @@ void SceneMgr::get_stop_falag(Request_flag next){
 SceneMgr::SceneMgr() //:
 		//mNextScene(eScene_None) //次のシーン管理変数
 {
+
 	mScene = (BaseScene*) new Start(this);
 }
 
 //初期化
 void SceneMgr::Initialize(){
-
 	mScene->Initialize();
 
 }

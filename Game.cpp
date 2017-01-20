@@ -63,7 +63,7 @@ void Game::setInfoPlayerWall(){
 
 //初期化
 void Game::Initialize(){
-
+	glutSetCursor(GLUT_CURSOR_NONE);
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
@@ -87,13 +87,13 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Magic);
+	player1.DrawInitialize(Magicstick);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
-	flname=(char*)"Data/charamodel/char2/一人称/char2_firstside_shoot.mqo";
+	flname=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
 	mqomodel[1]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 	mqomodel[2]=mqoCreateModel(flname,0.0035);
@@ -183,7 +183,6 @@ void Square2D(int x1,int y1,int x2, int y2,float size){
 //描画
 void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
-
 
 	player1.Draw();
 

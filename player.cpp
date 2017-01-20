@@ -44,7 +44,7 @@ bullet playerbullet;
 object mywire;
 bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
-
+static int wallsetting;
 float mousespeed = 0.1f;
 ///ここから//////
 //#include <opencv/cv.h>
@@ -299,7 +299,6 @@ void player::Draw(){
 }
 
 void player::Update(){
-	//atk=level*10+10;
 	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
@@ -329,6 +328,10 @@ void player::Update(){
 //プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
+
+
+
+
 	const float movespeed = speed;
 
 
@@ -344,16 +347,16 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	vec3 sampposition;
 	sampposition=position;
-
-	if(key_getmove(Left))
-		sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Right) )
-		sampposition += right_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Forward))
-		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Backward))
-		sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-
+	if(wallsetting==0){
+		if(key_getmove(Left))
+			sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Right) )
+			sampposition += right_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Forward))
+			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Backward))
+			sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+	}
 	playerfoot_collider=position;
 	playerfoot_collider.y-=0.7;
 
@@ -714,14 +717,27 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 }
 void player::set_wall(){
-	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2)
+	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
+		for(int i=0;i<WALLMAX;i++)
+			if(mywall[i].count==0){
+				wallsetting++;
+				break;
+			}
+
+
+	}
+	if(wallsetting>0)
+		wallsetting++;
+	if(wallsetting>60*2){
+		wallsetting=0;
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 
-				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
+				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
 				mywall[i].count++;
 				break;
 			}
+	}
 
 
 
@@ -745,11 +761,10 @@ void player::DrawMyWallWire(){
 	if(key_getmove(Setwall)==2)
 		drawmywire=!drawmywire;
 	if(drawmywire)
-	mywire.DrawWire(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
+		mywire.DrawWire(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
 }
 
 int thread(void *data){
-
 
 	player *info=(player*)data;
 	while(1){
@@ -757,6 +772,9 @@ int thread(void *data){
 		if(testcursol){
 
 		}
+
+		if(wallsetting>0)
+			glutWarpPointer(1200 / 2, 700 / 2);
 
 		else if(!wrap) {
 			float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
@@ -854,6 +872,14 @@ void player::launchBullet(){
 
 	//	playerbullet.Update();
 }
+
+////死亡から復活まで
+//void player::dead(){
+//	static int deadcount;
+//	deadcount++;
+//
+//}
+
 //TODO
 //ポインタなし？
 bullet get_playerbullet(){
