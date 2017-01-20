@@ -224,6 +224,9 @@ object obj[]={
 		//横壁 89
 		,object(vec3(-29.5,99999992,-42.75),vec3(0.1,4,4.95),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
+		//真ん中床 90
+		,object(vec3(0,0.005,0),vec3(39,0.005,39),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
 		//天空足場の壁
 		//前
 		//,object(vec3(7,23.5,0),vec3(1,5,15),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -527,6 +530,8 @@ void map::DrawInitialize(){
 	obj[60].set_imgno(handle[4],100);
 	obj[61].set_imgno(handle[4],100);
 
+	//中央広場の床
+	obj[90].set_imgno(handle[4],100);
 
 	//左右壁
 	obj[47].set_imgno(handle[5],100);
