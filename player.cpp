@@ -366,7 +366,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	vec3 player_collider_down = player_collider;
 	player_collider_down.y +=  mapobject[hitnum].speed.y * get_mainfps().fps_getDeltaTime();
-	int down = 0;
+	//int down = 0;
 
 	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
 	mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
@@ -379,7 +379,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
 		printf("衝突処理 分岐1:ノーマル\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-		down = 0;
+		//down = 0;
 	}
 
 	//オブジェクト降下時
@@ -388,7 +388,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 					&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider_down) <= radi){
 		printf("衝突処理 分岐2:オブジェクト降下\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-		down = 1;
+		//down = 1;
 	}
 
 	//LenOBBToPoint_moveのy座標1下げ
@@ -398,7 +398,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 				&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
 		printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-		down = 0;
+		//down = 0;
 	}
 
 	//動作確認
