@@ -3,7 +3,6 @@
 #include "GL/glut.h"
 #include "glm.h"
 
-
 static int move = 0;
 static int keycount[none];
 void key_Update(){

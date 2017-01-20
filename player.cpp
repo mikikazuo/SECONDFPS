@@ -530,9 +530,6 @@ void player::set_wall(){
 				mywall[i].count++;
 				break;
 			}
-
-
-
 }
 void player::remove_wall(){
 	if(key_getmove(Removewall)==2)

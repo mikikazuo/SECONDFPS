@@ -61,8 +61,11 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 	player1.Initialize(vec3(30,10,-10),1,100,100);
-	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
+	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
 		mober[i].Initialize(i,vec3(-10,1,-5),1,100,10,20);
+	}
+	//プレイヤーの壁情報初期化
+	player1.wall = 0;
 }
 
 void Game::DrawInitialize(){
@@ -97,6 +100,7 @@ void Game::Update(){
 	//追加??
 	//キャラクターの座標表示
 	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+	printf("wall = %d\n",player1.wall);
 
 	player1.Update();
 	gamecanvas.Update();

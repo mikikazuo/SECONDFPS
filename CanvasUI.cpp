@@ -9,6 +9,8 @@
 #include "GL/glut.h"
 #include "image.h"
 
+#include "player.h"
+
 CanvasUI::CanvasUI() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -26,6 +28,9 @@ void CanvasUI::Initialize(){
 	shakeX = 0;
 	shakeY = 0;
 	level = 0;
+
+	progress_time = 0;
+	progress_per  = 30;
 
 	int i;
 	for(i=0;i<5;i++){
@@ -71,6 +76,9 @@ void CanvasUI::DrawInitialize(){
 	handle[40]=image_Load("Data/image/num/Lv.png");
 
 	handle[41]=image_Load("Data/image/sousa.png");
+
+	//壁進捗バー
+	handle[42]=image_Load("Data/image/wall_progress_bar.png");
 }
 
 
@@ -126,6 +134,35 @@ void CanvasUI::Update() {
 		shakeX = 0;
 		shakeY = 0;
 	}
+
+	//if(壁設置に入った時)
+		//progress_time = 0;
+
+	progress_time++;
+
+	//壁設置中の時
+	//if(player1.wall == 1){
+		if(progress_time >= WALL_SET){
+			progress_time = 0;
+			progress_per  = 0;
+		}
+	//}
+	//else if(player1.wall == 2){
+		/*if(progress_time >= WALL_DELETE){
+			progress_time = 0;
+			progress_per  = 0;
+		}*/
+	//}
+
+	progress_per = progress_time / WALL_SET;
+
+	//if(player1.wall == 2){
+		//progress_per = 1 - progress_per;
+	//}
+
+	//動作確認
+	printf("time = %lf per = %lf\n",progress_time,progress_per);
+
 }
 
 
@@ -219,6 +256,23 @@ void CanvasUI::Draw() {
 
 
 	image_DrawExRota(handle[41],105,540,0,1.0);//Blue
+
+	/***壁設置・除去進捗バー***/
+	//壁設置中
+	glColor3d(0.486,1.0,0.333);	//緑指定
+	rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
+
+	//壁除去中
+	//glColor3d(1.0,0.2,0.263);		//赤指定
+	//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
+	//rect_Draw2D(handle[42],770 + shakeX - (260 * progress_per),640+shakeY,260 * progress_per,20); //(不要)
+
+	glColor3d(0.0,0.0,0.0);		//黒指定
+	rect_Draw2D(handle[42],510+shakeX,640+shakeY,260,20); //裏ゲージ
+
+	//進捗バーの枠表示
+	//画像番号，中心の座標(x,y),回転(そのままなら0)，大きさ(等倍なら1)
+	image_DrawExRota(handle[42],620+shakeX,650+shakeY,0,1);	//進捗バー枠
 
 }
 

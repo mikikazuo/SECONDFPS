@@ -36,6 +36,7 @@ public:
 	float dx,dy;	//??
 	int atk;		//攻撃力
 	int radi;		//当たり判定の半径
+	int wall;		//壁操作の状況(0:ノーマル，1:設置中,2:除去中)
 
 	//プレイヤーの頭のあたり判定で使用
 	vec3 playerhead_collider;
