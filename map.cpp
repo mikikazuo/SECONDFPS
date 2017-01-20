@@ -448,9 +448,9 @@ void map::DrawInitialize(){
 	obj[20].set_imgno(handle[1],100);
 
 	//中央柱
-	obj[21].set_imgno(handle[1],100);
+	obj[21].set_imgno(handle[4],100);
 	//天空足場
-	obj[22].set_imgno(handle[1],100);
+	obj[22].set_imgno(handle[4],100);
 	//螺旋階段
 	obj[23].set_imgno(handle[3],100);
 	obj[24].set_imgno(handle[3],100);
@@ -463,7 +463,7 @@ void map::DrawInitialize(){
 	obj[31].set_imgno(handle[3],100);
 	obj[32].set_imgno(handle[3],100);
 
-	obj[33].set_imgno(handle[1],100);
+	obj[33].set_imgno(handle[4],100);
 
 	//天空足場へのエレベーター
 	obj[34].set_imgno(handle[3],100);
@@ -509,12 +509,12 @@ void map::DrawInitialize(){
 	obj[89].set_imgno(handle[9],100);
 
 	//中央広場の壁
-	obj[41].set_imgno(handle[10],100);
-	obj[42].set_imgno(handle[10],100);
-	obj[43].set_imgno(handle[10],100);
-	obj[44].set_imgno(handle[10],100);
-	obj[45].set_imgno(handle[10],100);
-	obj[46].set_imgno(handle[10],100);
+	obj[41].set_imgno(handle[4],100);
+	obj[42].set_imgno(handle[4],100);
+	obj[43].set_imgno(handle[4],100);
+	obj[44].set_imgno(handle[4],100);
+	obj[45].set_imgno(handle[4],100);
+	obj[46].set_imgno(handle[4],100);
 
 
 	//柱群
@@ -526,6 +526,11 @@ void map::DrawInitialize(){
 	obj[59].set_imgno(handle[4],100);
 	obj[60].set_imgno(handle[4],100);
 	obj[61].set_imgno(handle[4],100);
+
+
+	//左右壁
+	obj[47].set_imgno(handle[5],100);
+	obj[48].set_imgno(handle[5],100);
 
 	//天井
 	obj[62].set_imgno(handle[6],10);
