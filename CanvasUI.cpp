@@ -275,7 +275,7 @@ rect_Draw2D(handle[3],210+shakeX,660+shakeY,260*get_player()->hp/get_player()->m
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
 
 
-	image_DrawExRota(handle[41],105,540,0,1.0);//Blue
+	image_DrawExRota(handle[41],105,520,0,1.0);//操作方法
 
 }
 
