@@ -95,9 +95,9 @@ object obj[]={
 		//天空足場へ登るエレベーター 34
 
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
-		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		//,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
 		,object(vec3(15,99999991,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -488,7 +488,7 @@ void map::DrawInitialize(){
 	obj[7].set_imgno(handle[1],100);
 
 	//壁
-	obj[9].set_imgno(handle[2],50);
+	obj[9].set_imgno(handle[3],50);
 	obj[10].set_imgno(handle[2],50);
 	obj[11].set_imgno(handle[2],50);
 	obj[12].set_imgno(handle[2],50);
