@@ -8,8 +8,10 @@
 #ifndef CANVASUI_H_
 #define CANVASUI_H_
 
-#define WALL_SET 300
-#define WALL_DELETE 600
+//単位は1/60秒
+#define WALL_SET 		300		//壁の設置にかかる時間
+#define WALL_DELETE 	600		//壁の除去にかかる時間
+#define RESPAWN_TIME	900		//死亡してからリスポーンするまでの待機時間
 
 class CanvasUI {
 private:

@@ -80,8 +80,12 @@ void CanvasUI::DrawInitialize(){
 
 	handle[41]=image_Load("Data/image/sousa.png");
 
-	//壁進捗バー
+	//壁進捗バー枠
 	handle[42]=image_Load("Data/image/wall_progress_bar.png");
+	//リスポーン進捗バー枠
+	handle[43]=image_Load("Data/image/message.png");
+	//死亡画面エフェクト画像
+	handle[44]=image_Load("Data/image/dead_screen1.png");
 }
 
 
@@ -145,27 +149,28 @@ void CanvasUI::Update() {
 
 	//壁設置中の時
 	//if(player1.wall == 1){
-		/*if(progress_time >= WALL_SET){
+		if(progress_time >= WALL_SET){
 			progress_time = 0;
 			progress_per  = 0;
 			set = 1;
-		}*/
+		}
 	//}
 	//else if(player1.wall == 2){
-		if(progress_time >= WALL_DELETE){
+		/*if(progress_time >= WALL_DELETE){
 			progress_time = 0;
 			progress_per  = 0;
 			del = 1;
-		}
+		}*/
 	//}
 
-	//progress_per = progress_time / WALL_SET;
-	progress_per = progress_time / WALL_DELETE;
+		/*if(progress_time >= RESPAWN_TIME){
+					progress_time = 0;
+					progress_per  = 0;
+		}*/
 
-	//壁除去のとき(右から左に減少させるために1から進捗率を引いている)
-	//if(player1.wall == 2){
-		progress_per = 1 - progress_per;
-	//}
+	progress_per = progress_time / WALL_SET;					//壁設置のとき
+	//progress_per = 1 - (progress_time / WALL_DELETE);			//壁除去のとき(右から左に減少させるために1から進捗率を引いている)
+	//progress_per = progress_time / RESPAWN_TIME;				//リスポーン待機のとき
 
 	//動作確認
 	printf("time = %lf per = %lf\n",progress_time,progress_per);
@@ -266,12 +271,12 @@ void CanvasUI::Draw() {
 
 	/***壁設置・除去進捗バー***/
 	//壁設置中
-	//glColor3d(0.486,1.0,0.333);	//緑指定
-	//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
+	glColor3d(0.486,1.0,0.333);	//緑指定
+	rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
 
 	//壁除去中
-	glColor3d(1.0,0.2,0.263);		//赤指定
-	rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
+	//glColor3d(1.0,0.2,0.263);		//赤指定
+	//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
 	//rect_Draw2D(handle[42],770 + shakeX - (260 * progress_per),640+shakeY,260 * progress_per,20); //(不要)
 
 	glColor3d(0.0,0.0,0.0);		//黒指定
@@ -281,6 +286,16 @@ void CanvasUI::Draw() {
 	//画像番号，中心の座標(x,y),回転(そのままなら0)，大きさ(等倍なら1)
 	image_DrawExRota(handle[42],620+shakeX,650+shakeY,0,1);	//進捗バー枠
 
+	/***リスポーン待機関連***/
+	//リスポーン進捗バー
+	//glColor3d(0.486,1.0,0.333);		//緑指定(不要)
+	glColor3d(0.444,1.0,0.64);			//緑指定
+	rect_Draw2D(handle[42],380,230,440 * progress_per,70); //進捗バー
+	glColor3d(1.0,0.302,0.302);		//赤指定
+	rect_Draw2D(handle[42],380,230,440,70); 	//裏ゲージ
+	image_DrawExRota(handle[43],600,250,0,0.5);	//枠
+
+	image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)の画面を黒くさせるために用いる画像
 }
 
 
