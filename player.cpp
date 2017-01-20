@@ -214,19 +214,19 @@ void player::DrawInitialize(Role setrole){
 	myrole=setrole;
 	switch(myrole){
 	case Crossbow:
-		flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+		flname=(char*)"Data/charamodel/char1/char1_firstside_reload.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Rifle:
-		flname=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Gatling:
-		flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char3/char3_firstside_defalt.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Spear:
-		flname=(char*)"Data/charamodel/char4/char4_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	case Magicstick:
@@ -234,7 +234,7 @@ void player::DrawInitialize(Role setrole){
 		handmodel=mqoCreateModel(flname,0.001);
 		break;
 	case Magic:
-		flname=(char*)"Data/charamodel/char6/char6_firstside_shoot.mqo";
+		flname=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
 		handmodel=mqoCreateModel(flname,0.0035);
 		break;
 	default:
