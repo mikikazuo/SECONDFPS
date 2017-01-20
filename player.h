@@ -36,6 +36,13 @@ typedef enum{
 	nonemode
 }Role;
 
+typedef enum{
+	defaultmodel,
+	shootmodel,
+	shootedmodel,
+	reloadmodel,
+	nonemodel
+}Poze;
 
 class player
 {
@@ -46,6 +53,7 @@ private:
 	int speed;
 	double pers;
 	Role myrole;
+	Poze nowpoze;
 public:
 
 	int myid;    //my server id

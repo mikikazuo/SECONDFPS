@@ -17,7 +17,7 @@ SceneMgr::SceneMgr() //:
 		//mNextScene(eScene_None) //次のシーン管理変数
 {
 
-	mScene = (BaseScene*) new Start(this);
+	mScene = (BaseScene*) new Game(this);
 }
 
 //初期化

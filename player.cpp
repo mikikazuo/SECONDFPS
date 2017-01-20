@@ -45,6 +45,7 @@ object mywire;
 bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
 static int wallsetting;
+static int modelcount;
 float mousespeed = 0.1f;
 ///ここから//////
 //#include <opencv/cv.h>
@@ -133,6 +134,7 @@ float mousespeed = 0.1f;
 //////////////////////////////////
 #define LOOK_DISTANT 1200           //見える距離
 
+
 checkObjectHit movechecker;
 
 //static GLfloat ground[][4] = {
@@ -145,7 +147,7 @@ GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納す
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
 double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
 
-MQO_MODEL handmodel;
+MQO_MODEL handmodel[nonemodel];
 
 Wall *player::get_mywall(){
 	return mywall;
@@ -210,37 +212,32 @@ void player::DrawInitialize(Role setrole){
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
-	char *flname;
+	char *flname[nonemodel];
 	myrole=setrole;
 	switch(myrole){
 	case Crossbow:
-		flname=(char*)"Data/charamodel/char1/char1_firstside_reload.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char1/char1_firstside_defalt.mqo";
 		break;
 	case Rifle:
-		flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 		break;
 	case Gatling:
-		flname=(char*)"Data/charamodel/char3/char3_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char3/char3_firstside_defalt.mqo";
 		break;
 	case Spear:
-		flname=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
 		break;
 	case Magicstick:
-		flname=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.001);
+		flname[0]=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
 		break;
 	case Magic:
-		flname=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
 		break;
 	default:
 		break;
 	}
-
+	for(int i=0;i<nonemodel;i++)
+		handmodel[i]=mqoCreateModel(flname[0],0.0035);
 	//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
@@ -290,7 +287,7 @@ void player::Draw(){
 	glRotated(-angles.y* 180 /M_PI ,1,0,0);
 
 
-	mqoCallModel(handmodel);
+	mqoCallModel(handmodel[0]);
 	glPopMatrix();
 
 	playerbullet.Draw();
@@ -299,6 +296,7 @@ void player::Draw(){
 }
 
 void player::Update(){
+	if(modelcount)
 	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
@@ -356,7 +354,14 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 		if(key_getmove(Backward))
 			sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	}
+
+		if(key_getmove(Left)||key_getmove(Right)||key_getmove(Forward)||key_getmove(Backward)){
+			nowpoze=shootmodel;
+			modelcount=60*3;
+		}
+	}else
+	modelcount=0;
+
 	playerfoot_collider=position;
 	playerfoot_collider.y-=0.7;
 

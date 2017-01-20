@@ -87,7 +87,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Spear);
+	player1.DrawInitialize(Crossbow);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
