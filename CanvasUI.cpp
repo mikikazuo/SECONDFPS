@@ -39,16 +39,19 @@ void CanvasUI::DrawInitialize(){
 	handle[0]=image_Load("Data/image/assist.png");
 	handle[1]=image_Load("Data/image/man.png");
 	handle[2]=image_Load("Data/image/man_B.png");
-	handle[3]=image_Load("Data/image/num/level.png");
+	//handle[3]=image_Load("Data/image/num/level.png");
 	handle[4]=image_Load("Data/image/pHP_bar2.png");
 	handle[5]=image_Load("Data/image/BULLET_bar2.png");
 	handle[6]=image_Load("Data/image/exp_bar.png");
 
+	handle[7]=image_Load("Data/image/level_R.png");
+	handle[8]=image_Load("Data/image/level_B.png");
+
 	//HPbar 10-13
-	handle[10]=image_Load("Data/image/HP_bar_back.png");//下地B
-	handle[11]=image_Load("Data/image/HP_bar_back_Red.png");//下地R
-	handle[12]=image_Load("Data/image/HP_bar_tex.png");//質感
-	handle[13]=image_Load("Data/image/HP_bar_frame.png");//枠
+	handle[10]=image_Load("Data/image/HP_bar_B.png");//Blue
+	handle[11]=image_Load("Data/image/HP_bar_R.png");//Red
+	//handle[12]=image_Load("Data/image/HP_bar_tex.png");//質感
+	//handle[13]=image_Load("Data/image/HP_bar_frame.png");//枠
 
 	//Wallinfo
 	handle[14]=image_Load("Data/image/wall_info.png");//壁情報
@@ -67,6 +70,7 @@ void CanvasUI::DrawInitialize(){
 	handle[39]=image_Load("Data/image/num/9.png");
 	handle[40]=image_Load("Data/image/num/Lv.png");
 
+	handle[41]=image_Load("Data/image/sousa.png");
 }
 
 
@@ -134,24 +138,29 @@ void CanvasUI::Draw() {
 	glColor3d(1.0,0.2,0.2);//赤指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
 	rect_Draw2D(handle[11],10+shakeX,10+shakeY,280*0.01*a,60);//ゲージ描画
-	image_DrawExRota(handle[11],150+shakeX,50+shakeY,0,1);//背景
+	glColor3d(0.2,0.2,0.2);//黒指定
+	rect_Draw2D(handle[11],10+shakeX+(280*0.01*a),10+shakeY,280*(1-0.01*a),60);//裏ゲージ描画
+	image_DrawExRota(handle[11],150+shakeX,50+shakeY,0,1);//HPバー
 
-	image_DrawExRota(handle[12],150+shakeX,50+shakeY,0,1);//ハイライト,質感
-	image_DrawExRota(handle[13],150+shakeX,50+shakeY,0,1);//枠
+	//image_DrawExRota(handle[12],150+shakeX,50+shakeY,0,1);//ハイライト,質感
+	//image_DrawExRota(handle[13],150+shakeX,50+shakeY,0,1);//枠
 
 	//敵陣HP
 	glColor3d(0.2,0.2,1.0);//青指定
 	if((time-dam)==0) glColor3d(1.0,1.0,1.0);
 	rect_Draw2D(handle[9],1190-280*0.01*a+shakeX,10+shakeY,280*0.01*a,60);//ゲージ描画
-	image_DrawExRota(handle[10],1050+shakeX,50+shakeY,0,1);//背景
+	glColor3d(0.2,0.2,0.2);//黒指定
+	rect_Draw2D(handle[9],910+shakeX,10+shakeY,280*(1-0.01*a),60);//裏ゲージ描画
+	image_DrawExRota(handle[10],1050+shakeX,50+shakeY,0,1);//HPバー
 
-	image_DrawExRota(handle[12],1050+shakeX,50+shakeY,0,1);//ハイライト、質感
-	image_DrawExRota(handle[13],1050+shakeX,50+shakeY,0,1);//枠
+	//image_DrawExRota(handle[12],1050+shakeX,50+shakeY,0,1);//ハイライト、質感
+	//image_DrawExRota(handle[13],1050+shakeX,50+shakeY,0,1);//枠
 
 
 	//レベル表示
-	image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
-
+	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
+	//image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
+	image_DrawExRota(handle[8],75+shakeX,680+shakeY,0,2);//Blue
 	int number1,number10;
 	number1 = level%10;//ひとけため
 	number10 = (level/10)%10;//ふたけため
@@ -207,6 +216,9 @@ void CanvasUI::Draw() {
 		rect_Draw2D(handle[14],850+(50*i)+shakeX,650+shakeY,34,34);//壁情報ランプ
 	}
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
+
+
+	image_DrawExRota(handle[41],105,540,0,1.0);//Blue
 
 }
 
