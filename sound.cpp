@@ -81,8 +81,8 @@ void SoundInit() {
 	se_buf[15] = alureCreateBufferFromFile("Data/SE/charging.wav");
 	se_buf[16] = alureCreateBufferFromFile("Data/SE/charged.wav");
 	se_buf[17] = alureCreateBufferFromFile("Data/SE/efe.wav");
-	se_buf[18] = alureCreateBufferFromFile("Data/sound/se/se_extend.wav");
-	se_buf[19] = alureCreateBufferFromFile("Data/sound/se/se_cardget.wav");
+//	se_buf[18] = alureCreateBufferFromFile("Data/sound/se/se_extend.wav");
+//	se_buf[19] = alureCreateBufferFromFile("Data/sound/se/se_cardget.wav");
 	for (i = 0; i < MAXSE; i++) {
 		alSourcei(se_src[i], AL_BUFFER, se_buf[i]);
 	}

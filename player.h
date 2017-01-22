@@ -52,10 +52,11 @@ private:
 	int atkcount;
 	int speed;
 	double pers;
-	Role myrole;
-	Poze nowpoze;
-public:
 
+	Poze nowpoze;
+
+public:
+	Role myrole;
 	int myid;    //my server id
 	float maxhp;
 	float hp;

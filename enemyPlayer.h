@@ -23,12 +23,13 @@ public:
 	vec3 angles;	//角度
 	vec3 lookat;	//視点
 	Team myteam;
+	Role myrole;
 	float serverminushp;          //sa-ba-
 	Wall mywall[WALLMAX];
 
 	enemyPlayer();
 	void Initialize();
-	void DrawInitialize(MQO_MODEL setmodel);
+	void DrawInitialize(Role setrole);
 	void set_enemyposition();
 	void Draw();
 	void resetminushp();

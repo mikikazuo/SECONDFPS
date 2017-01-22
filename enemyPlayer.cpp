@@ -23,16 +23,16 @@ void enemyPlayer::Initialize(){
 
 	}
 }
-void enemyPlayer::DrawInitialize(MQO_MODEL setmodel){
+void enemyPlayer::DrawInitialize(Role setrole){
 
 	int wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
+	enemymodel=mqoCreateModel(flname,0.0035);
 
-	enemymodel=setmodel;
-
-	enemybullet.bullet_DrawInitialize(Crossbow);
+	enemybullet.bullet_DrawInitialize(setrole);
 }
 
 void enemyPlayer::Draw() {

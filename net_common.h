@@ -81,6 +81,7 @@ typedef struct{
 	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
 	Team myteam;
+	Role myrole;
 	vec3 delmove;//慣性による移動
 }PLAYER_DATA;
 

@@ -39,6 +39,7 @@ int get_playerdata(S_CONTAINER sdata){
 			continue;
 		}
 		get_enemy()[i].myteam=sdata.players[i].myteam;
+		get_enemy()[i].myrole=sdata.players[i].myrole;
 
 		get_enemy()[i].position=sdata.players[i].position;
 

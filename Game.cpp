@@ -87,7 +87,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Crossbow);
+	player1.DrawInitialize(Gatling);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
@@ -130,7 +130,7 @@ void Game::DrawInitialize(){
 	for(int i=0;i<MAX_CLIENTS;i++){
 		if(get_player()->myid==i)
 			continue;
-		enemy[i].DrawInitialize(mqomodel[0]);
+		enemy[i].DrawInitialize(enemy[i].myrole);
 	}
 
 }
@@ -192,7 +192,7 @@ void Game::Draw(){
 		enemy[i].Draw();
 	}
 
-	mapobj.Draw();
+//	mapobj.Draw();
 	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();

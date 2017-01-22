@@ -225,7 +225,7 @@ void mob::Draw(){
 	glRotated(-angles.y * 180 /M_PI ,1,0,0);
 
 
-	  mqoCallModelRed(mobmqo);
+	  mqoCallModel(mobmqo);
 
 
 	glPopMatrix();

@@ -14,7 +14,7 @@
 
 
 //ライトの位置
-static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0 }; /* 光源の位置 */
+static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0 ,0}; /* 光源の位置 */
 static GLfloat lightDiffuse[3]  = { 1.0,  1.0, 1.0  }; //拡散光
 static GLfloat lightAmbient[3]  = { 1.0,  1.0, 1.0  }; //環境光
 static GLfloat lightSpecular[3] = { 1.0,  1.0, 1.0  }; //鏡面光
