@@ -68,6 +68,9 @@ public:
 	int radi;
 	vec3 delmove;
 
+	int wall;		//壁操作の状況(0:ノーマル，1:設置中,2:除去中)
+
+
 	float minushp;
 
 	Team myteam;
