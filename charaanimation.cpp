@@ -58,7 +58,7 @@ void chara_animation::DrawInitialize(){
 	char1[2]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_ene_leg3.mqo";
 	char1[3]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/char1_ene_hand1.mqo";
+	flname=(char*)"Data/charamodel/char1/char1_ene_shooted.mqo";
 	char1[4]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_ene_hand2.mqo";
 	char1[5]=mqoCreateModel(flname,0.0035);
@@ -149,41 +149,41 @@ void chara_animation::Draw() {
 
 
 	///****************歩き
-	modelPP(char2[0],5+(11-6)*5,1.7,-17);//body
+	modelPP(char2[0],5+(11-6)*5,1.2,-17);//body
 	//modelPP(char2[1],5+(11-6)*5,1,-17);//leg
-	modelPP(char2[2],5+(11-6)*5,2.5,-17);//head
-	modelPP(char2[3],5+(11-6)*5,1.7,-17);//arm
+	modelPP(char2[2],5+(11-6)*5,2.0,-17);//head
+	modelPP(char2[3],5+(11-6)*5,1.2,-17);//arm
 	int no = 0;
 	if(time%60<15) no = 0;
 	else if(time%60<30) no = 1;
 	else if(time%60<45) no = 0;
 	else no = 2;
-	modelPP(char2[4+no],5+(11-6)*5,1,-17);//leg
+	modelPP(char2[4+no],5+(11-6)*5,0.5,-17);//leg
 
-	modelPP(char1[0],28,1.7,-17);//body
-	modelPP(char1[1+no],28,1,-17);//leg
-	modelPP(char1[7],28,2.5,-17);//head
-	modelPP(char1[5],28,1.7,-17);//arm
+	modelPP(char1[0],28,1.3,-17);//body
+	modelPP(char1[1+no],28,0.5,-17);//leg
+	modelPP(char1[7],28,2.0,-17);//head
+	modelPP(char1[4],28,1.4,-17);//arm
 
-	modelPP(char3[0],32,1.7,-17);//body
-	modelPP(char3[1+no],32,1,-17);//leg
-	modelPP(char3[6],32,2.5,-17);//head
-	modelPP(char3[4],32,1.7,-17);//arm
+	modelPP(char3[0],32,1.2,-17);//body
+	modelPP(char3[1+no],32,0.5,-17);//leg
+	modelPP(char3[6],32,1.7,-17);//head
+	modelPP(char3[4],32,1.4,-16.8);//arm
 
-	modelPP(char4[0],34,1.7,-17);//body
-	modelPP(char4[1+no],34,1,-17);//leg
-	modelPP(char4[6],34,2.5,-17);//head
-	modelPP(char4[4],34,1.7,-17);//arm
+	modelPP(char4[0],34,1.0,-17);//body
+	modelPP(char4[1+no],34,0.5,-17);//leg
+	modelPP(char4[6],34,1.6,-17);//head
+	modelPP(char4[4],34,1.2,-17);//arm
 
-	modelPP(char5[0],36,1.7,-17);//body
-	modelPP(char5[1+no],36,1,-17);//leg
-	modelPP(char5[7],36,2.5,-17);//head
-	modelPP(char5[4],36,1.7,-17);//arm
+	modelPP(char5[0],36,1.0,-17);//body
+	modelPP(char5[1+no],36,0.5,-17);//leg
+	modelPP(char5[7],36,1.8,-17);//head
+	modelPP(char5[4+no],36,1.1,-17);//arm
 
-	modelPP(char6[2],38,1.7,-17);//body
-	modelPP(char6[3+no%2],38,1,-17);//leg
-	modelPP(char6[5],38,2.5,-17);//head
-	modelPP(char6[6],38,1.7,-17);//arm
+	modelPP(char6[2],38,0.9,-17);//body
+	modelPP(char6[3+no%2],38,0.5,-17);//leg
+	modelPP(char6[5],38,1.9,-17);//head
+	modelPP(char6[6+no%2],38,1.2,-17);//arm
 	///*********************
 }
 

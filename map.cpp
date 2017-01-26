@@ -659,6 +659,7 @@ void map::Update(){
 }
 
 void map::Draw(){
+	/***********お空きれい
 	image_DrawExRota3D(img[0],vec3(-512,0,0),90,vec3(0,1,0),1);
 	image_DrawExRota3D(img[1],vec3(512,0,0),-90,vec3(0,1,0),1);
 
@@ -667,6 +668,7 @@ void map::Draw(){
 
 	image_DrawExRota3D(img[4],vec3(0,0,512),180,vec3(0,1,0),1);
 	image_DrawExRota3D(img[5],vec3(0,0,-512),0,vec3(0,1,0),1);
+	お空きれい**********/
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
 
