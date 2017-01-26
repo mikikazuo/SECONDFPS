@@ -19,6 +19,7 @@ MQO_MODEL char5[20];
 MQO_MODEL char6[20];
 
 void modelPP(MQO_MODEL MODEL,double x,double y,double z);
+void walk(int model_no,double x,double y,double z);
 
 chara_animation::chara_animation() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -147,8 +148,8 @@ void chara_animation::Draw() {
 	//mqoCallModel(char2[0]);
 	//glPopMatrix();
 
-
-	///****************歩き
+	/*
+	///歩き
 	modelPP(char2[0],5+(11-6)*5,1.2,-17);//body
 	//modelPP(char2[1],5+(11-6)*5,1,-17);//leg
 	modelPP(char2[2],5+(11-6)*5,2.0,-17);//head
@@ -184,6 +185,13 @@ void chara_animation::Draw() {
 	modelPP(char6[3+no%2],38,0.5,-17);//leg
 	modelPP(char6[5],38,1.9,-17);//head
 	modelPP(char6[6+no%2],38,1.2,-17);//arm
+	*/
+	walk(1,28,0,-17);
+	walk(2,30,0,-17);
+	walk(3,32,0,-17);
+	walk(4,34,0,-17);
+	walk(5,36,0,-17);
+	walk(6,38,0,-17);
 	///*********************
 }
 
@@ -193,3 +201,80 @@ void modelPP(MQO_MODEL MODEL,double x,double y,double z){
 	mqoCallModel(MODEL);
 	glPopMatrix();
 }
+
+
+//歩かせる
+void walk(int model_no,double x,double y,double z){
+	//歩行用アニメーション番号　no
+	int no = 0;
+	if(time%60<15) no = 0;
+	else if(time%60<30) no = 1;
+	else if(time%60<45) no = 0;
+	else no = 2;
+
+	//legを0.5浮かせる
+	double leg = y + 0.5;
+	double body = 0;
+	double arm = 0;
+	double head = 0;
+
+	switch(model_no){
+	case 1:
+		body = leg+0.8;
+		arm = leg+0.9;
+		head = leg+1.5;
+		modelPP(char1[0],x,body,z);//body
+		modelPP(char1[1+no],x,leg,z);//leg
+		modelPP(char1[7],x,head,z);//head
+		modelPP(char1[4],x,arm,z);//arm
+		break;
+	case 2:
+		body = leg+0.7;
+		arm = leg+0.7;
+		head = leg+1.5;
+		modelPP(char2[0],x,body,z);//body
+		modelPP(char2[4+no],x,leg,z);//leg
+		modelPP(char2[2],x,head,z);//head
+		modelPP(char2[3],x,arm,z);//arm
+		break;
+	case 3:
+		body = leg+0.7;
+		arm = leg+0.9;
+		head = leg+1.2;
+		modelPP(char3[0],x,body,z);//body
+		modelPP(char3[1+no],x,leg,z);//leg
+		modelPP(char3[6],x,head,z);//head
+		modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+		break;
+	case 4:
+		body = leg+0.5;
+		arm = leg+0.7;
+		head = leg+1.1;
+		modelPP(char4[0],x,body,z);//body
+		modelPP(char4[1+no],x,leg,z);//leg
+		modelPP(char4[6],x,head,z);//head
+		modelPP(char4[4],x,arm,z);//arm
+		break;
+	case 5:
+		body = leg+0.5;
+		arm = leg+0.6;
+		head = leg+1.3;
+		modelPP(char5[0],x,body,z);//body
+		modelPP(char5[1+no],x,leg,z);//leg
+		modelPP(char5[7],x,head,z);//head
+		modelPP(char5[4+no],x,arm,z);//arm
+		break;
+	case 6:
+		body = leg+0.4;
+		arm = leg+0.7;
+		head = leg+1.4;
+		modelPP(char6[2],x,body,z);//body
+		modelPP(char6[3+no%2],x,leg,z);//leg
+		modelPP(char6[5],x,head,z);//head
+		modelPP(char6[6],x,arm,z);//arm
+		break;
+	default:break;
+	}
+
+}
+
