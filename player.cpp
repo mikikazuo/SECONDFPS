@@ -164,7 +164,7 @@ player::player() {
 
 }
 
-void player::Initialize(vec3 pos,float ra,Team setteam){
+void player::Initialize(vec3 pos,float ra){
 
 	level=0;
 	exp=0;
@@ -197,7 +197,6 @@ void player::Initialize(vec3 pos,float ra,Team setteam){
 
 
 	radi=ra;
-	myteam=setteam;
 
 	pers=60.0;
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)

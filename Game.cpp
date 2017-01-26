@@ -22,6 +22,7 @@
 #include "enemyPlayer.h"
 #include "charaanimation.h"
 #include "main.h"
+#include "Letter.h"
 
 #define PLAYERNUM 5
 
@@ -50,9 +51,6 @@ GLfloat specular[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat shininess = 65.0;
 
 
-void set_myteam(Team myt){
-	myteam=myt;
-}
 void Game::setInfoPlayerWall(){
 
 	for(int i=1;i<PLAYERNUM;i++)
@@ -68,7 +66,7 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
-	player1.Initialize(vec3(30,10,-10),1,myteam);//(*get_argc()==2)?RedTeam:BlueTeam);
+	player1.Initialize(vec3(30,10,-10),1);//(*get_argc()==2)?RedTeam:BlueTeam);
 	chara.Initialize();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)

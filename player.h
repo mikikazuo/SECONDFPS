@@ -87,7 +87,7 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,Team setteam);
+	void Initialize(vec3 pos,float ra);
 	void DrawInitialize(Role setrole);
 	void DrawFinalize();
 	void Draw();

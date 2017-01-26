@@ -108,8 +108,8 @@ void bullet::bullet_DrawInitialize(Role setbulletmode){
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
-	vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
-	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+	//vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
+	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
 //	if(mode==Magic){
 //		for(int i=0;i<MAXBULLET;i++)

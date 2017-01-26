@@ -7,7 +7,7 @@
 
 #include "enemyPlayer.h"
 #include "image.h"
-
+#include "Letter.h"
 
 
 enemyPlayer::enemyPlayer() {
@@ -49,6 +49,9 @@ void enemyPlayer::Draw() {
 	mqoCallModel(enemymodel);
 
 	glPopMatrix();
+
+	glColor3f(1,1,1);
+	Mozi_DrawM2_3D(vec3(position.x,position.y+2,position.z),0,vec3(0,1,0),0.01,MOZI_HGMINTYOE,"赤：%d人/4人 ",231);
 
 	enemybullet.Draw();
 	DrawMyWall();

@@ -20,7 +20,7 @@
 #include <math.h>
 #include "key.h"
 
-
+#include "Letter.h"
 #include "fps.h"
 #include "main.h"
 
@@ -35,7 +35,7 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=false;    //sever connect
+static bool debug=false ;    //sever connect
 
 
 
@@ -74,7 +74,7 @@ void myInit(char *progname)
 		//printf("error");
 		exit(-1);
 	}
-
+	initMozi() ;
 	mainfps.fps_Initialize();
 
 	glutInitWindowPosition(0,0);
