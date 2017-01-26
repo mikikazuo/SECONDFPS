@@ -154,6 +154,54 @@ void CanvasUI::Update() {
 		shakeX = 0;
 		shakeY = 0;
 	}
+
+	/***壁に関する動作***/
+	//if(壁に関する動作中){
+		progress_time++;
+		//if(壁設置中){
+			progress_per = progress_time / WALL_SET;
+
+			if(progress_time == WALL_SET){
+				progress_time = 0;
+				//ここで壁設置実行
+			}
+		//}
+
+		//else if(壁除去中){
+			//progress_per = 1 - (progress_time / WALL_DELETE);	(右から左に減少させるために1から進捗率を引いている)
+			//if(progress_time == WALL_DELETE){
+				//progress_time = 0;
+				//ここで壁除去実行
+			//}
+		//}
+	//}
+
+	/***リスポーン待機***/
+	//if(リスポーン待機中)
+		res_time++;
+
+		if(res_time >= RESPAWN_TIME){
+			res_time = 0;
+			//ここでリスポーン実行処理
+		}
+
+		res_per = res_time / RESPAWN_TIME;
+	//}
+
+	/***ゲーム終了メッセージ***/
+	//if(ゲーム終了 && fin_mes == 0){
+		if(fin_mes == 0)//本来は必要ないが動作確認のためのif文
+			fin_mes = 1;	//第一段階開始
+	//}
+
+	if(fin_mes != 0){
+		fin_time++;
+	}
+	//次の段階への移行
+	if((fin_mes == 1 && fin_time >= FIN_MES1) || (fin_mes == 2 && fin_time >= FIN_MES2)){
+		fin_time = 0;
+		fin_mes++;
+	}
 }
 
 
@@ -253,32 +301,17 @@ void CanvasUI::Draw() {
 
 	/***壁設置・除去進捗バー***/
 	//if(壁に関する動作中){
-		progress_time++;
-
 		//壁設置中
 		//if(壁設置中){
-			progress_per = progress_time / WALL_SET;					//壁設置のとき
 			glColor3d(0.486,1.0,0.333);	//緑指定
 			rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
-
-			if(progress_time == WALL_SET){
-				progress_time = 0;
-				//ここで壁設置実行
-			}
-			//}
+		//}
 
 		//壁除去中
-		//else if(壁除去中){
-			//progress_per = 1 - (progress_time / WALL_DELETE);			//壁除去のとき(右から左に減少させるために1から進捗率を引いている)
+		/*else if(壁除去中){
 			//glColor3d(1.0,0.2,0.263);		//赤指定
 			//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
-			/*rect_Draw2D(handle[42],770 + shakeX - (260 * progress_per),640+shakeY,260 * progress_per,20); //(不要)*/
-
-			//if(progress_time == WALL_DELETE){
-				//progress_time = 0;
-				//ここで壁除去実行
-			//}
-		//}
+		}*/
 
 		glColor3d(0.0,0.0,0.0);		//黒指定
 		//引数補足:不要，左上の座標(x,y),横幅，高さ
@@ -289,46 +322,26 @@ void CanvasUI::Draw() {
 		image_DrawExRota(handle[42],620+shakeX,650+shakeY,0,1);	//進捗バー枠
 	//}
 
-	//動作確認
-	//printf("time = %lf per = %lf\n",progress_time,progress_per);
-
 	/***リスポーン待機関連***/
 	//if(リスポーン待機中){
-		res_time++;
+		glColor3d(0.444,1.0,0.64);		//緑指定
+		//rect_Draw2D(0,380,230,440 * res_per,70); 	//進捗バー
+		glColor3d(1.0,0.302,0.302);	//赤指定
+		//rect_Draw2D(0,380,230,440,70); 				//裏ゲージ
+		//image_DrawExRota(handle[43],600,250,0,0.5);	//枠
 
-		if(res_time >= RESPAWN_TIME){
-			res_time = 0;
-			//ここでリスポーン実行処理
-		}
-
-		res_per = res_time / RESPAWN_TIME;
-
-		glColor3d(0.444,1.0,0.64);			//緑指定
-		rect_Draw2D(0,380,230,440 * res_per,70); //進捗バー
-		glColor3d(1.0,0.302,0.302);		//赤指定
-		rect_Draw2D(0,380,230,440,70); 	//裏ゲージ
-		image_DrawExRota(handle[43],600,250,0,0.5);	//枠
-
-		image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)の画面を黒くさせるために用いる画像
+		//image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)に画面を黒くさせるために用いる画像
 	//}
 
 	/***ゲーム終了時***/
 	//ゲーム終了メッセージ表示開始
 	//if(ゲーム終了 && fin_mes == 0){
+	//if(fin_mes == 0)//本来は必要ないが動作確認のためのif文
 		//fin_mes = 1;	//第一段階開始
 	//}
 
 
 	//終了メッセージ表示時
-	if(fin_mes != 0){
-		fin_time++;
-	}
-		//次の段階への移行
-		if((fin_mes == 1 && fin_time >= FIN_MES1) || (fin_mes == 2 && fin_time >= FIN_MES2)){
-			fin_time = 0;
-			fin_mes++;
-		}
-
 		//動作確認
 		//printf("fin_mes = %d\n",fin_mes);
 
