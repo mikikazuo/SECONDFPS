@@ -325,7 +325,7 @@ rect_Draw2D(210+shakeX,660+shakeY,260*get_player()->hp/get_player()->maxhp,40);/
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
 
 
-	image_DrawExRota(handle[41],105,540,0,1.0);//Blue
+	image_DrawExRota(handle[41],105,520,0,1.0);//操作方法
 
 	/***壁設置・除去進捗バー***/
 	//壁設置中
