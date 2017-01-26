@@ -25,6 +25,8 @@
 #include "GLMetaseq.h"
 #include "bullet.h"
 #include "net_common.h"
+#include "GL/glut.h"
+#include "CanvasUI.h"
 
 #define HP 100
 #define BULLETNUM 10
@@ -187,7 +189,7 @@ void player::Initialize(vec3 pos,float ra){
 	default:
 		break;
 	}
-
+	respawntime=0;
 	position=pos;
 	speed=7;
 	hp=maxhp=100;
@@ -542,11 +544,11 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//hitnum = -1;
 
 	//動作確認
-//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint(mapobject[hitnum],player_collider));
-//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider));
-//
-//	vec3 player_collider_down = player_collider;
-//	player_collider_down.y +=  mapobject[hitnum].speed.y * get_mainfps().fps_getDeltaTime();
+	//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint(mapobject[hitnum],player_collider));
+	//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider));
+	//
+	//	vec3 player_collider_down = player_collider;
+	//	player_collider_down.y +=  mapobject[hitnum].speed.y * get_mainfps().fps_getDeltaTime();
 	//int down = 0;
 
 	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
@@ -556,414 +558,423 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	//移動するオブジェクトから衝突してきた時のプレイヤーを押し寄せる処理(x軸z軸方向は完成)
 	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
-//	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
-//			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-//
-//		printf("衝突処理 分岐1:ノーマル\n");
-//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-//		//down = 0;
-//	}
-//
-//	//オブジェクト降下時
-//	else if(mapobject[hitnum].type == MOVE
-//			&& mapobject[hitnum].speed.y < 0//){
-//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider_down) <= radi){
-//		printf("衝突処理 分岐2:オブジェクト降下\n");
-//
-//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-//		//down = 1;
-//	}
-//
-//	//LenOBBToPoint_moveのy座標1下げ
-//	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
-//	//else if(mapobject[hitnum].type == MOVE){
-//	else if(mapobject[hitnum].type == MOVE
-//
-//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-//		printf("12345\n");
-//
-//		&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-//			printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
-//			//down = 0;
-//		}
+	//	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
+	//			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
+	//
+	//		printf("衝突処理 分岐1:ノーマル\n");
+	//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	//		//down = 0;
+	//	}
+	//
+	//	//オブジェクト降下時
+	//	else if(mapobject[hitnum].type == MOVE
+	//			&& mapobject[hitnum].speed.y < 0//){
+	//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider_down) <= radi){
+	//		printf("衝突処理 分岐2:オブジェクト降下\n");
+	//
+	//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	//		//down = 1;
+	//	}
+	//
+	//	//LenOBBToPoint_moveのy座標1下げ
+	//	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
+	//	//else if(mapobject[hitnum].type == MOVE){
+	//	else if(mapobject[hitnum].type == MOVE
+	//
+	//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+	//		printf("12345\n");
+	//
+	//		&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+	//			printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
+	//			//down = 0;
+	//		}
 
-		//衝突したオブジェクトの番号
-		//printf("hitnum = %d\n",hitnum);
-		//オブジェクトの位置
-		//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
-		//移動後のオブジェクトの位置
-		//printf("move.x = %lf move.y = %lf move.z =%lf\n",mapobject[hitnum].Pos_move.x,mapobject[hitnum].Pos_move.y,mapobject[hitnum].Pos_move.z);
-		//オブジェクトの進行速度
-		//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
-		//オブジェクトのタイプ
-		//printf("type = %d\n",mapobject[hitnum].type);
+	//衝突したオブジェクトの番号
+	//printf("hitnum = %d\n",hitnum);
+	//オブジェクトの位置
+	//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
+	//移動後のオブジェクトの位置
+	//printf("move.x = %lf move.y = %lf move.z =%lf\n",mapobject[hitnum].Pos_move.x,mapobject[hitnum].Pos_move.y,mapobject[hitnum].Pos_move.z);
+	//オブジェクトの進行速度
+	//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
+	//オブジェクトのタイプ
+	//printf("type = %d\n",mapobject[hitnum].type);
 
 
-		int i;
-		if(foothit){
-			if(upflag&&!upwall)
-				for(int j=0;j<100;j++){
-					player_collider=position;
-					player_collider.x=sampposition.x;
-					player_collider.z=sampposition.z;
-					//object 斜面約40°まで
-					player_collider.y=sampposition.y+0.001f*j;//0.01f;
-					for(i=0;i<mapn;i++){
-						if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-							break;
-						}
-						if(i==mapn-1)
-							position=player_collider;
-					}
-					//for文の最後で++されてしまうため==
-					if(i==mapn)
+	int i;
+	if(foothit){
+		if(upflag&&!upwall)
+			for(int j=0;j<100;j++){
+				player_collider=position;
+				player_collider.x=sampposition.x;
+				player_collider.z=sampposition.z;
+				//object 斜面約40°まで
+				player_collider.y=sampposition.y+0.001f*j;//0.01f;
+				for(i=0;i<mapn;i++){
+					if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
 						break;
+					}
+					if(i==mapn-1)
+						position=player_collider;
 				}
+				//for文の最後で++されてしまうため==
+				if(i==mapn)
+					break;
+			}
 
-			//	}else if(upflag){
-			//		for(int i=0;i<500;i++)
-			//			for(int j=0;j<8;j++){
-			//				player_collider=position;
-			//
-			//				switch(i){
-			//				case 0:
-			//					player_collider.x+=0.001f*i;
-			//					break;
-			//				case 1:
-			//					player_collider.x-=0.001f*i;
-			//					break;
-			//				case 2:
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 3:
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//				case 4:
-			//					player_collider.x+=0.001f*i;
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 5:
-			//					player_collider.x-=0.001f*i;
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 6:
-			//					player_collider.x-=0.001f*i;
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//				case 7:
-			//					player_collider.x+=0.001f*i;
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//
-			//				}
-			//				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
-			//					position=player_collider;
-			//					break;
-			//				}
-			//			}
-			//	}else if(upwall){
-			//		for(int i=0;i<500;i++)
-			//			for(int j=0;j<8;j++){
-			//				player_collider=position;
-			//
-			//				switch(i){
-			//				case 0:
-			//					player_collider.x+=0.001f*i;
-			//					break;
-			//				case 1:
-			//					player_collider.x-=0.001f*i;
-			//					break;
-			//				case 2:
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 3:
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//				case 4:
-			//					player_collider.x+=0.001f*i;
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 5:
-			//					player_collider.x-=0.001f*i;
-			//					player_collider.z+=0.001f*i;
-			//					break;
-			//				case 6:
-			//					player_collider.x-=0.001f*i;
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//				case 7:
-			//					player_collider.x+=0.001f*i;
-			//					player_collider.z-=0.001f*i;
-			//					break;
-			//
-			//				}
-			//				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
-			//					position=player_collider;
-			//					break;
-			//				}
-			//			}
+		//	}else if(upflag){
+		//		for(int i=0;i<500;i++)
+		//			for(int j=0;j<8;j++){
+		//				player_collider=position;
+		//
+		//				switch(i){
+		//				case 0:
+		//					player_collider.x+=0.001f*i;
+		//					break;
+		//				case 1:
+		//					player_collider.x-=0.001f*i;
+		//					break;
+		//				case 2:
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 3:
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 4:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 5:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 6:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 7:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//
+		//				}
+		//				if(!movechecker.sethitcheck(mapn,mapobject,player_collider,radi)){
+		//					position=player_collider;
+		//					break;
+		//				}
+		//			}
+		//	}else if(upwall){
+		//		for(int i=0;i<500;i++)
+		//			for(int j=0;j<8;j++){
+		//				player_collider=position;
+		//
+		//				switch(i){
+		//				case 0:
+		//					player_collider.x+=0.001f*i;
+		//					break;
+		//				case 1:
+		//					player_collider.x-=0.001f*i;
+		//					break;
+		//				case 2:
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 3:
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 4:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 5:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z+=0.001f*i;
+		//					break;
+		//				case 6:
+		//					player_collider.x-=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//				case 7:
+		//					player_collider.x+=0.001f*i;
+		//					player_collider.z-=0.001f*i;
+		//					break;
+		//
+		//				}
+		//				if(!movechecker.sethitcheck(WALLMAX,playerwall,player_collider,radi)){
+		//					position=player_collider;
+		//					break;
+		//				}
+		//			}
+	}
+
+
+	gravity+=0.3f;
+	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+
+	//重力による下降処理
+	//if(mapobject[hitnum].type != MOVE && mapobject[hitnum].speed.y >= 0 && movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) >= radi){
+	//if(down == 0){
+	//printf("重力\n");
+	//}
+
+
+
+	//y座標の補正
+	player_collider=position;
+	player_collider.y=sampposition.y;
+
+	//頭部分
+	for(int i=0;i<mapn;i++){
+		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=radi    ){
+			hitheadflag=true;
 		}
 
+		if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
+			jumpflag=false;
+			hitheadflag=false;
+			hitmap=true;
+			gravity=0;
+			break;
+		}
+		if(i==mapn-1){
 
-		gravity+=0.3f;
-		sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+			for(int j=0;j<WALLMAX;j++){
+				if(playerwall[j].count>0){
 
-		//重力による下降処理
-		//if(mapobject[hitnum].type != MOVE && mapobject[hitnum].speed.y >= 0 && movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) >= radi){
-		//if(down == 0){
-		//printf("重力\n");
-		//}
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi){
+						hitheadflag=true;
+					}
 
+					if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+						jumpflag=false;
+						hitheadflag=false;
+						hitmap=true;
+						gravity=0;
+						break;
+					}
 
+				}
 
-		//y座標の補正
-		player_collider=position;
-		player_collider.y=sampposition.y;
-
-		//頭部分
-		for(int i=0;i<mapn;i++){
-			if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=radi    ){
-				hitheadflag=true;
-			}
-
-			if(	movechecker.LenOBBToPoint( mapobject[i],  player_collider)<=radi){
-				jumpflag=false;
-				hitheadflag=false;
-				hitmap=true;
-				gravity=0;
-				break;
-			}
-			if(i==mapn-1){
-
-				for(int j=0;j<WALLMAX;j++){
-					if(playerwall[j].count>0){
-
-						if(	movechecker.LenOBBToPoint( playerwall[j].wall,  playerhead_collider)<=radi){
+				for(int k=0;k<MAX_CLIENTS;k++){
+					if(k==myid)
+						continue;
+					if(get_enemy()[k].mywall[j].count>0){
+						if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  playerhead_collider)<=radi){
 							hitheadflag=true;
 						}
 
-						if(	movechecker.LenOBBToPoint( playerwall[j].wall,  player_collider)<=radi){
+						if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  player_collider)<=radi){
 							jumpflag=false;
 							hitheadflag=false;
 							hitmap=true;
 							gravity=0;
-							break;
+							goto label;
 						}
-
 					}
 
-					for(int k=0;k<MAX_CLIENTS;k++){
-						if(k==myid)
-							continue;
-						if(get_enemy()[k].mywall[j].count>0){
-							if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  playerhead_collider)<=radi){
-								hitheadflag=true;
-							}
-
-							if(	movechecker.LenOBBToPoint( get_enemy()[k].mywall[j].wall,  player_collider)<=radi){
-								jumpflag=false;
-								hitheadflag=false;
-								hitmap=true;
-								gravity=0;
-								goto label;
-							}
-						}
-
-					}
-
-					if(j==WALLMAX-1)
-						hitmap=false;
 				}
-				label: ;
+
+				if(j==WALLMAX-1)
+					hitmap=false;
 			}
-
-
-
+			label: ;
 		}
 
 
-
-
-
-		if(hitmap==false)
-			position.y=player_collider.y;
-		else
-			hitmap=true;
-
-		if(position.y<radi){
-			position.y=1;
-			jumpflag=false;
-		}
-
-
-		return false;
 
 	}
-	void player::set_wall(){
-		if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
-			for(int i=0;i<WALLMAX;i++)
-				if(mywall[i].count==0){
-					wallsetting++;
-					break;
-				}
-		}
-		if(wallsetting>0)
-			wallsetting++;
-		if(wallsetting>60*2){
-			wallsetting=0;
-			for(int i=0;i<WALLMAX;i++)
-				if(mywall[i].count==0){
 
-					mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
-					mywall[i].count++;
-					break;
-				}
-		}
+
+
+
+
+	if(hitmap==false)
+		position.y=player_collider.y;
+	else
+		hitmap=true;
+
+	if(position.y<radi){
+		position.y=1;
+		jumpflag=false;
 	}
 
-	void player::remove_wall(){
-		if(key_getmove(Removewall)==2)
-			for(int i=0;i<WALLMAX;i++)
-				if(mywall[i].count!=0)
-					if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
-						mywall[i].count=0;
-					}
 
+	return false;
+
+}
+
+void player::dead(){
+	if(respawntime>RESPAWN_TIME){
+		hp=maxhp;
+		respawntime=0;
 	}
-	void player::DrawMyWall(){
+	else if(hp<=0)
+		respawntime++;
+}
+void player::set_wall(){
+	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
 		for(int i=0;i<WALLMAX;i++)
-			if(mywall[i].count>0)
-				mywall[i].wall.Draw();
-	}
-
-	void player::DrawMyWallWire(){
-		if(key_getmove(Setwall)==2)
-			drawmywire=!drawmywire;
-		if(drawmywire)
-			mywire.DrawWire(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
-	}
-
-	int thread(void *data){
-
-		player *info=(player*)data;
-		while(1){
-
-			if(testcursol){
-
+			if(mywall[i].count==0){
+				wallsetting++;
+				break;
 			}
+	}
+	if(wallsetting>0)
+		wallsetting++;
+	if(wallsetting>60*2){
+		wallsetting=0;
+		for(int i=0;i<WALLMAX;i++)
+			if(mywall[i].count==0){
 
-			if(wallsetting>0)
+				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
+				mywall[i].count++;
+				break;
+			}
+	}
+}
+
+void player::remove_wall(){
+	if(key_getmove(Removewall)==2)
+		for(int i=0;i<WALLMAX;i++)
+			if(mywall[i].count!=0)
+				if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
+					mywall[i].count=0;
+				}
+
+}
+void player::DrawMyWall(){
+	for(int i=0;i<WALLMAX;i++)
+		if(mywall[i].count>0)
+			mywall[i].wall.Draw();
+}
+
+void player::DrawMyWallWire(){
+	if(key_getmove(Setwall)==2)
+		drawmywire=!drawmywire;
+	if(drawmywire)
+		mywire.DrawWire(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
+}
+
+int thread(void *data){
+
+	player *info=(player*)data;
+	while(1){
+
+		if(testcursol){
+
+		}
+
+		if(wallsetting>0)
+			glutWarpPointer(1200 / 2, 700 / 2);
+
+		else if(!wrap) {
+			float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
+			float wh = 700;//glutGet(GLUT_WINDOW_HEIGHT);
+
+
+
+			info->dx=get_mouseinfo().x - ww /2;
+			info->dy=get_mouseinfo().y- wh / 2;
+
+			// Do something with dx and dy here
+
+			// move mouse pointer back to the center of the window
+			wrap = true;
+
+
+			//このあたいで初期視野に影響あり
+
+
+			info->angles.x -= info->dx * mousespeed*get_mainfps().fps_getDeltaTime();
+			info->angles.y -= info->dy * mousespeed*get_mainfps().fps_getDeltaTime();
+
+			if(info->angles.x < -M_PI)
+				info->angles.x += M_PI * 2;
+			else if(info->angles.x > M_PI)
+				info->angles.x -= M_PI * 2;
+
+			if(info->angles.y < -M_PI / 2+0.01f)
+				info->angles.y = -M_PI / 2+0.01f;
+			if(info->angles.y > M_PI / 2-0.01f)
+				info->angles.y = M_PI / 2-0.01f;
+
+			info->lookat.x = sinf(info->angles.x) * cosf(info->angles.y);
+			info->lookat.y = sinf(info->angles.y);
+			info->lookat.z = cosf(info->angles.x) * cosf(info->angles.y);
+
+			count++;
+
+
+			if(count%5==0)
 				glutWarpPointer(1200 / 2, 700 / 2);
-
-			else if(!wrap) {
-				float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
-				float wh = 700;//glutGet(GLUT_WINDOW_HEIGHT);
-
-
-
-				info->dx=get_mouseinfo().x - ww /2;
-				info->dy=get_mouseinfo().y- wh / 2;
-
-				// Do something with dx and dy here
-
-				// move mouse pointer back to the center of the window
-				wrap = true;
-
-
-				//このあたいで初期視野に影響あり
-
-
-				info->angles.x -= info->dx * mousespeed*get_mainfps().fps_getDeltaTime();
-				info->angles.y -= info->dy * mousespeed*get_mainfps().fps_getDeltaTime();
-
-				if(info->angles.x < -M_PI)
-					info->angles.x += M_PI * 2;
-				else if(info->angles.x > M_PI)
-					info->angles.x -= M_PI * 2;
-
-				if(info->angles.y < -M_PI / 2+0.01f)
-					info->angles.y = -M_PI / 2+0.01f;
-				if(info->angles.y > M_PI / 2-0.01f)
-					info->angles.y = M_PI / 2-0.01f;
-
-				info->lookat.x = sinf(info->angles.x) * cosf(info->angles.y);
-				info->lookat.y = sinf(info->angles.y);
-				info->lookat.z = cosf(info->angles.x) * cosf(info->angles.y);
-
-				count++;
-
-
-				if(count%5==0)
-					glutWarpPointer(1200 / 2, 700 / 2);
-			}
-
-			else
-				wrap = false;
-
-			SDL_Delay(10);
-		}
-		return 0;
-	}
-	void player::MouseMove()
-	{
-
-		static int falag;
-		if(falag==0){
-			thr = SDL_CreateThread(thread, this);
-			falag=1;
-		}
-	}
-
-	void player::Action()
-	{
-
-	}
-
-	void player::launchBullet(){
-		if(!atkok)
-			atkcount++;
-		//最後の弾だけ音がならないため
-		static bool lastbullet=false;
-
-		if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
-
-			playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
-
-
-			if(playerbullet.launchbulletcount<playerbullet.reloadmax){
-				shootedcount=20;
-				playerbullet.launchbulletcount++;
-				ChangeSE(1);
-			}
-			atkok=false;
-		}
-		//攻撃間隔
-		if(atkcount>atktime){
-			atkok=true;
-			atkcount=0;
 		}
 
-		//	playerbullet.Update();
+		else
+			wrap = false;
+
+		SDL_Delay(10);
+	}
+	return 0;
+}
+void player::MouseMove()
+{
+
+	static int falag;
+	if(falag==0){
+		thr = SDL_CreateThread(thread, this);
+		falag=1;
+	}
+}
+
+void player::Action()
+{
+
+}
+
+void player::launchBullet(){
+	if(!atkok)
+		atkcount++;
+	//最後の弾だけ音がならないため
+	static bool lastbullet=false;
+
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
+
+		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
+
+
+		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
+			shootedcount=20;
+			playerbullet.launchbulletcount++;
+			ChangeSE(1);
+		}
+		atkok=false;
+	}
+	//攻撃間隔
+	if(atkcount>atktime){
+		atkok=true;
+		atkcount=0;
 	}
 
-	////死亡から復活まで
-	//void player::dead(){
-	//	static int deadcount;
-	//	deadcount++;
-	//
-	//}
+	//	playerbullet.Update();
+}
 
-	//TODO
-	//ポインタなし？
-	bullet get_playerbullet(){
-		return playerbullet;
-	}
+////死亡から復活まで
+//void player::dead(){
+//	static int deadcount;
+//	deadcount++;
+//
+//}
 
-	player::~player() {
-		// TODO Auto-generated destructor stub
-	}
+//TODO
+//ポインタなし？
+bullet get_playerbullet(){
+	return playerbullet;
+}
 
-	void set_mousespeed(float set){
-		mousespeed=set;
-	}
+player::~player() {
+	// TODO Auto-generated destructor stub
+}
+
+void set_mousespeed(float set){
+	mousespeed=set;
+}
 

@@ -69,6 +69,7 @@ public:
 	vec3 delmove;
 
 	int wall;		//壁操作の状況(0:ノーマル，1:設置中,2:除去中)
+	int respawntime;
 
 
 	float minushp;
@@ -93,6 +94,7 @@ public:
 	void Draw();
 	void Update();
 	bool Move(object *mapobject,int mapn,Wall *playerwall);
+	void dead();
 	void set_wall();
 	void remove_wall();
 	void DrawMyWall();
