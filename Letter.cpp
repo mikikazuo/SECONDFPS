@@ -3,6 +3,8 @@
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <SDL/SDL_ttf.h>
+#include <math.h>
+#include "Game.h"
 //using namespace Leap;
 
 #define MOZI_DEBUG 0//1でデバッグ出力モード
@@ -175,7 +177,7 @@ void Mozi_DrawM_3D(const char *mstr, double X, double Y, double scale, int type)
 
 	//setlocale( LC_ALL, "ja_JP.UTF-8" );
 	mbstowcs(ws, mstr, 100);
-	Mozi_Draw_3D(ws,scale, type);
+	Mozi_Draw_3D(ws, X, Y, scale, type);
 }
 
 /*
@@ -241,18 +243,17 @@ void Mozi_Draw(wchar_t *wstr, double X, double Y, double scale, int type) {
 			}
 		}
 	}
-//バイリニア補間ここまで
+	//バイリニア補間ここまで
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-void Mozi_Draw_3D(wchar_t *wstr,  double scale, int type) {
+void Mozi_Draw_3D(wchar_t *wstr, double X, double Y, double scale, int type) {
 	//バイリニア補間
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	int i;
+	double sumlength=0;
 	Mozi_chInfomation tmpmozi;
 	Mozi_Infomation *tmp2;
-	glEnable(GL_TEXTURE_2D);//テクスチャ有効
-	glEnable(GL_ALPHA_TEST);//アルファテスト開始
 	for (i = 0; wstr[i] != '\0'; i++) {
 		//		tmp = mozi_getMoziNO(wstr[i]);
 		tmp2 = mozi_getMoziPointer(wstr[i]);
@@ -285,15 +286,58 @@ void Mozi_Draw_3D(wchar_t *wstr,  double scale, int type) {
 				}
 				return;
 			}
-
-			GLfloat X=0;
-			GLfloat Y=0;
-
 			if (tmpmozi.textureNo > 0) {
+				sumlength += tmpmozi.Width*scale;
+			}
+			else {
+			}
+		}
+	}
+	glPushMatrix();
+	glTranslated(-sumlength/2,0,0);
+
+	glEnable(GL_TEXTURE_2D);//テクスチャ有効
+	glEnable(GL_ALPHA_TEST);//アルファテスト開始
+
+	for (i = 0; wstr[i] != '\0'; i++) {
+		//		tmp = mozi_getMoziNO(wstr[i]);
+		tmp2 = mozi_getMoziPointer(wstr[i]);
+		if (tmp2 == NULL) {//存在しない文字は無視
+		}
+		else {
+			if (type == MOZI_SHOUZANGYOUSYO) {//衡山毛筆フォント行書
+				tmpmozi = tmp2->syouzan_gyousyo;
+			}
+			else if (type == MOZI_SHOUZANSOUSYO) {
+				tmpmozi = tmp2->syouzan_sousyo;
+			}
+			else if (type == MOZI_HGMINTYOE) {
+				tmpmozi = tmp2->HGmintyouE;
+			}
+			else if (type == MOZI_ADOBEFANGSONG) {
+				tmpmozi = tmp2->AdobeFangsong;
+			}
+			//日本語不可
+			else if (type == MOZI_AGENCYBOLD) {
+				tmpmozi = tmp2->AGENCYBold;
+			}
+			else if (type == MOZI_SFSQUAREHEADCONDENSED) {
+				tmpmozi = tmp2->SFSquareHeadCondensed;
+			}
+			else {
+				if (Mozi_ALART_Nommozicolor == 0) {
+					if (MOZI_DEBUG)	printf("存在しない文字種類です:%d(最初の一度のみ警告)\n", type);
+					Mozi_ALART_Nommozicolor = 1;
+				}
+				return;
+			}
+			if (tmpmozi.textureNo > 0) {
+
+
 				glBindTexture(GL_TEXTURE_2D, tmpmozi.textureNo);
 				glBegin(GL_QUADS);
-				glTexCoord2f(0.0f, 1.0f);	// 画像の左下と次の頂点を対応させる
 
+				glTexCoord2f(0.0f, 1.0f);	// 画像の左下と次の頂点を対応させる
 				glVertex2f(X, Y);
 				glTexCoord2f(1.0f, 1.0f);	// 画像の右下と次の頂点を対応させる
 				glVertex2f(X + tmpmozi.Width*scale, Y);
@@ -301,7 +345,9 @@ void Mozi_Draw_3D(wchar_t *wstr,  double scale, int type) {
 				glVertex2f(X + tmpmozi.Width*scale, Y + tmpmozi.Heigh*scale);
 				glTexCoord2f(0.0f, 0.0f);	// 画像の左上と次の頂点を対応させる
 				glVertex2f(X, Y + tmpmozi.Heigh*scale);
+
 				glEnd();
+
 
 				X += tmpmozi.Width*scale;
 			}
@@ -309,7 +355,8 @@ void Mozi_Draw_3D(wchar_t *wstr,  double scale, int type) {
 			}
 		}
 	}
-//バイリニア補間ここまで
+	glPopMatrix();
+	//バイリニア補間ここまで
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
@@ -482,8 +529,19 @@ void Mozi_DrawM2(double X, double Y, double scale, int type, const char *format,
 void Mozi_DrawM2_3D(vec3 Center,double rota,vec3 nvec, double scale, int type, const char *format, ...)
 {
 	glPushMatrix();
+	//double length=strlen(format);
 	glTranslated(Center.x,Center.y,Center.z);
-	glRotated(rota,nvec.x,nvec.y,nvec.z);
+
+	vec3 toplayer_dir = get_player()->position-Center;
+	float toplayer_dir_big=sqrt(toplayer_dir.x*toplayer_dir.x+toplayer_dir.y*toplayer_dir.y+toplayer_dir.z*toplayer_dir.z);
+	toplayer_dir.x/=toplayer_dir_big;
+	toplayer_dir.y/=toplayer_dir_big;
+	toplayer_dir.z/=toplayer_dir_big;
+	vec3 angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+			atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
+	glRotated(angles.x * 180 /M_PI ,0,1,0);
+	glRotated(-angles.y * 180 /M_PI ,1,0,0);
+	//glTranslated(-length*0.12,0,0);
 	va_list args;
 	char str[100];
 	str[0] = '\0';

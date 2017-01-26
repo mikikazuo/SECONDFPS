@@ -18,6 +18,7 @@ private:
 
 
 public:
+	int myid;
 	bullet enemybullet;
 	vec3 position;	//座標
 	vec3 angles;	//角度

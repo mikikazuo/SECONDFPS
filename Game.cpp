@@ -23,6 +23,7 @@
 #include "charaanimation.h"
 #include "main.h"
 #include "Letter.h"
+#include "net_client.h"
 
 #define PLAYERNUM 5
 
@@ -76,6 +77,7 @@ void Game::Initialize(){
 		if(get_player()->myid==i)
 			continue;
 		enemy[i].Initialize();
+		enemy[i].myid=i;
 	}
 
 	//プレイヤーの壁情報初期化
@@ -89,7 +91,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Gatling);
+	player1.DrawInitialize(Crossbow);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
@@ -198,6 +200,7 @@ void Game::Draw(){
 		if(get_player()->myid==i)
 			continue;
 		enemy[i].Draw();
+
 	}
 
 //	mapobj.Draw();

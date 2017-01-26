@@ -8,8 +8,8 @@
 #include "enemyPlayer.h"
 #include "image.h"
 #include "Letter.h"
-
-
+#include "net_client.h"
+#include "Game.h"
 enemyPlayer::enemyPlayer() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -36,7 +36,7 @@ void enemyPlayer::DrawInitialize(Role setrole){
 }
 
 void enemyPlayer::Draw() {
-//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+	//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
 	glPushMatrix();
@@ -51,7 +51,8 @@ void enemyPlayer::Draw() {
 	glPopMatrix();
 
 	glColor3f(1,1,1);
-	Mozi_DrawM2_3D(vec3(position.x,position.y+2,position.z),0,vec3(0,1,0),0.01,MOZI_HGMINTYOE,"赤：%d人/4人 ",231);
+	if(myteam==get_player()->myteam)
+		Mozi_DrawM2_3D(vec3(position.x,position.y+1.3f,position.z),30,vec3(0,1,0),0.005,MOZI_HGMINTYOE,get_clients()[myid].name);
 
 	enemybullet.Draw();
 	DrawMyWall();
