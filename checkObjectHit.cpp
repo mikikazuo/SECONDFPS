@@ -384,7 +384,7 @@ float checkObjectHit::LenOBBToPoint_move(object &obb, vec3 pointpos)
 		//この値がプレイヤーの当たり判定の半径より小さいと衝突
 		//sa:差
 		vec3 sa	 = pointpos - obb.Pos_move;
-		sa.y--;
+		sa.y -= 0.5;
 		//動作確認
 		/*if(i == 1){
 			printf("i = %d sa.x = %lf\n",i,sa.x);

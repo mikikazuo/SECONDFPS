@@ -20,7 +20,7 @@
 #include <math.h>
 #include "key.h"
 
-
+#include "Letter.h"
 #include "fps.h"
 #include "main.h"
 
@@ -74,7 +74,7 @@ void myInit(char *progname)
 		//printf("error");
 		exit(-1);
 	}
-
+	initMozi() ;
 	mainfps.fps_Initialize();
 
 	glutInitWindowPosition(0,0);

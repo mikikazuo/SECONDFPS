@@ -81,6 +81,7 @@ typedef struct{
 	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
 	Team myteam;
+	Role myrole;
 	vec3 delmove;//慣性による移動
 }PLAYER_DATA;
 
@@ -102,14 +103,15 @@ typedef struct{
 	BULLET_DATA bullets[MAX_CLIENTS];
 	wall2 walls[MAX_CLIENTS][WALLMAX];
 	Mapobj movablemapobj[MOVABLE];
-
 	mob2 mob[MOBNUM];
 	float basehp[2];
+	bool start[MAX_CLIENTS];
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
 typedef struct{
 	char command;//コマンド
+	bool start;  //decide team
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
 }C_CONTAINER;

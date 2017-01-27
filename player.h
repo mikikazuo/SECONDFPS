@@ -36,6 +36,13 @@ typedef enum{
 	nonemode
 }Role;
 
+typedef enum{
+	defaultmodel,
+	shootmodel,
+	shootedmodel,
+	reloadmodel,
+	nonemodel
+}Poze;
 
 class player
 {
@@ -45,9 +52,11 @@ private:
 	int atkcount;
 	int speed;
 	double pers;
-	Role myrole;
-public:
 
+	Poze nowpoze;
+
+public:
+	Role myrole;
 	int myid;    //my server id
 	float maxhp;
 	float hp;
@@ -58,6 +67,10 @@ public:
 	float atk;
 	int radi;
 	vec3 delmove;
+
+	int wall;		//壁操作の状況(0:ノーマル，1:設置中,2:除去中)
+	int respawntime;
+
 
 	float minushp;
 
@@ -75,12 +88,13 @@ public:
 
 	Wall *get_mywall();
 	player();
-	void Initialize(vec3 pos,float ra,Team setteam);
+	void Initialize(vec3 pos,float ra);
 	void DrawInitialize(Role setrole);
 	void DrawFinalize();
 	void Draw();
 	void Update();
 	bool Move(object *mapobject,int mapn,Wall *playerwall);
+	void dead();
 	void set_wall();
 	void remove_wall();
 	void DrawMyWall();

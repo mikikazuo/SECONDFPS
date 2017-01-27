@@ -7,9 +7,9 @@
 
 #include "enemyPlayer.h"
 #include "image.h"
-
-
-
+#include "Letter.h"
+#include "net_client.h"
+#include "Game.h"
 enemyPlayer::enemyPlayer() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -23,20 +23,20 @@ void enemyPlayer::Initialize(){
 
 	}
 }
-void enemyPlayer::DrawInitialize(MQO_MODEL setmodel){
+void enemyPlayer::DrawInitialize(Role setrole){
 
 	int wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
+	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
+	enemymodel=mqoCreateModel(flname,0.0035);
 
-	enemymodel=setmodel;
-
-	enemybullet.bullet_DrawInitialize(Crossbow);
+	enemybullet.bullet_DrawInitialize(setrole);
 }
 
 void enemyPlayer::Draw() {
-//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+	//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
 	glPushMatrix();
@@ -49,6 +49,10 @@ void enemyPlayer::Draw() {
 	mqoCallModel(enemymodel);
 
 	glPopMatrix();
+
+	glColor3f(1,1,1);
+	if(myteam==get_player()->myteam)
+		Mozi_DrawM2_3D(vec3(position.x,position.y+1.3f,position.z),30,vec3(0,1,0),0.005,MOZI_HGMINTYOE,get_clients()[myid].name);
 
 	enemybullet.Draw();
 	DrawMyWall();

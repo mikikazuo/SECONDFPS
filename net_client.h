@@ -14,7 +14,7 @@ extern player player1;
 
 extern void client_start(void);
 extern int control_requests ();
-
+CLIENT *get_clients();
 
 
 

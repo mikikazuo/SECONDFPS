@@ -20,9 +20,6 @@ checkObjectHit bulletmovechecker;
 
 bullet::bullet() {
 	// TODO 自動生成されたコンストラクター・スタブ
-	for(int i=0;i<MAXBULLET;i++)
-		bullet_info[i].count=0;
-	lifetime=3;
 }
 void bullet::bullet_Initialize(){
 	bulletradi=0.01f;
@@ -34,7 +31,7 @@ void bullet::bullet_Initialize(){
 
 
 
-	lifetime=3;
+	lifetime=6;
 
 
 	switch(mode){
@@ -56,11 +53,11 @@ void bullet::bullet_Initialize(){
 		break;
 	case Magicstick:
 		reloadmax=20;
-		speed=8;
+		speed=15;
 		break;
 	case Magic:
 		reloadmax=30;
-		speed=9;
+		speed=15;
 		break;
 	case Mob:
 		reloadmax=30;
@@ -73,7 +70,7 @@ void bullet::bullet_Initialize(){
 }
 
 void bullet::bullet_DrawInitialize(Role setbulletmode){
-	char *flname=(char*)"Data/charamodel/char1/char1_tama.mqo";
+	char *flname=(char*)"Data/charamodel/char5/char5_tama.mqo";
 
 
 	mode=setbulletmode;
@@ -96,14 +93,14 @@ void bullet::bullet_DrawInitialize(Role setbulletmode){
 		break;
 	case Magicstick:
 		flname=(char*)"Data/charamodel/char5/char5_tama.mqo";
-		bulletmodel=mqoCreateModel(flname,0.01);
+		bulletmodel=mqoCreateModel(flname,0.005);
 		break;
 	case Magic:
 		flname=(char*)"Data/charamodel/char6/char6_tama.mqo";
 		bulletmodel=mqoCreateModel(flname,0.01);
 		break;
 	case Mob:
-		bulletmodel=mqoCreateModel(flname,0.01);
+		bulletmodel=mqoCreateModel(flname,0.001);
 		break;
 	default:
 		break;
@@ -111,35 +108,34 @@ void bullet::bullet_DrawInitialize(Role setbulletmode){
 }
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
-	vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
-	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
+	//vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
+	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
-	if(mode==Magic){
-		for(int i=0;i<MAXBULLET;i++)
-			if(launchbulletcount<reloadmax)
-				if(bullet_info[i].count==0){
-					for(int j=0;j<3;j++){
-						if(i+j>MAXBULLET)
-							break;
-						bullet_info[i+j].position=playerposition;
-						switch(j){
-						case 0:
-							bullet_info[i+j].position+=right_dir*0.2f;
-							break;
-						case 1:
-							bullet_info[i+j].position-=right_dir*0.2f;
-							break;
-						case 2:
-							bullet_info[i+j].position.y-=0.2f;
-							break;
-						}
-						bullet_info[i+j].dir=playerdir;
-						bullet_info[i+j].count++;
-					}
-					launchbulletcount++;
-					break;
-				}
-	}else{
+//	if(mode==Magic){
+//		for(int i=0;i<MAXBULLET;i++)
+//			if(launchbulletcount<reloadmax)
+//				if(bullet_info[i].count==0){
+//					for(int j=0;j<3;j++){
+//						if(i+j>MAXBULLET)
+//							break;
+//						bullet_info[i+j].position=playerposition;
+//						switch(j){
+//						case 0:
+//							bullet_info[i+j].position+=right_dir*0.2f;
+//							break;
+//						case 1:
+//							bullet_info[i+j].position-=right_dir*0.2f;
+//							break;
+//						case 2:
+//							bullet_info[i+j].position.y-=0.2f;
+//							break;
+//						}
+//						bullet_info[i+j].dir=playerdir;
+//						bullet_info[i+j].count++;
+//					}
+//					break;
+//				}
+//	}else{
 		for(int i=0;i<MAXBULLET;i++)
 			if(launchbulletcount<reloadmax)
 				if(bullet_info[i].count==0){
@@ -154,17 +150,16 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 					bullet_info[i].angles=vec3(atan2(bullet_info[i].dir.x,bullet_info[i].dir.z),
 							atan2(bullet_info[i].dir.y,bullet_info[i].dir.x*bullet_info[i].dir.x+bullet_info[i].dir.z*bullet_info[i].dir.z),
 							atan2(bullet_info[i].dir.z,bullet_info[i].dir.x));
-					launchbulletcount++;
 					bullet_info[i].count++;
 					break;
 				}
-	}
+	//}
 
 }
 
 void bullet::reload(){
 
-	if(key_getmove(Reload)==2&&reloadtime==0){
+	if(key_getmove(Reload)==2&&reloadtime==0&&launchbulletcount!=0){
 		reloadtime++;
 	}
 

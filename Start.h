@@ -13,15 +13,24 @@
 class Start : public BaseScene{
 private:
 	int handle[10];
+
+	int teamnum[2];
 public:
 	Start(ISceneChanger* changer);
 	virtual ~Start();
+
+/*
     void Initialize();			//初期化処理をオーバーライド。
     void DrawInitialize();
     void Update() ;				//更新処理をオーバーライド。
     void Draw() ;					//描画処理をオーバーライド。
     void DrawFinalize();
     void Finalize();
+*/
 };
+bool get_start();
+void set_start(bool set);
+int *get_teammemfaze();
+
 
 #endif /* START_H_ */

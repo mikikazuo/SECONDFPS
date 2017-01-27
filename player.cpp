@@ -25,6 +25,8 @@
 #include "GLMetaseq.h"
 #include "bullet.h"
 #include "net_common.h"
+#include "GL/glut.h"
+#include "CanvasUI.h"
 
 #define HP 100
 #define BULLETNUM 10
@@ -45,6 +47,10 @@ object mywire;
 bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
 static int wallsetting;
+static int modelcount;
+static int shootedcount;
+static int reloadcount;
+
 float mousespeed = 0.1f;
 ///ここから//////
 //#include <opencv/cv.h>
@@ -133,6 +139,7 @@ float mousespeed = 0.1f;
 //////////////////////////////////
 #define LOOK_DISTANT 1200           //見える距離
 
+
 checkObjectHit movechecker;
 
 //static GLfloat ground[][4] = {
@@ -145,7 +152,7 @@ GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納す
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
 double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
 
-MQO_MODEL handmodel;
+MQO_MODEL handmodel[nonemodel];
 
 Wall *player::get_mywall(){
 	return mywall;
@@ -159,7 +166,7 @@ player::player() {
 
 }
 
-void player::Initialize(vec3 pos,float ra,Team setteam){
+void player::Initialize(vec3 pos,float ra){
 
 	level=0;
 	exp=0;
@@ -182,7 +189,7 @@ void player::Initialize(vec3 pos,float ra,Team setteam){
 	default:
 		break;
 	}
-
+	respawntime=0;
 	position=pos;
 	speed=7;
 	hp=maxhp=100;
@@ -192,7 +199,6 @@ void player::Initialize(vec3 pos,float ra,Team setteam){
 
 
 	radi=ra;
-	myteam=setteam;
 
 	pers=60.0;
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -210,37 +216,50 @@ void player::DrawInitialize(Role setrole){
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
-	char *flname;
+	char *flname[nonemodel];
 	myrole=setrole;
 	switch(myrole){
 	case Crossbow:
-		flname=(char*)"Data/charamodel/char1/char1_firstside_reload.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char1/char1_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char1/char1_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char1/char1_firstside_reload.mqo";
 		break;
 	case Rifle:
-		flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char2/char2_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char2/char2_firstside_reload.mqo";
 		break;
 	case Gatling:
-		flname=(char*)"Data/charamodel/char3/char3_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[1]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[3]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
 		break;
 	case Spear:
-		flname=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char4/char4_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char4/char4_firstside_reload.mqo";
 		break;
 	case Magicstick:
-		flname=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.001);
+		flname[0]=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
+		flname[2]=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
+		flname[3]=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
 		break;
 	case Magic:
-		flname=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
-		handmodel=mqoCreateModel(flname,0.0035);
+		flname[0]=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char6/char6_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char6/char6_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char6/char6_ene_shooted.mqo";
 		break;
 	default:
 		break;
 	}
-
+	for(int i=0;i<nonemodel;i++)
+		handmodel[i]=mqoCreateModel(flname[i],0.0035);
 	//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
@@ -282,23 +301,47 @@ void player::Draw(){
 
 
 	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
 
+	glPushMatrix();
 	//glTranslatef(position.x-0.1,position.y+0.48f,position.z+0.3);
 	glTranslatef(position.x,position.y+0.5f,position.z);
 	glRotated(angles.x* 180 /M_PI ,0,1,0);
 	glRotated(-angles.y* 180 /M_PI ,1,0,0);
-
-
-	mqoCallModel(handmodel);
+	mqoCallModel(handmodel[nowpoze]);
 	glPopMatrix();
+	DrawMyWallWire();
+	DrawMyWall();
+
+
+	get_mapobj()->Draw();
+
+
 
 	playerbullet.Draw();
-	DrawMyWall();
-	DrawMyWallWire();
+
 }
 
 void player::Update(){
+	if(modelcount>0)
+		modelcount--;
+	if(shootedcount>0)
+		shootedcount--;
+	if(reloadcount>0)
+		reloadcount--;
+
+
+	if(shootedcount>0&&playerbullet.launchbulletcount<=playerbullet.reloadmax)
+		nowpoze=shootedmodel;
+	else if(reloadcount>0)
+		nowpoze=reloadmodel;
+	else if(modelcount>0)
+		nowpoze=shootmodel;
+	else
+		nowpoze=defaultmodel;
+
+	if(key_getmove(Reload)==2&&playerbullet.launchbulletcount!=0)
+		reloadcount=60*3;
+
 	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
@@ -356,7 +399,13 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 		if(key_getmove(Backward))
 			sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	}
+
+		if(key_getmove(Left)||key_getmove(Right)||key_getmove(Forward)||key_getmove(Backward)){
+			modelcount=60*2;
+		}
+	}else if(wallsetting>0)
+		modelcount=0;
+
 	playerfoot_collider=position;
 	playerfoot_collider.y-=0.7;
 
@@ -391,7 +440,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	int hitnum=0;
 	//オブジェクトとの当たり判定
-	for(int i=0;i<mapn;i++)
+	for(int i=0;i<mapn;i++){
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
 			//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
 			upflag = true;
@@ -400,6 +449,10 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			goto brex;
 		}
 
+
+		//else
+		//hitnum = 0;
+	}
 
 	//hitnum = 0;
 	for(int k=0;k<MAX_CLIENTS;k++)
@@ -490,27 +543,51 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//if(!hitmap)
 	//hitnum = -1;
 
+	//動作確認
+	//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint(mapobject[hitnum],player_collider));
+	//	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider));
+	//
+	//	vec3 player_collider_down = player_collider;
+	//	player_collider_down.y +=  mapobject[hitnum].speed.y * get_mainfps().fps_getDeltaTime();
+	//int down = 0;
+
 	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
-	mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	//mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 	//mapobject[hitnum].Pos_move += (mapobject[hitnum].get_m_Pos() + (mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime() ));
 	//printf("%lf %lf %lf\n",mapobject[hitnum].Pos_move.x,mapobject[hitnum].Pos_move.y,mapobject[hitnum].Pos_move.z);
 
 	//移動するオブジェクトから衝突してきた時のプレイヤーを押し寄せる処理(x軸z軸方向は完成)
 	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
-	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
-			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-		printf("ABCDE\n");
-		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	}
-
-	//LenOBBToPoint_moveのy座標1下げ
-	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
-	//else if(mapobject[hitnum].type == MOVE){
-	else if(mapobject[hitnum].type == MOVE
-			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("12345\n");
-		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	}
+	//	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
+	//			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
+	//
+	//		printf("衝突処理 分岐1:ノーマル\n");
+	//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	//		//down = 0;
+	//	}
+	//
+	//	//オブジェクト降下時
+	//	else if(mapobject[hitnum].type == MOVE
+	//			&& mapobject[hitnum].speed.y < 0//){
+	//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider_down) <= radi){
+	//		printf("衝突処理 分岐2:オブジェクト降下\n");
+	//
+	//		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
+	//		//down = 1;
+	//	}
+	//
+	//	//LenOBBToPoint_moveのy座標1下げ
+	//	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
+	//	//else if(mapobject[hitnum].type == MOVE){
+	//	else if(mapobject[hitnum].type == MOVE
+	//
+	//			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+	//		printf("12345\n");
+	//
+	//		&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
+	//			printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
+	//			//down = 0;
+	//		}
 
 	//衝突したオブジェクトの番号
 	//printf("hitnum = %d\n",hitnum);
@@ -629,8 +706,16 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		//			}
 	}
 
+
 	gravity+=0.3f;
 	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+
+	//重力による下降処理
+	//if(mapobject[hitnum].type != MOVE && mapobject[hitnum].speed.y >= 0 && movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) >= radi){
+	//if(down == 0){
+	//printf("重力\n");
+	//}
+
 
 
 	//y座標の補正
@@ -716,6 +801,15 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	return false;
 
 }
+
+void player::dead(){
+	if(respawntime>RESPAWN_TIME){
+		hp=maxhp;
+		respawntime=0;
+	}
+	else if(hp<=0)
+		respawntime++;
+}
 void player::set_wall(){
 	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
 		for(int i=0;i<WALLMAX;i++)
@@ -723,8 +817,6 @@ void player::set_wall(){
 				wallsetting++;
 				break;
 			}
-
-
 	}
 	if(wallsetting>0)
 		wallsetting++;
@@ -738,10 +830,8 @@ void player::set_wall(){
 				break;
 			}
 	}
-
-
-
 }
+
 void player::remove_wall(){
 	if(key_getmove(Removewall)==2)
 		for(int i=0;i<WALLMAX;i++)
@@ -847,23 +937,17 @@ void player::launchBullet(){
 	static bool lastbullet=false;
 
 	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
+
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 
-		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
-			lastbullet=false;
 
-		if(playerbullet.launchbulletcount<=playerbullet.reloadmax&&lastbullet==false)
+		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
+			shootedcount=20;
+			playerbullet.launchbulletcount++;
 			ChangeSE(1);
-
-		if(playerbullet.launchbulletcount==playerbullet.reloadmax&& lastbullet==false){
-			lastbullet=true;
 		}
-
-
-
 		atkok=false;
 	}
-
 	//攻撃間隔
 	if(atkcount>atktime){
 		atkok=true;

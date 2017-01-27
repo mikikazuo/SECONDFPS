@@ -22,6 +22,8 @@
 #include "enemyPlayer.h"
 #include "charaanimation.h"
 #include "main.h"
+#include "Letter.h"
+#include "net_client.h"
 
 #define PLAYERNUM 5
 
@@ -50,9 +52,6 @@ GLfloat specular[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat shininess = 65.0;
 
 
-void set_myteam(Team myt){
-	myteam=myt;
-}
 void Game::setInfoPlayerWall(){
 
 	for(int i=1;i<PLAYERNUM;i++)
@@ -68,7 +67,7 @@ void Game::Initialize(){
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
-	player1.Initialize(vec3(30,10,-10),1,myteam);//(*get_argc()==2)?RedTeam:BlueTeam);
+	player1.Initialize(vec3(30,10,-10),1);//(*get_argc()==2)?RedTeam:BlueTeam);
 	chara.Initialize();
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -78,7 +77,12 @@ void Game::Initialize(){
 		if(get_player()->myid==i)
 			continue;
 		enemy[i].Initialize();
+		enemy[i].myid=i;
 	}
+
+	//プレイヤーの壁情報初期化
+	player1.wall = 0;
+
 }
 
 void Game::DrawInitialize(){
@@ -87,7 +91,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Spear);
+	player1.DrawInitialize(Gatling);
 
 	chara.DrawInitialize();
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
@@ -130,7 +134,7 @@ void Game::DrawInitialize(){
 	for(int i=0;i<MAX_CLIENTS;i++){
 		if(get_player()->myid==i)
 			continue;
-		enemy[i].DrawInitialize(mqomodel[0]);
+		enemy[i].DrawInitialize(enemy[i].myrole);
 	}
 
 }
@@ -154,8 +158,14 @@ void Game::Update(){
 
 	//追加??
 	//キャラクターの座標表示
+
 	//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
 	chara.Update();
+
+//	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
+//	printf("wall = %d\n",player1.wall);
+
+
 	player1.Update();
 	gamecanvas.Update();
 	//mapobj.Update();
@@ -190,9 +200,10 @@ void Game::Draw(){
 		if(get_player()->myid==i)
 			continue;
 		enemy[i].Draw();
+
 	}
 
-	mapobj.Draw();
+//	mapobj.Draw();
 	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();

@@ -18,6 +18,7 @@
 #include "Game.h"
 #include "player.h"
 #include "get_sdata.h"
+#include "Start.h"
 static int num_clients;
 static int myid;
 static int sock;
@@ -37,6 +38,10 @@ static void send_data(void *, int);
 static int receive_data(void *, int);
 void handle_error();
 
+
+CLIENT *get_clients(){
+	return clients;
+}
 
 //ネットワーク接続の確立
 void setup_client(char *server_name, u_short port) {
@@ -67,7 +72,11 @@ void setup_client(char *server_name, u_short port) {
 	//  if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
 	//    handle_error();
 	//  }
-	user_name[0]='a';
+
+	if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
+		handle_error();
+	}
+
 	user_name[strlen(user_name) - 1] = '\0';
 	send_data(user_name, MAX_LEN_NAME);
 
@@ -97,7 +106,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc019");
+	sprintf(server_name,"clpc064");
 
 	setup_client(server_name,port);
 }
@@ -133,6 +142,7 @@ int control_requests () {
 
 
 	cdata.command = DATA;
+	cdata.start = get_start();
 
 	player me = player1;
 	cdata.my_player.position.x = me.position.x;
@@ -148,11 +158,12 @@ int control_requests () {
 	cdata.my_player.lookat.z = me.lookat.z;
 
 	cdata.my_player.myteam = me.myteam;
+	cdata.my_player.myrole = me.myrole;
 
 	for(int i=0;i<WALLMAX;i++){
-	cdata.my_player.mywall[i].count=get_player()->mywall[i].count;
-	cdata.my_player.mywall[i].pos=get_player()->mywall[i].wall.get_m_Pos();
-	cdata.my_player.mywall[i].angles=get_player()->mywall[i].wall.get_m_Rot();
+		cdata.my_player.mywall[i].count=get_player()->mywall[i].count;
+		cdata.my_player.mywall[i].pos=get_player()->mywall[i].wall.get_m_Pos();
+		cdata.my_player.mywall[i].angles=get_player()->mywall[i].wall.get_m_Rot();
 	}
 
 	cdata.my_bullet.shooter=get_player()->myid;
@@ -177,8 +188,8 @@ int control_requests () {
 	get_mapobj()->resetminushp();
 
 	for(int i=0;i<MAX_CLIENTS;i++){
-	cdata.my_bullet.minusplayerhp[i]=get_enemy()[i].serverminushp;
-	get_enemy()[i].resetminushp();
+		cdata.my_bullet.minusplayerhp[i]=get_enemy()[i].serverminushp;
+		get_enemy()[i].resetminushp();
 	}
 
 
