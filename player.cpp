@@ -46,7 +46,7 @@ bullet playerbullet;
 object mywire;
 bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
-static int wallsetting;
+
 static int modelcount;
 static int shootedcount;
 static int reloadcount;
@@ -322,6 +322,9 @@ void player::Draw(){
 }
 
 void player::Update(){
+
+	dead();
+
 	if(modelcount>0)
 		modelcount--;
 	if(shootedcount>0)
@@ -390,7 +393,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	vec3 sampposition;
 	sampposition=position;
-	if(wallsetting==0){
+	if(progress_time==0){
 		if(key_getmove(Left))
 			sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
 		if(key_getmove(Right) )
@@ -399,11 +402,10 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 		if(key_getmove(Backward))
 			sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-
 		if(key_getmove(Left)||key_getmove(Right)||key_getmove(Forward)||key_getmove(Backward)){
 			modelcount=60*2;
 		}
-	}else if(wallsetting>0)
+	}else if(progress_time>0)
 		modelcount=0;
 
 	playerfoot_collider=position;
@@ -807,21 +809,22 @@ void player::dead(){
 		hp=maxhp;
 		respawntime=0;
 	}
-	else if(hp<=0)
+	if(hp<=0)
 		respawntime++;
 }
 void player::set_wall(){
 	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
-				wallsetting++;
+				progress_time++;
 				break;
 			}
 	}
-	if(wallsetting>0)
-		wallsetting++;
-	if(wallsetting>60*2){
-		wallsetting=0;
+	if(progress_time>0)
+		progress_time++;
+
+	if(progress_time>WALL_SET){
+		progress_time=0;
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 
@@ -830,6 +833,8 @@ void player::set_wall(){
 				break;
 			}
 	}
+
+
 }
 
 void player::remove_wall(){
@@ -837,8 +842,23 @@ void player::remove_wall(){
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count!=0)
 				if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
-					mywall[i].count=0;
+					progress_time--;
+					break;
 				}
+	if(progress_time<0)
+		progress_time--;
+
+
+	for(int i=0;i<WALLMAX;i++)
+		if(progress_time<-WALL_DELETE){
+			progress_time=0;
+			for(int i=0;i<WALLMAX;i++)
+				if(mywall[i].count!=0)
+					if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
+						mywall[i].count=0;
+						break;
+					}
+		}
 
 }
 void player::DrawMyWall(){
@@ -863,7 +883,7 @@ int thread(void *data){
 
 		}
 
-		if(wallsetting>0)
+		if(get_player()->progress_time>0)
 			glutWarpPointer(1200 / 2, 700 / 2);
 
 		else if(!wrap) {
