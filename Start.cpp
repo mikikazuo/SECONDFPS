@@ -94,7 +94,7 @@ void Start::DrawInitialize(){
 	handle[3]=image_Load("Data/image/スタート画面/button4.png");
 	handle[4]=image_Load("Data/image/スタート画面/button5.png");
 
-	image[0]==image_Load("Data/image/スタート画面/button1.png");//あとで変更
+	image[0]=image_Load("Data/image/スタート画面/system1-3.png");//
 
 	name=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	model[0] = mqoCreateModel( name, aaa );//モデル読み込み
@@ -305,15 +305,21 @@ void Start::Draw() {
 			mqoCallModel( model[5] );
 
 			if(ro_flag >= 0) {
+				startcanvas.view2D();
 				int img_w = 300;
 				int img_h = 300;
+				/*
 				glMatrixMode(GL_PROJECTION);
 				glPushMatrix();
 				glLoadIdentity();
 				glOrtho(0,w,h,0,-1,1);
 				glMatrixMode(GL_MODELVIEW);
+				*/
 				//rect_Draw2D(get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3),img_w,img_h);
 				img_DrawXY(image[0],get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3),img_w,img_h);
+				/*char aaaa[100] = "お";
+				glColor3d(0,0,0);
+				Mozi_DrawM2(get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3), 1,MOZI_SHOUZANGYOUSYO ,aaaa);*/
 			}
 
 			glPopMatrix();//取り出し
