@@ -99,6 +99,10 @@ void CanvasUI::DrawInitialize(){
 	//YOU LOSE...
 	handle[46]=image_Load("Data/image/you_lose.png");
 
+	//スナイパーエフェクト
+	handle[47]=image_Load("Data/image/sniper.png");
+	handle[48]=image_Load("Data/image/sniper_bar.png");
+
 }
 
 
@@ -159,18 +163,18 @@ void CanvasUI::Update() {
 	//if(壁に関する動作中){
 		progress_time++;
 		//if(壁設置中){
-			//progress_per = progress_time / WALL_SET;
+			progress_per = progress_time / WALL_SET;
 
 			if(progress_time == WALL_SET){
-				//progress_time = 0;
+				progress_time = 0;
 				//ここで壁設置実行
 			}
 		//}
 
 		//else if(壁除去中){
-			progress_per = 1 - (progress_time / WALL_DELETE);	//(右から左に減少させるために1から進捗率を引いている)
+			//progress_per = 1 - (progress_time / WALL_DELETE);	//(右から左に減少させるために1から進捗率を引いている)
 			if(progress_time == WALL_DELETE){
-				progress_time = 0;
+				//progress_time = 0;
 				//ここで壁除去実行
 			}
 		//}
@@ -190,8 +194,9 @@ void CanvasUI::Update() {
 
 	/***ゲーム終了メッセージ***/
 	//if(ゲーム終了 && fin_mes == 0){
-		if(fin_mes == 0)//本来は必要ないが動作確認のためのif文
-			fin_mes = 1;	//第一段階開始
+		if(fin_mes == 0){//本来は必要ないが動作確認のためのif文
+			//fin_mes = 1;	//第一段階開始
+		}
 	//}
 
 	if(fin_mes != 0){
@@ -202,6 +207,11 @@ void CanvasUI::Update() {
 		fin_time = 0;
 		fin_mes++;
 	}
+
+	/***スナイパーモード***/
+	/*if(スナイパーモード){
+		snipe_per = 現在の数値/最大数値;
+	}*/
 }
 
 
@@ -303,14 +313,14 @@ void CanvasUI::Draw() {
 	//if(壁に関する動作中){
 		//壁設置中
 		//if(壁設置中){
-			//glColor3d(0.486,1.0,0.333);	//緑指定
-			//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
+			glColor3d(0.486,1.0,0.333);	//緑指定
+			rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
 		//}
 
 		//壁除去中
 		//else if(壁除去中){
-			glColor3d(1.0,0.2,0.263);		//赤指定
-			rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
+			//glColor3d(1.0,0.2,0.263);		//赤指定
+			//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
 		//}
 
 		glColor3d(0.0,0.0,0.0);		//黒指定
@@ -373,6 +383,15 @@ void CanvasUI::Draw() {
 				//}
 				break;
 		}
+
+	//動作確認(本来は 現在の数値/最大数値 にて算出)
+	snipe_per = progress_per;
+
+	/***スナイパーモード***/
+	//if(スナイパーモード時)
+		image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
+		image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
+	//}
 }
 
 
