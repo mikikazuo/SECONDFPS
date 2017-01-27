@@ -100,7 +100,7 @@ void Game::Update(){
 	//追加??
 	//キャラクターの座標表示
 	printf("x = %lf y = %lf z = %lf \n",player1.position.x,player1.position.y,player1.position.z);
-	printf("wall = %d\n",player1.wall);
+	//printf("wall = %d\n",player1.wall);
 
 	player1.Update();
 	gamecanvas.Update();

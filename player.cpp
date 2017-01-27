@@ -361,8 +361,8 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		//hitnum = -1;
 
 	//動作確認
-	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint(mapobject[hitnum],player_collider));
-	printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider));
+	//printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint(mapobject[hitnum],player_collider));
+	//printf("obj[%d]との距離:%lf\n",hitnum,movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider));
 
 	vec3 player_collider_down = player_collider;
 	player_collider_down.y +=  mapobject[hitnum].speed.y * get_mainfps().fps_getDeltaTime();
@@ -377,7 +377,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
 	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
 			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-		printf("衝突処理 分岐1:ノーマル\n");
+		//printf("衝突処理 分岐1:ノーマル\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 		//down = 0;
 	}
@@ -386,7 +386,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	else if(mapobject[hitnum].type == MOVE
 				&& mapobject[hitnum].speed.y < 0//){
 					&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider_down) <= radi){
-		printf("衝突処理 分岐2:オブジェクト降下\n");
+		//printf("衝突処理 分岐2:オブジェクト降下\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 		//down = 1;
 	}
@@ -396,14 +396,14 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//else if(mapobject[hitnum].type == MOVE){
 	else if(mapobject[hitnum].type == MOVE
 				&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
+		//printf("衝突処理 分岐3:オブジェクト乗り上げ\n");
 		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
 		//down = 0;
 	}
 
 	//動作確認
 	//衝突したオブジェクトの番号
-	printf("hitnum = %d\n",hitnum);
+	//printf("hitnum = %d\n",hitnum);
 	//オブジェクトの位置
 	//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
 	//移動後のオブジェクトの位置
@@ -411,7 +411,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//オブジェクトの進行速度
 	//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
 	//オブジェクトのタイプ
-	printf("type = %d\n",mapobject[hitnum].type);
+	//printf("type = %d\n",mapobject[hitnum].type);
 
 
 	//	//頭衝突時

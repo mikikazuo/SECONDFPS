@@ -159,20 +159,20 @@ void CanvasUI::Update() {
 	//if(壁に関する動作中){
 		progress_time++;
 		//if(壁設置中){
-			progress_per = progress_time / WALL_SET;
+			//progress_per = progress_time / WALL_SET;
 
 			if(progress_time == WALL_SET){
-				progress_time = 0;
+				//progress_time = 0;
 				//ここで壁設置実行
 			}
 		//}
 
 		//else if(壁除去中){
-			//progress_per = 1 - (progress_time / WALL_DELETE);	(右から左に減少させるために1から進捗率を引いている)
-			//if(progress_time == WALL_DELETE){
-				//progress_time = 0;
+			progress_per = 1 - (progress_time / WALL_DELETE);	//(右から左に減少させるために1から進捗率を引いている)
+			if(progress_time == WALL_DELETE){
+				progress_time = 0;
 				//ここで壁除去実行
-			//}
+			}
 		//}
 	//}
 
@@ -303,15 +303,15 @@ void CanvasUI::Draw() {
 	//if(壁に関する動作中){
 		//壁設置中
 		//if(壁設置中){
-			glColor3d(0.486,1.0,0.333);	//緑指定
-			rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
+			//glColor3d(0.486,1.0,0.333);	//緑指定
+			//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
 		//}
 
 		//壁除去中
-		/*else if(壁除去中){
-			//glColor3d(1.0,0.2,0.263);		//赤指定
-			//rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
-		}*/
+		//else if(壁除去中){
+			glColor3d(1.0,0.2,0.263);		//赤指定
+			rect_Draw2D(handle[42],510+shakeX,640+shakeY,260 * progress_per,20);   //進捗バー(右から左へ減少)
+		//}
 
 		glColor3d(0.0,0.0,0.0);		//黒指定
 		//引数補足:不要，左上の座標(x,y),横幅，高さ
