@@ -12,6 +12,11 @@
 #include "server_main.h"
 #include "map.h"
 
+static bool teamok[MAX_CLIENTS];
+
+void get_teamnum(int id,C_CONTAINER cdata,S_CONTAINER *sdata){
+		sdata->start[id]=cdata.start;
+}
 
 void get_walldata(int id,C_CONTAINER cdata,S_CONTAINER *sdata){
 
@@ -32,7 +37,7 @@ int get_playerdata(int id,C_CONTAINER cdata,S_CONTAINER *sdata){
 	for(int i=0;i<WALLMAX;i++)
 		sdata->walls[id][i] = cdata.my_player.mywall[i];
 	sdata->players[id].delmove = get_player()[id].delmove;
-	 get_player()[id].delmove=vec3(0,0,0);
+	get_player()[id].delmove=vec3(0,0,0);
 
 	get_player()[id].position=cdata.my_player.position;
 	get_player()[id].angles=cdata.my_player.angles;
@@ -47,7 +52,7 @@ int get_playerdata(int id,C_CONTAINER cdata,S_CONTAINER *sdata){
 
 	}
 
-	for(int i=0;i<10;i++)
+	for(int i=0;i<MOBNUM;i++)
 		get_mober()[i].minushp+=cdata.my_bullet.minusmobhp[i];
 	for(int i=0;i<2;i++)
 		get_mapobj()->minushp[i]+=cdata.my_bullet.minusbasehp[i];
@@ -71,7 +76,7 @@ void set_MapData(int id,S_CONTAINER* sdata){
 
 void set_MobData(int id,S_CONTAINER* sdata){
 
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MOBNUM;i++){
 		sdata->mob[i].position=get_mober()[i].position;
 		sdata->mob[i].angles=get_mober()[i].angles;
 		sdata->mob[i].hp=get_mober()[i].hp;

@@ -10,6 +10,7 @@
 
 #include "net_common.h"
 
+void get_teamnum(int id,C_CONTAINER cdata,S_CONTAINER *sdata);
 void get_walldata(int id,C_CONTAINER cdata,S_CONTAINER *sdata);
 int get_playerdata(int id,C_CONTAINER cdata,S_CONTAINER *sdata);
 void set_MapData(int id,S_CONTAINER* sdata);

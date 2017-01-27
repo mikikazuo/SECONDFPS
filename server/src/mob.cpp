@@ -65,6 +65,7 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	minushp=0;
 	mobbullet.bullet_Initialize(Mob);
 	dir=GetRandom(0,1)==0?-1:1;
+	alivecount=0;
 }
 
 void mob::minushpfunc(){
@@ -99,6 +100,12 @@ void mob::Update(){
 		launchBullet();
 		mobbullet.HitObj();
 		mobbullet.MobToPlayer(this->atk);
+	}else{
+		alivecount++;
+		if(alivecount>60*10){
+			hp=maxhp;
+			alivecount=0;
+		}
 	}
 	mobbullet.Update();
 }
@@ -156,9 +163,8 @@ void mob::move(){
 
 		}
 
-		if(!this->hitmap)
-			if(movecount%(60*1)==0)
-				dx=GetRandom(-10,10);
+		if(movecount%(60*1)==0)
+			dx=GetRandom(-10,10);
 
 		//	static float gravity;
 		//	gravity+=0.3f;
@@ -260,6 +266,7 @@ void mob::launchBullet(){
 			sa.z=pow(position.z-get_player()[i].position.z,2);
 			big=sqrt(sa.x+sa.y+sa.z);
 
+			//プレイヤー
 			if(radi>=sa.x+sa.y+sa.z){
 				vsinfo.findplayer=true;
 				vsinfo.mobmode=(attackmode)GetRandom(0,2);

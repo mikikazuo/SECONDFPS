@@ -21,6 +21,7 @@ static fd_set mask;
 static C_CONTAINER cdata;
 static S_CONTAINER sdata;
 static int readData[MAX_CLIENTS];
+static int teamnum[2];
 void setup_server(int, u_short);
 int control_requests();
 void terminate_server();
@@ -56,6 +57,7 @@ void setup_server(int num_cl, u_short port) {
 
 	int i, max_sock = 0;
 	socklen_t len;
+	teamnum[0]=teamnum[1]=0;
 	char src[MAX_LEN_ADDR];
 	for (i = 0; i < num_clients; i++) {
 		len = sizeof(cl_addr);
@@ -121,6 +123,7 @@ int control_requests() {
 					break;
 				case DATA://データを受け取った時
 					//*************ここでデータを受け取る.
+					get_teamnum(i,cdata,&sdata);
 					get_playerdata(i,cdata,&sdata);
 					set_MapData(i,&sdata);
 					set_MobData(i,&sdata);

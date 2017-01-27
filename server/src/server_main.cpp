@@ -23,7 +23,7 @@ extern void terminate_server();
 static SDL_Thread *update;  //ゲーム書利用スレッド
 fps mainfps;
 map mapobj;
-mob mober[10];
+mob mober[MOBNUM];
 bullet playerbullets[MAX_CLIENTS];
 player playerinfo[MAX_CLIENTS];
 
@@ -38,11 +38,11 @@ void Update(){
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++){
 		mober[i].Update();
 	}
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MOBNUM;i++){
 		get_mober()[i].minushpfunc();
 	}
 
-		get_mapobj()->minus_BaseHp();
+	get_mapobj()->minus_BaseHp();
 
 
 }
@@ -51,7 +51,7 @@ int thread_Update(void *arg){
 	mapobj.Initialize();
 	mainfps.fps_Initialize();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
-		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,10,30,10);
+		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,5,30,10);
 
 	for(int i=0;i<(int)(sizeof(playerbullets)/sizeof(playerbullets[0]));i++)
 		playerbullets[i].bullet_Initialize(Crossbow);
@@ -72,6 +72,12 @@ int main() {
 
 	fprintf(stderr, "Number of clients = %d\n", num_cl);
 	fprintf(stderr, "Port number = %d\n", port);
+
+	//fpsdeltatimeがバグるため絶対いる
+	if(SDL_Init(SDL_INIT_EVERYTHING)<0){
+		//printf("error");
+		exit(-1);
+	}
 
 	setup_server(num_cl, port);
 

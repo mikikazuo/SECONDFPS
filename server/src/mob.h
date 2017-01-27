@@ -39,6 +39,7 @@ private:
 	int atktime;
 	vsplayer vsinfo;
 	int dir;
+	int alivecount;
 
 public:
 	bullet mobbullet;
