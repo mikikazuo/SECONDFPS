@@ -166,6 +166,7 @@ void Game::Update(){
 //	printf("wall = %d\n",player1.wall);
 
 
+
 	player1.Update();
 	gamecanvas.Update();
 	//mapobj.Update();

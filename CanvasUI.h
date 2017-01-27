@@ -13,8 +13,8 @@
 #define WALL_DELETE 	600		//壁の除去にかかる時間
 #define RESPAWN_TIME	600		//死亡してからリスポーンするまでの待機時間
 
-#define FIN_MES1 50		//ゲーム終了メッセージを表示する際に使用
-#define FIN_MES2 15
+#define FIN_MES1 50		//ゲーム終了メッセージ表示領域を横方向に伸ばす際に使用
+#define FIN_MES2 15		//ゲーム終了メッセージ表示領域を縦方向に伸ばす際に使用
 #define FIN_MES_HEIGHT 100 //ゲーム終了メッセージを表示する領域の高さ
 
 class CanvasUI {
