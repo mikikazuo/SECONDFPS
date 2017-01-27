@@ -195,7 +195,7 @@ void CanvasUI::Update() {
 	/***ゲーム終了メッセージ***/
 	//if(ゲーム終了 && fin_mes == 0){
 		if(fin_mes == 0){//本来は必要ないが動作確認のためのif文
-			//fin_mes = 1;	//第一段階開始
+			fin_mes = 1;	//第一段階開始
 		}
 	//}
 
@@ -389,8 +389,8 @@ void CanvasUI::Draw() {
 
 	/***スナイパーモード***/
 	//if(スナイパーモード時)
-		image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
-		image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
+		//image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
+		//image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
 	//}
 }
 
