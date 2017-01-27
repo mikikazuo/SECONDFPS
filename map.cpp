@@ -8,8 +8,9 @@
 #include "map.h"
 
 #include "image.h"
+#include "GLMetaseq.h"
 
-
+MQO_MODEL basemodel[2];
 //多人数戦用obj
 int img[6];
 object obj[]={
@@ -50,9 +51,9 @@ object obj[]={
 		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 
 		//拠点1(前方:赤) 13
-		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
+		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,0)),
 		//拠点2(後方:青) 14
-		object(vec3(-(MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(0,0,256,1)),
+		object(vec3(-(MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(0,0,256,0)),
 
 		//マップ分割
 		//縦 15
@@ -95,9 +96,6 @@ object obj[]={
 		//天空足場へ登るエレベーター 34
 
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-
-		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
 		,object(vec3(15,99999991,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -229,6 +227,9 @@ object obj[]={
 		,object(vec3(-27.5,9999992,-40.5),vec3(5,4,0.1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//横壁 89
 		,object(vec3(-29.5,99999992,-42.75),vec3(0.1,4,4.95),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//真ん中床 90
+		,object(vec3(0,0.005,0),vec3(39,0.005,39),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//天空足場の壁
 		//前
@@ -445,7 +446,10 @@ void map::Initialize(){
 }
 
 void map::DrawInitialize(){
-
+	char *flname=(char*)"Data/charamodel/拠点/castle3_RED.mqo";
+	basemodel[0]=mqoCreateModel(flname,0.015);
+	flname=(char*)"Data/charamodel/拠点/castle3_exp.mqo";
+	basemodel[1]=mqoCreateModel(flname,0.015);
 
 	//描画初期化関数
 	handle[0] = image_Load("Data/image/capture2.png");
@@ -455,7 +459,8 @@ void map::DrawInitialize(){
 	handle[4] = image_Load("Data/image/check_blue.jpg");
 	handle[5] = image_Load("Data/image/bricks.jpg");
 	handle[6] = image_Load("Data/image/13.jpg");
-	handle[7] = image_Load("Data/image/14.jpg");
+	//<<<<<<< HEAD
+	//	handle[7] = image_Load("Data/image/14.jpg");
 
 	img[0]=image_Load("Data/skybox/skyX53+x.png");
 	img[1]=image_Load("Data/skybox/skyX53-x.png");
@@ -463,12 +468,12 @@ void map::DrawInitialize(){
 	img[3]=image_Load("Data/skybox/skyX53-y.png");
 	img[4]=image_Load("Data/skybox/skyX53+z.png");
 	img[5]=image_Load("Data/skybox/skyX53-z.png");
-
+	//=======
 	handle[7] = image_Load("Data/image/bricks_red.jpg");
 	handle[8] = image_Load("Data/image/tile.jpg");
 	handle[9] = image_Load("Data/image/bricks_blue.jpg");
 	handle[10] = image_Load("Data/image/bricks_purple.jpg");
-
+	//>>>>>>> refs/heads/map_develop
 
 	//床
 	obj[0].set_imgno(handle[8],50);
@@ -484,10 +489,10 @@ void map::DrawInitialize(){
 	obj[7].set_imgno(handle[1],100);
 
 	//壁
-//	obj[9].set_imgno(handle[2],50);
-//	obj[10].set_imgno(handle[2],50);
-//	obj[11].set_imgno(handle[2],50);
-//	obj[12].set_imgno(handle[2],50);
+	obj[9].set_imgno(handle[2],50);
+	obj[10].set_imgno(handle[2],50);
+	obj[11].set_imgno(handle[2],50);
+	obj[12].set_imgno(handle[2],50);
 
 	//拠点横の高台
 	obj[17].set_imgno(handle[5],100);
@@ -498,9 +503,9 @@ void map::DrawInitialize(){
 	obj[20].set_imgno(handle[1],100);
 
 	//中央柱
-	obj[21].set_imgno(handle[1],100);
+	obj[21].set_imgno(handle[4],100);
 	//天空足場
-	obj[22].set_imgno(handle[1],100);
+	obj[22].set_imgno(handle[4],100);
 	//螺旋階段
 	obj[23].set_imgno(handle[3],100);
 	obj[24].set_imgno(handle[3],100);
@@ -513,7 +518,7 @@ void map::DrawInitialize(){
 	obj[31].set_imgno(handle[3],100);
 	obj[32].set_imgno(handle[3],100);
 
-	obj[33].set_imgno(handle[1],100);
+	obj[33].set_imgno(handle[4],100);
 
 	//天空足場へのエレベーター
 	obj[34].set_imgno(handle[3],100);
@@ -559,12 +564,12 @@ void map::DrawInitialize(){
 	obj[89].set_imgno(handle[9],100);
 
 	//中央広場の壁
-	obj[41].set_imgno(handle[10],100);
-	obj[42].set_imgno(handle[10],100);
-	obj[43].set_imgno(handle[10],100);
-	obj[44].set_imgno(handle[10],100);
-	obj[45].set_imgno(handle[10],100);
-	obj[46].set_imgno(handle[10],100);
+	obj[41].set_imgno(handle[4],100);
+	obj[42].set_imgno(handle[4],100);
+	obj[43].set_imgno(handle[4],100);
+	obj[44].set_imgno(handle[4],100);
+	obj[45].set_imgno(handle[4],100);
+	obj[46].set_imgno(handle[4],100);
 
 
 	//柱群
@@ -576,6 +581,13 @@ void map::DrawInitialize(){
 	obj[59].set_imgno(handle[4],100);
 	obj[60].set_imgno(handle[4],100);
 	obj[61].set_imgno(handle[4],100);
+
+	//中央広場の床
+	obj[90].set_imgno(handle[4],100);
+
+	//左右壁
+	obj[47].set_imgno(handle[5],100);
+	obj[48].set_imgno(handle[5],100);
 
 	//天井
 	obj[62].set_imgno(handle[6],10);
@@ -647,7 +659,21 @@ void map::Update(){
 
 }
 
+void map:: DrawBase(){
+	glPushMatrix();
+	glTranslated(obj[13].get_m_Pos().x,obj[13].get_m_Pos().y,obj[13].get_m_Pos().z);
+	mqoCallModel(basemodel[0]);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslated(obj[14].get_m_Pos().x,obj[14].get_m_Pos().y,obj[14].get_m_Pos().z);
+	mqoCallModel(basemodel[1]);
+	glPopMatrix();
+
+}
+
 void map::Draw(){
+
 	image_DrawExRota3D(img[0],vec3(-512,0,0),90,vec3(0,1,0),1);
 	image_DrawExRota3D(img[1],vec3(512,0,0),-90,vec3(0,1,0),1);
 
@@ -656,6 +682,9 @@ void map::Draw(){
 
 	image_DrawExRota3D(img[4],vec3(0,0,512),180,vec3(0,1,0),1);
 	image_DrawExRota3D(img[5],vec3(0,0,-512),0,vec3(0,1,0),1);
+
+	DrawBase();
+
 	for(int i=0;get_objnum()>i;i++)
 		obj[i].Draw();
 

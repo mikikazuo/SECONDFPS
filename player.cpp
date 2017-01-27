@@ -34,7 +34,7 @@
 static int count = 0;
 static bool wrap = false;
 
-
+static int bulletsoundcount;
 
 
 SDL_Thread *thr;
@@ -157,7 +157,16 @@ MQO_MODEL handmodel[nonemodel];
 Wall *player::get_mywall(){
 	return mywall;
 }
-
+vec3 setposition[]={
+		vec3(30,10,-10),
+		vec3(30,10,-5),
+		vec3(30,10,0),
+		vec3(30,10,5),
+		vec3(-30,10,-10),
+		vec3(-30,10,-5),
+		vec3(-30,10,0),
+		vec3(-30,10,5),
+};
 
 player::player() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -194,7 +203,7 @@ void player::Initialize(vec3 pos,float ra){
 	speed=7;
 	hp=maxhp=100;
 	atk=10;
-
+	bulletsoundcount=0;
 	atkok=true;
 
 
@@ -843,7 +852,7 @@ int thread(void *data){
 
 		}
 
-		if(get_player()->progress_time>0)
+		if(get_player()->progress_time!=0)
 			glutWarpPointer(1200 / 2, 700 / 2);
 
 		else if(!wrap) {
@@ -924,17 +933,36 @@ void player::launchBullet(){
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
 			shootedcount=20;
 			playerbullet.launchbulletcount++;
-			ChangeSE(1);
+			if(bulletsoundcount==0){
+				ChangeSE(17);
+				bulletsoundcount++;
+			}
+
+
+
 		}
 		atkok=false;
+	}else if(get_mousebutton_count(LEFT_BUTTON)==0){
+		StopMusic(17);
+		bulletsoundcount=0;
 	}
-	//攻撃間隔
-	if(atkcount>atktime){
-		atkok=true;
-		atkcount=0;
+	double musicsoundset;
+	switch(myrole){
+	case Gatling:
+	break;
 	}
+	if(bulletsoundcount>60*1.7)
+		bulletsoundcount=0;
+	else if(bulletsoundcount>0)
+			bulletsoundcount++;
 
-	//	playerbullet.Update();
+		//攻撃間隔
+		if(atkcount>atktime){
+			atkok=true;
+			atkcount=0;
+		}
+
+		//	playerbullet.Update();
 }
 
 ////死亡から復活まで

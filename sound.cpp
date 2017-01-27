@@ -81,6 +81,7 @@ void SoundInit() {
 	se_buf[15] = alureCreateBufferFromFile("Data/SE/charging.wav");
 	se_buf[16] = alureCreateBufferFromFile("Data/SE/charged.wav");
 	se_buf[17] = alureCreateBufferFromFile("Data/SE/efe.wav");
+	se_buf[17] = alureCreateBufferFromFile("Data/SE/heavy-machine-gun1.wav");
 //	se_buf[18] = alureCreateBufferFromFile("Data/sound/se/se_extend.wav");
 //	se_buf[19] = alureCreateBufferFromFile("Data/sound/se/se_cardget.wav");
 	for (i = 0; i < MAXSE; i++) {
@@ -116,8 +117,8 @@ void StopMusic(int src_no) {
 		alSourceStop(bgm_src);
 		break;
 	default: //効果音系は普通に分かるので
-		if (0 <= src_no - 21 && src_no - 21 < MAXSE)
-			alSourceStop(se_src[src_no - 21]);
+		//if (0 <= src_no - 21 && src_no - 21 < MAXSE)
+			alSourceStop(se_src[src_no /*- 21*/]);
 		break;
 	}
 }
@@ -128,8 +129,8 @@ void PauseMusic(int src) {
 		alSourcePause(bgm_src);
 		break;
 	default: //効果音系は普通に分かるので
-		if (0 <= src - 21 && src - 21 < MAXSE)
-			alSourcePause(se_src[src - 21]);
+	//	if (0 <= src - 21 && src - 21 < MAXSE)
+			alSourcePause(se_src[src /*- 21*/]);
 		break;
 	}
 }

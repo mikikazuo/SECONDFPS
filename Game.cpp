@@ -97,7 +97,7 @@ void Game::DrawInitialize(){
 	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	mqomodel[0]=mqoCreateModel(flname,0.0035);
 
-	flname=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
+	flname=(char*)"Data/charamodel/拠点/castle3_exp.mqo";
 	mqomodel[1]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
 	mqomodel[2]=mqoCreateModel(flname,0.0035);
