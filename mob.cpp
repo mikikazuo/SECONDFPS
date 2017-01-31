@@ -23,7 +23,7 @@
 
 checkObjectHit mobhitobj;
 MQO_MODEL mobmqo;
-MQO_MODEL pre_mobmqo[10];			//異なるモデルを保存する
+
 
 
 
@@ -73,22 +73,14 @@ void mob::resetminushp(){
 	serverminushp=0;
 }
 void mob::DrawInitialize(char *filename){
-	static char *flname='\0';
-	static int mqonum;
-	if(flname!=filename){
-		flname=filename;
-		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
-		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
-	}
+	mobmqo=mqoCreateModel(filename,0.0025);
 	mobbullet.bullet_DrawInitialize(Mob);
 }
 
 void mob::DrawFinalize(){
-	for(int i=0;(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));i++)
-		if(pre_mobmqo[i]!=NULL){
-			mqoDeleteModel( pre_mobmqo[i]);
-			pre_mobmqo[i]=NULL;
-		}
+
+	mqoDeleteModel(mobmqo);
+
 }
 //void mob::Update(){
 //	movecount++;
@@ -225,7 +217,7 @@ void mob::Draw(){
 	glRotated(-angles.y * 180 /M_PI ,1,0,0);
 
 
-	  mqoCallModel(mobmqo);
+	mqoCallModel(mobmqo);
 
 
 	glPopMatrix();

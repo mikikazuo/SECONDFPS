@@ -9,9 +9,11 @@
 #include "GL/glut.h"
 #include "image.h"
 #include "Game.h"
-
+#include "SceneMgr.h"
 #include "player.h"
-
+#include "main.h"
+#include "Start.h"
+static int changestartcount;
 CanvasUI::CanvasUI() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -23,6 +25,7 @@ CanvasUI::~CanvasUI() {
 
 //計算関連の初期化
 void CanvasUI::Initialize(){
+	changestartcount=0;
 	dam = 0;
 	a = 100;
 	time = 0;
@@ -185,40 +188,40 @@ void CanvasUI::shake(float nowhp){
 
 	/***壁に関する動作***/
 	//if(壁に関する動作中){
-		//if(壁設置中){
-			//progress_per = progress_time / WALL_SET;
+	//if(壁設置中){
+	//progress_per = progress_time / WALL_SET;
 
-//			if(progress_time == WALL_SET){
-//				//progress_time = 0;
-//				//ここで壁設置実行
-//			}
-//		//}
-//
-//		//else if(壁除去中){
-//			progress_per = 1 - (progress_time / WALL_DELETE);	//(右から左に減少させるために1から進捗率を引いている)
-//			if(progress_time == WALL_DELETE){
-//				progress_time = 0;
-//				//ここで壁除去実行
-//			}
-		//}
+	//			if(progress_time == WALL_SET){
+	//				//progress_time = 0;
+	//				//ここで壁設置実行
+	//			}
+	//		//}
+	//
+	//		//else if(壁除去中){
+	//			progress_per = 1 - (progress_time / WALL_DELETE);	//(右から左に減少させるために1から進捗率を引いている)
+	//			if(progress_time == WALL_DELETE){
+	//				progress_time = 0;
+	//				//ここで壁除去実行
+	//			}
+	//}
 	//}
 
 	/***リスポーン待機***/
 	//if(リスポーン待機中)
-//		res_time++;
-//
-//		if(res_time >= RESPAWN_TIME){
-//			res_time = 0;
-//			//ここでリスポーン実行処理
-//		}
-//
-//		res_per = res_time / RESPAWN_TIME;
+	//		res_time++;
+	//
+	//		if(res_time >= RESPAWN_TIME){
+	//			res_time = 0;
+	//			//ここでリスポーン実行処理
+	//		}
+	//
+	//		res_per = res_time / RESPAWN_TIME;
 	//}
 
 	/***ゲーム終了メッセージ***/
 	//if(ゲーム終了 && fin_mes == 0){
-		if(fin_mes == 0)//本来は必要ないが動作確認のためのif文
-			fin_mes = 1;	//第一段階開始
+	if(fin_mes == 0&&(get_player()->result==1||get_player()->result==2))//本来は必要ないが動作確認のためのif文
+		fin_mes = 1;	//第一段階開始
 	//}
 
 	if(fin_mes != 0){
@@ -230,7 +233,16 @@ void CanvasUI::shake(float nowhp){
 		fin_mes++;
 	}
 
+
+	if(fin_mes==3)
+		changestartcount++;
+
+	if(changestartcount>60*3){
+		get_SceneMgr().ChangeScene(eScene_Menu);
+		set_start(false);
+	}
 }
+
 //毎フレーム描画
 void CanvasUI::Draw() {
 	//ゲーム終了メッセージを表示する際は非表示に
@@ -367,19 +379,19 @@ void CanvasUI::Draw() {
 
 	if(get_player()->progress_time<0){
 		progress_per = (double)get_player()->progress_time /(double) WALL_DELETE;
-	//壁除去中
-	glColor3d(1.0,0.2,0.263);		//赤指定
-	rect_Draw2D(510+shakeX,640+shakeY,260 * (1+progress_per),20);   //進捗バー(右から左へ減少)
-	//rect_Draw2D(handle[42],770 + shakeX - (260 * progress_per),640+shakeY,260 * progress_per,20); //(不要)
+		//壁除去中
+		glColor3d(1.0,0.2,0.263);		//赤指定
+		rect_Draw2D(510+shakeX,640+shakeY,260 * (1+progress_per),20);   //進捗バー(右から左へ減少)
+		//rect_Draw2D(handle[42],770 + shakeX - (260 * progress_per),640+shakeY,260 * progress_per,20); //(不要)
 
-	//壁設置中
-	//if(壁設置中){
+		//壁設置中
+		//if(壁設置中){
 	}
 	else if(get_player()->progress_time>0){
 		progress_per = (double)get_player()->progress_time /(double) WALL_SET;
 		//壁設置のとき
-	glColor3d(0.486,1.0,0.333);	//緑指定
-	rect_Draw2D(510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
+		glColor3d(0.486,1.0,0.333);	//緑指定
+		rect_Draw2D(510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
 	}
 	glColor3d(0.0,0.0,0.0);		//黒指定
 	rect_Draw2D(510+shakeX,640+shakeY,260,20); //裏ゲージ
@@ -415,13 +427,13 @@ void CanvasUI::Draw() {
 		image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)の画面を黒くさせるために用いる画像
 	}
 
-		glColor3d(0.444,1.0,0.64);		//緑指定
-		//rect_Draw2D(0,380,230,440 * res_per,70); 	//進捗バー
-		glColor3d(1.0,0.302,0.302);	//赤指定
-		//rect_Draw2D(0,380,230,440,70); 				//裏ゲージ
-		//image_DrawExRota(handle[43],600,250,0,0.5);	//枠
+	glColor3d(0.444,1.0,0.64);		//緑指定
+	//rect_Draw2D(0,380,230,440 * res_per,70); 	//進捗バー
+	glColor3d(1.0,0.302,0.302);	//赤指定
+	//rect_Draw2D(0,380,230,440,70); 				//裏ゲージ
+	//image_DrawExRota(handle[43],600,250,0,0.5);	//枠
 
-		//image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)に画面を黒くさせるために用いる画像
+	//image_DrawExRota(handle[44],600,350,0,1);	//死亡時(リスポーン待機時)に画面を黒くさせるために用いる画像
 
 	//}
 
@@ -432,27 +444,18 @@ void CanvasUI::Draw() {
 	//fin_mes = 1;	//第一段階開始
 
 	//if(fin_mes == 0)//本来は必要ないが動作確認のためのif文
-		//fin_mes = 1;	//第一段階開始
+	//fin_mes = 1;	//第一段階開始
 
 	//}
 
 
-	//終了メッセージ表示時
 
-	if(fin_mes != 0){
-		fin_time++;
-	}
-	//次の段階への移行
-	if((fin_mes == 1 && fin_time >= FIN_MES1) || (fin_mes == 2 && fin_time >= FIN_MES2)){
-		fin_time = 0;
-		fin_mes++;
-	}
 
 	//動作確認
 	//printf("fin_mes = %d\n",fin_mes);
 
-		//動作確認
-		//printf("fin_mes = %d\n",fin_mes);
+	//動作確認
+	//printf("fin_mes = %d\n",fin_mes);
 
 
 	//勝敗に応じてメッセージ表示領域の色変更
@@ -462,6 +465,12 @@ void CanvasUI::Draw() {
 	//else if(敗北){
 	//glColor3d(0,0,0);		//黒指定
 	//}
+	if(fin_mes>0){
+		if(get_player()->result==1)
+			glColor3d(1,1,1);
+		else
+			glColor3d(0,0,0);
+	}
 
 	/***ゲーム終了メッセージ表示(fin_mesは表示段階を示す)***/
 	switch(fin_mes){
@@ -471,15 +480,17 @@ void CanvasUI::Draw() {
 		break;
 	case 2:
 		fin_per = fin_time / FIN_MES2;
+
 		rect_Draw2D(0,350 - (FIN_MES_HEIGHT * fin_per/2),1200,FIN_MES_HEIGHT * fin_per);	//メッセージ表示領域(縦に伸びる)
 		break;
 	case 3:
 		rect_Draw2D(0,350 - FIN_MES_HEIGHT/2,1200,FIN_MES_HEIGHT);	//メッセージ表示領域
-		//if(勝利){
-		image_DrawExRota(handle[45],600,350,0,1);					//YOU WIN!!表示
+		if(get_player()->result==1)
+			image_DrawExRota(handle[45],600,350,0,1);					//YOU WIN!!表示
 		//}
-		//if(敗北){
-		//image_DrawExRota(handle[46],600,350,0,1); 					//YOU LOSE...表示
+		else if(get_player()->result==2)
+			image_DrawExRota(handle[46],600,350,0,1); 					//YOU LOSE...表示
+
 		//}
 		break;
 	}

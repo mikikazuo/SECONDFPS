@@ -77,6 +77,7 @@ public:
 	Team myteam;
 	int level;
 	int exp;
+	int result;    //0:?  1:Win  2:Lose
 
 	//プレイヤーの頭のあたり判定
 	vec3 playerhead_collider;
@@ -104,7 +105,7 @@ public:
 	void Action();
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
-
+	void set_pointerfree(bool set);
 
 	virtual ~player();
 

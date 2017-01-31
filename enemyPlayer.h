@@ -15,7 +15,7 @@
 class enemyPlayer {
 private:
 	MQO_MODEL enemymodel;
-
+	int wallhandle;
 
 public:
 	int myid;
@@ -31,6 +31,7 @@ public:
 	enemyPlayer();
 	void Initialize();
 	void DrawInitialize(Role setrole);
+	void DrawFinalize();
 	void set_enemyposition();
 	void Draw();
 	void resetminushp();

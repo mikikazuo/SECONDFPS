@@ -10,6 +10,8 @@
 #include "Letter.h"
 #include "net_client.h"
 #include "Game.h"
+
+
 enemyPlayer::enemyPlayer() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -25,7 +27,7 @@ void enemyPlayer::Initialize(){
 }
 void enemyPlayer::DrawInitialize(Role setrole){
 
-	int wallhandle=image_Load("Data/image/2079.jpg");
+	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
@@ -33,6 +35,10 @@ void enemyPlayer::DrawInitialize(Role setrole){
 	enemymodel=mqoCreateModel(flname,0.0035);
 
 	enemybullet.bullet_DrawInitialize(setrole);
+}
+void enemyPlayer::DrawFinalize(){
+	image_free(wallhandle);
+	mqoDeleteModel(enemymodel);
 }
 
 void enemyPlayer::Draw() {

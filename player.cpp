@@ -30,13 +30,13 @@
 
 #define HP 100
 #define BULLETNUM 10
-
+static int falag;
 static int count = 0;
 static bool wrap = false;
 
 static int bulletsoundcount;
 
-
+static bool pointerfree=false;
 SDL_Thread *thr;
 
 int wallhandle;
@@ -176,7 +176,7 @@ player::player() {
 }
 
 void player::Initialize(vec3 pos,float ra){
-
+	falag=0;
 	level=0;
 	exp=0;
 	playerbullet.bullet_Initialize();
@@ -205,7 +205,7 @@ void player::Initialize(vec3 pos,float ra){
 	atk=10;
 	bulletsoundcount=0;
 	atkok=true;
-
+	result=0;
 
 	radi=ra;
 
@@ -278,6 +278,8 @@ void player::DrawInitialize(Role setrole){
 
 void player::DrawFinalize(){
 	image_free(wallhandle);
+	for(int i=0;i<nonemodel;i++)
+		mqoDeleteModel(handmodel[i]);
 }
 
 void player::set_Pers(double next){
@@ -332,7 +334,22 @@ void player::Draw(){
 
 void player::Update(){
 
+	if(key_getmove(Test)==2)
+		pointerfree=!pointerfree;
+
+
 	dead();
+
+	if(myteam==RedTeam){
+		if(get_mapobj()->basehp[RedTeam]<=0)
+			result=2;
+		else if(get_mapobj()->basehp[BlueTeam]<=0)
+			result=1;
+	}else if(myteam==BlueTeam)
+		if(get_mapobj()->basehp[RedTeam]<=0)
+			result=1;
+		else if(get_mapobj()->basehp[BlueTeam]<=0)
+			result=2;
 
 	if(modelcount>0)
 		modelcount--;
@@ -847,10 +864,10 @@ int thread(void *data){
 
 	player *info=(player*)data;
 	while(1){
-
-		if(testcursol){
-
-		}
+		if(get_player()->result==1||get_player()->result==2)
+			break;
+		if(pointerfree)
+			continue;
 
 		if(get_player()->progress_time!=0)
 			glutWarpPointer(1200 / 2, 700 / 2);
@@ -902,12 +919,13 @@ int thread(void *data){
 
 		SDL_Delay(10);
 	}
+
 	return 0;
 }
 void player::MouseMove()
 {
 
-	static int falag;
+
 	if(falag==0){
 		thr = SDL_CreateThread(thread, this);
 		falag=1;
@@ -949,20 +967,20 @@ void player::launchBullet(){
 	double musicsoundset;
 	switch(myrole){
 	case Gatling:
-	break;
+		break;
 	}
 	if(bulletsoundcount>60*1.7)
 		bulletsoundcount=0;
 	else if(bulletsoundcount>0)
-			bulletsoundcount++;
+		bulletsoundcount++;
 
-		//攻撃間隔
-		if(atkcount>atktime){
-			atkok=true;
-			atkcount=0;
-		}
+	//攻撃間隔
+	if(atkcount>atktime){
+		atkok=true;
+		atkcount=0;
+	}
 
-		//	playerbullet.Update();
+	//	playerbullet.Update();
 }
 
 ////死亡から復活まで

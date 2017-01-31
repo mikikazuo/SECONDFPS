@@ -19,10 +19,10 @@
 #include "net_client.h"
 
 CanvasUI startcanvas;
-bool clickrole;
+bool clickmousesmoother;
 static float smoothvalue;
 
-static bool start=true;
+static bool start;
 static int teammemfaze[MAX_CLIENTS];
 static int startcount;
 
@@ -64,12 +64,14 @@ void Start::Initialize(){
 	//	ShowCursor( TRUE );
 	start=false;
 	teamnum[0]=teamnum[1]=0;
-	get_teammemfaze()[0]=get_teammemfaze()[1]=0;
 	startcount=0;
 	get_player()->myteam=NoneTeam;
 	for(int i=0;i<MAX_CLIENTS;i++)
 	get_enemy()[i].myteam=NoneTeam;
-
+	glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+	for(int i=0;i<MAX_CLIENTS;i++){
+		teammemfaze[i]=0;
+	}
 }
 void Start::DrawInitialize(){
 	handle[0]=image_Load("Data/image/スタート画面/button1.png");
@@ -119,15 +121,13 @@ void Start::Update() {
 		if(get_mousebutton_count(LEFT_BUTTON)>=2){
 			if(smooth.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<smooth.leftup.x+smooth.width&&
 					smooth.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<smooth.leftup.y+smooth.height)
-				clickrole=true;
-
-
+				clickmousesmoother=true;
 		}
 		else
-			clickrole=false;
+			clickmousesmoother=false;
 
 		float middle=smooth.leftup.x+smooth.width/2;
-		if(clickrole)
+		if(clickmousesmoother)
 			middle=(get_mouseinfo().x>600+SMOOTHRANGEHALF)?600+SMOOTHRANGEHALF:
 					(get_mouseinfo().x<600-SMOOTHRANGEHALF)?600-SMOOTHRANGEHALF:get_mouseinfo().x;
 		smooth.leftup.x=middle-smooth.width/2;
