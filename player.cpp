@@ -226,7 +226,7 @@ void player::DrawInitialize(Role setrole){
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 	char *flname[nonemodel];
-	myrole=setrole;
+
 	switch(myrole){
 	case Crossbow:
 		flname[0]=(char*)"Data/charamodel/char1/char1_firstside_defalt.mqo";

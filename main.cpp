@@ -127,6 +127,7 @@ int thread_Update(void *arg){
 
 	sceneMgr.Initialize();
 	while(1){
+
 		mainfps.UpdateUpDatefps();
 		mainfps.fps_UpdateDeltaTime();
 
