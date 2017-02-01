@@ -22,12 +22,13 @@ CanvasUI startcanvas;
 bool clickrole;
 static float smoothvalue;
 
-static int s_flag = 0;
+static int s_flag = -1;
 static int ro_flag = -1;
 //static int nagasa = 300;//モデル間の長さ
 static float angle = 0;
 static vec3 position;
 static int image[6]; //画像
+static int Title;
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -101,6 +102,8 @@ void Start::DrawInitialize(){
 	image[4]=image_Load("Data/image/スタート画面/stats_mag.png");//魔法
 	image[5]=image_Load("Data/image/スタート画面/stats_chg.png");//突撃
 
+	Title=image_Load("Data/image/スタート画面/タイトル.png");//タイトル画面
+
 	name=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	model[0] = mqoCreateModel( name, aaa );//モデル読み込み
 	//name=(char*)"Data/charamodel/enemy1/enemy2_exp.mqo";
@@ -133,6 +136,12 @@ void Start::Update() {
 	}
 	if(get_start()==false){
 		switch(s_flag){
+		case -1:{
+			if(get_mousebutton_count(LEFT_BUTTON)==2){
+				s_flag = 0;
+			}
+			break;
+		}
 		case 0:{
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
@@ -255,6 +264,11 @@ void Start::Draw() {
 
 	if(get_start()==false){
 		switch(s_flag){
+		case -1:{
+			startcanvas.view2D();
+			img_DrawXY(Title,0,0,1200,700);
+			break;
+		}
 		case 0:{
 			startcanvas.view2D();
 			img_DrawXY(handle[0],0,0,1200,700);
