@@ -27,7 +27,7 @@ static int ro_flag = -1;
 //static int nagasa = 300;//モデル間の長さ
 static float angle = 0;
 static vec3 position;
-static int image[3]; //画像
+static int image[6]; //画像
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -94,7 +94,12 @@ void Start::DrawInitialize(){
 	handle[3]=image_Load("Data/image/スタート画面/button4.png");
 	handle[4]=image_Load("Data/image/スタート画面/button5.png");
 
-	image[0]=image_Load("Data/image/スタート画面/system1-3.png");//
+	image[0]=image_Load("Data/image/スタート画面/stats_bow.png");//ボウガン
+	image[1]=image_Load("Data/image/スタート画面/stats_gun.png");//ライフル
+	image[2]=image_Load("Data/image/スタート画面/stats_gun2.png");//ガトリング
+	image[3]=image_Load("Data/image/スタート画面/stats_ran.png");//槍
+	image[4]=image_Load("Data/image/スタート画面/stats_mag.png");//魔法
+	image[5]=image_Load("Data/image/スタート画面/stats_chg.png");//突撃
 
 	name=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
 	model[0] = mqoCreateModel( name, aaa );//モデル読み込み
@@ -134,7 +139,7 @@ void Start::Update() {
 						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	){
 					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					get_player()->myrole=Gatling;
+					//get_player()->myrole=Gatling;
 					s_flag = 1;
 					//set_start(true);
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
@@ -142,7 +147,7 @@ void Start::Update() {
 
 					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					get_player()->myrole=Gatling;
+					//get_player()->myrole=Gatling;
 					s_flag = 1;//キャラ選択へ
 					//set_start(true);//チーム待ち画面にジャンプ
 				}
@@ -169,37 +174,62 @@ void Start::Update() {
 		}
 		case 1:{
 			//キャラ選択
+			//あとはプログラム的にキャラ選択するだけ
 			//int sikaku_w = 100;int sikaku_h = 100;
 
 			if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
 				ro_flag = 0;
-				puts("範囲");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole= Crossbow;
+					set_start(true);
+				}
+				//puts("範囲");
 			}
 			else if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
 				ro_flag = 1;
-				puts("範囲1");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole=Rifle;
+					set_start(true);
+				}
+				//puts("範囲1");
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
 				ro_flag = 2;
-				puts("範囲2");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole=Gatling;
+					set_start(true);
+				}
+				//puts("範囲2");
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
 				ro_flag = 3;
-				puts("範囲3");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole=Spear;
+					set_start(true);
+				}
+				//puts("範囲3");
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
 				ro_flag = 4;
-				puts("範囲4");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole=Magicstick;
+					set_start(true);
+				}
+				//puts("範囲4");
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
 				ro_flag = 5;
-				puts("範囲5");
+				if(get_mousebutton_count(LEFT_BUTTON)==2){
+					get_player()->myrole=Magic;
+					set_start(true);
+				}
+				//puts("範囲5");
 			}
 			else{//非選択時
 				angle = 0;
@@ -267,7 +297,6 @@ void Start::Draw() {
 					0, 0.0f, 0,
 					0.0f, 1.0f, 0.0f);
 
-
 			//glMatrixMode(GL_MODELVIEW);//モデルビュー変換行列
 			/*移動関連これより下 移動関係関数,描画 の順番*/
 
@@ -304,27 +333,49 @@ void Start::Draw() {
 			if(ro_flag == 5) {glRotatef(angle,0, 1, 0);}
 			mqoCallModel( model[5] );
 
+			//printf("x:%d  y:%d\n",get_mouseinfo().x,get_mouseinfo().y);
 			if(ro_flag >= 0) {
 				startcanvas.view2D();
 				int img_w = 300;
 				int img_h = 300;
+
 				/*
 				glMatrixMode(GL_PROJECTION);
 				glPushMatrix();
 				glLoadIdentity();
 				glOrtho(0,w,h,0,-1,1);
 				glMatrixMode(GL_MODELVIEW);
-				*/
-				//rect_Draw2D(get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3),img_w,img_h);
-				img_DrawXY(image[0],get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3),img_w,img_h);
-				/*char aaaa[100] = "お";
-				glColor3d(0,0,0);
-				Mozi_DrawM2(get_mouseinfo().x-(img_w/3),get_mouseinfo().y-(img_h/3), 1,MOZI_SHOUZANGYOUSYO ,aaaa);*/
+				 */
+
+				/*ステータス表示*/
+				if(ro_flag < 4)
+					img_DrawXY(image[ro_flag],get_mouseinfo().x+100,get_mouseinfo().y-80,img_w,img_h);
+				else
+					img_DrawXY(image[ro_flag],get_mouseinfo().x-350,get_mouseinfo().y-80,img_w,img_h);
 			}
+			/*外枠*/
+			startcanvas.view2D();
+			glMatrixMode(GL_PROJECTION);//投影変換行列
+			glPushMatrix();//保存
+			if(get_player()->myteam == BlueTeam)
+				glColor3d(0.65,0.05,0);
+			else
+				glColor3d(0,0,0.65);
+			rect_Draw2D(0,0,170,700);
+			rect_Draw2D(170,0,860,50);
+			rect_Draw2D(400,50,100,270);
+			rect_Draw2D(700,50,100,270);
+			rect_Draw2D(170,320,860,30);
+			rect_Draw2D(400,350,100,300);
+			rect_Draw2D(700,350,100,300);
+			rect_Draw2D(170,650,860,50);
+			rect_Draw2D(1030,0,170,700);
+			glPopMatrix();
 
 			glPopMatrix();//取り出し
 			break;
 		}
+
 		}
 	}else{
 		glColor3d(0,0,0);
