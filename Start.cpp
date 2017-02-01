@@ -322,9 +322,9 @@ void Start::Draw() {
 			glTranslatef(600,-300,10);
 			if(ro_flag == 5) {glRotatef(angle,0, 1, 0);}
 			mqoCallModel( model[5] );
-
+			startcanvas.view2D();
 			if(ro_flag >= 0) {
-				startcanvas.view2D();
+
 				int img_w = 300;
 				int img_h = 300;
 
@@ -335,7 +335,7 @@ void Start::Draw() {
 					img_DrawXY(image[ro_flag],get_mouseinfo().x-350,get_mouseinfo().y-80,img_w,img_h);
 			}
 			/*外枠*/
-			startcanvas.view2D();
+
 			glMatrixMode(GL_PROJECTION);//投影変換行列
 			glPushMatrix();//保存
 			//if(get_player()->myteam == BlueTeam)
@@ -361,15 +361,19 @@ void Start::Draw() {
 
 			startcanvas.view2D();
 
-			//glPushMatrix();
 			glColor3d(0,0,0);
+
+			img_DrawXY(handle[0],0,0,1200,700);
+			img_DrawXY(handle[4],600-200,200,400,100);
+			glPushMatrix();
+			glColor3d(1,1,1);
+
 			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
 			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
 			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
-			//img_DrawXY(handle[4],600-200,200,400,100);
-			img_DrawXY(handle[0],0,0,1200,700);
-			//glPopMatrix();
-//glDisable(GL_DEPTH_TEST);
+			glPopMatrix();
+			glDisable(GL_DEPTH_TEST);
+
 			//glColor3d(1,0,0);
 			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
 			//glColor3d(0,0,1);
