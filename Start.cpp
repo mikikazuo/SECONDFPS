@@ -361,22 +361,23 @@ void Start::Draw() {
 
 			startcanvas.view2D();
 
-			glPushMatrix();
+			//glPushMatrix();
 			glColor3d(0,0,0);
 			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
 			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
 			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
-			img_DrawXY(handle[4],600-200,200,400,100);
+			//img_DrawXY(handle[4],600-200,200,400,100);
 			img_DrawXY(handle[0],0,0,1200,700);
-			glPopMatrix();
-glDisable(GL_DEPTH_TEST);
+			//glPopMatrix();
+//glDisable(GL_DEPTH_TEST);
 			//glColor3d(1,0,0);
 			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
 			//glColor3d(0,0,1);
 			image_DrawExRota(handle[2],blue.leftup.x+blue.width/2,blue.leftup.y+blue.height/2,0,0.5);
 			//glColor3d(0,0,0);
-
+			image_DrawExRota(handle[4],600,250,0,1);
 			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
+
 
 			break;
 		}
