@@ -89,6 +89,7 @@ public:
 
 	Wall *get_mywall();
 	player();
+
 	void Initialize(vec3 pos,float ra);
 	void DrawInitialize(Role setrole);
 	void DrawFinalize();
@@ -105,11 +106,11 @@ public:
 	void Action();
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
-	void set_pointerfree(bool set);
-
 	virtual ~player();
 
 };
+bool set_pointerfree(bool set);
+bool get_pointerfree();
 bullet get_playerbullet();
 void set_mousespeed(float set);
 

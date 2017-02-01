@@ -54,7 +54,7 @@ void enemyPlayer::Draw() {
 
 //	mqoCallModel(enemymodel);
 	glTranslated(0,-1,0);   //アニメーション用補正
-	get_chara().walk(4,0,0,0,1);
+	get_chara().walk((int)myrole+1,0,0,0,1);
 	glPopMatrix();
 
 	glColor3f(1,1,1);

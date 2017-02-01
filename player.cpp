@@ -220,7 +220,7 @@ void player::Initialize(vec3 pos,float ra){
 
 }
 void player::DrawInitialize(Role setrole){
-	playerbullet.bullet_DrawInitialize(setrole);
+	playerbullet.bullet_DrawInitialize(myrole);
 
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -332,10 +332,16 @@ void player::Draw(){
 
 }
 
+bool set_pointerfree(bool set){
+	pointerfree=set;
+}
+
+bool get_pointerfree(){
+	return pointerfree;
+}
 void player::Update(){
 
-	if(key_getmove(Test)==2)
-		pointerfree=!pointerfree;
+
 
 
 	dead();

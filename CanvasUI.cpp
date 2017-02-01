@@ -295,7 +295,9 @@ void CanvasUI::Draw() {
 	level=get_player()->level;
 
 	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
-	//image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
+	if(get_player()->myteam==RedTeam)
+	image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
+	else if(get_player()->myteam==BlueTeam)
 	image_DrawExRota(handle[8],75+shakeX,680+shakeY,0,2);//Blue
 
 	int number1,number10;

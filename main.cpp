@@ -27,7 +27,7 @@
 #include "mouse.h"
 #include "image.h"
 #include "SceneMgr.h"
-
+#include "player.h"
 #include "net_client.h"
 
 #define LOOK_DISTANT 1000            //見える距離
@@ -35,7 +35,7 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=true;    //sever connect
+static bool debug=false;    //sever connect
 
 
 
@@ -127,6 +127,8 @@ int thread_Update(void *arg){
 
 	sceneMgr.Initialize();
 	while(1){
+		if(key_getmove(Test)==2)
+			 set_pointerfree(!get_pointerfree());
 
 		mainfps.UpdateUpDatefps();
 		mainfps.fps_UpdateDeltaTime();
