@@ -142,21 +142,24 @@ void Start::Update() {
 			}
 			break;
 		}
-		case 0:{
+		case 1:{
+			/*チーム選択*/
 			/**/
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
 						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<=MAX_CLIENTS/2){
 					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					s_flag = 1;
+					set_start(true);
+					//s_flag = 0;
 					/**/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
 						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<=MAX_CLIENTS/2){
 
 					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					s_flag = 1;//キャラ選択へ
+					set_start(true);
+					//s_flag = 0;//キャラ選択へ
 				}
 			}
 			//mouse smooth
@@ -176,14 +179,15 @@ void Start::Update() {
 			smoothvalue=(middle-(600-SMOOTHRANGEHALF))/SMOOTHRANGEHALF*2;
 			break;
 		}
-		case 1:{
+		case 0:{
 			//キャラ選択
 			if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
 				ro_flag = 0;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole= Crossbow;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -192,7 +196,8 @@ void Start::Update() {
 				ro_flag = 1;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Rifle;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -201,7 +206,8 @@ void Start::Update() {
 				ro_flag = 2;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Gatling;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -210,7 +216,8 @@ void Start::Update() {
 				ro_flag = 3;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Spear;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -219,7 +226,8 @@ void Start::Update() {
 				ro_flag = 4;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Magicstick;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -228,7 +236,8 @@ void Start::Update() {
 				ro_flag = 5;
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Magic;
-					set_start(true);
+					s_flag = 1;
+					//set_start(true);
 					break;
 				}
 			}
@@ -244,7 +253,7 @@ void Start::Update() {
 			startcount++;
 		if(startcount>60*2)
 			get_SceneMgr().ChangeScene(eScene_Game);/**/
-		s_flag++;
+		//s_flag++;消してみた
 	}
 }
 
@@ -259,24 +268,6 @@ void Start::Draw() {
 			break;
 		}
 		case 0:{
-			startcanvas.view2D();
-			img_DrawXY(handle[0],0,0,1200,700);
-			glColor3d(1,0,0);
-			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
-			glColor3d(0,0,1);
-			image_DrawExRota(handle[2],blue.leftup.x+blue.width/2,blue.leftup.y+blue.height/2,0,0.5);
-
-			glColor3d(0,0,0);
-			img_DrawXY(handle[4],600-200,200,400,100);
-			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
-
-			glColor3d(1,1,1);
-			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
-			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
-			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
-			break;
-		}
-		case 1:{
 			angle++;
 			if(angle > 360.0f){
 				angle = 0.0f;
@@ -347,10 +338,11 @@ void Start::Draw() {
 			startcanvas.view2D();
 			glMatrixMode(GL_PROJECTION);//投影変換行列
 			glPushMatrix();//保存
-			if(get_player()->myteam == BlueTeam)
-				glColor3d(0,0,0.65);
-			else
-				glColor3d(0.65,0.05,0);
+			//if(get_player()->myteam == BlueTeam)
+			//	glColor3d(0,0,0.65);
+			//else
+			//	glColor3d(0.65,0.05,0);
+			glColor3d(0,0.45,0);//緑色のハズ
 			rect_Draw2D(0,0,170,700);
 			rect_Draw2D(170,0,860,50);
 			rect_Draw2D(400,50,100,270);
@@ -365,7 +357,29 @@ void Start::Draw() {
 			glPopMatrix();//取り出し
 			break;
 		}
+		case 1:{
 
+			startcanvas.view2D();
+
+			glPushMatrix();
+			glColor3d(0,0,0);
+			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
+			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
+			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
+			img_DrawXY(handle[4],600-200,200,400,100);
+			img_DrawXY(handle[0],0,0,1200,700);
+			glPopMatrix();
+glDisable(GL_DEPTH_TEST);
+			//glColor3d(1,0,0);
+			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
+			//glColor3d(0,0,1);
+			image_DrawExRota(handle[2],blue.leftup.x+blue.width/2,blue.leftup.y+blue.height/2,0,0.5);
+			//glColor3d(0,0,0);
+
+			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
+
+			break;
+		}
 		}
 	}else{
 		glColor3d(0,0,0);
