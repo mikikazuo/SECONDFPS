@@ -146,13 +146,13 @@ void Start::Update() {
 			/**/
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
-						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	&& teamnum[1] < 5){
+						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<=MAX_CLIENTS/2){
 					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
 					s_flag = 1;
 					/**/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
-						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2 && teamnum[0] < 5){
+						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<=MAX_CLIENTS/2){
 
 					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
@@ -184,6 +184,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole= Crossbow;
 					set_start(true);
+					break;
 				}
 			}
 			else if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
@@ -192,6 +193,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Rifle;
 					set_start(true);
+					break;
 				}
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
@@ -200,6 +202,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Gatling;
 					set_start(true);
+					break;
 				}
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
@@ -208,6 +211,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Spear;
 					set_start(true);
+					break;
 				}
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
@@ -216,6 +220,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Magicstick;
 					set_start(true);
+					break;
 				}
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
@@ -224,6 +229,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 					get_player()->myrole=Magic;
 					set_start(true);
+					break;
 				}
 			}
 			else{//非選択時
