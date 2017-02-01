@@ -143,18 +143,20 @@ void Start::Update() {
 			break;
 		}
 		case 0:{
+			/*青*/
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
-						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	){
-					get_player()->myteam=RedTeam;
+						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	&& teamnum[1] < 5){
+					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
 					//get_player()->myrole=Gatling;
 					s_flag = 1;
 					//set_start(true);
+			/*赤*/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
-						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2){
+						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2 && teamnum[0] < 5){
 
-					get_player()->myteam=BlueTeam;
+					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
 					//get_player()->myrole=Gatling;
 					s_flag = 1;//キャラ選択へ
