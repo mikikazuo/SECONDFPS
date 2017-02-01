@@ -147,30 +147,23 @@ void Start::Update() {
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
 						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	&& teamnum[1] < 5){
-					get_player()->myteam=BlueTeam;
+					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					//get_player()->myrole=Gatling;
 					s_flag = 1;
-					//set_start(true);
-			/*赤*/
+					/*赤*/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
 						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2 && teamnum[0] < 5){
 
-					get_player()->myteam=RedTeam;
+					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
-					//get_player()->myrole=Gatling;
 					s_flag = 1;//キャラ選択へ
-					//set_start(true);//チーム待ち画面にジャンプ
 				}
 			}
-
 			//mouse smooth
 			if(get_mousebutton_count(LEFT_BUTTON)>=2){
 				if(smooth.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<smooth.leftup.x+smooth.width&&
 						smooth.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<smooth.leftup.y+smooth.height)
 					clickrole=true;
-
-
 			}
 			else
 				clickrole=false;
@@ -185,9 +178,6 @@ void Start::Update() {
 		}
 		case 1:{
 			//キャラ選択
-			//あとはプログラム的にキャラ選択するだけ
-			//int sikaku_w = 100;int sikaku_h = 100;
-
 			if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
 				ro_flag = 0;
@@ -195,7 +185,6 @@ void Start::Update() {
 					get_player()->myrole= Crossbow;
 					set_start(true);
 				}
-				//puts("範囲");
 			}
 			else if(150<get_mouseinfo().x&&get_mouseinfo().x<400&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
@@ -204,7 +193,6 @@ void Start::Update() {
 					get_player()->myrole=Rifle;
 					set_start(true);
 				}
-				//puts("範囲1");
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
@@ -213,7 +201,6 @@ void Start::Update() {
 					get_player()->myrole=Gatling;
 					set_start(true);
 				}
-				//puts("範囲2");
 			}
 			else if(500<get_mouseinfo().x&&get_mouseinfo().x<740&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
@@ -222,7 +209,6 @@ void Start::Update() {
 					get_player()->myrole=Spear;
 					set_start(true);
 				}
-				//puts("範囲3");
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
 					50<get_mouseinfo().y&&get_mouseinfo().y<320 ){
@@ -231,7 +217,6 @@ void Start::Update() {
 					get_player()->myrole=Magicstick;
 					set_start(true);
 				}
-				//puts("範囲4");
 			}
 			else if(800<get_mouseinfo().x&&get_mouseinfo().x<1100&&
 					350<get_mouseinfo().y&&get_mouseinfo().y<650 ){
@@ -240,13 +225,11 @@ void Start::Update() {
 					get_player()->myrole=Magic;
 					set_start(true);
 				}
-				//puts("範囲5");
 			}
 			else{//非選択時
 				angle = 0;
 				ro_flag = -1;
 			}
-
 			break;
 		}
 		}
@@ -257,9 +240,6 @@ void Start::Update() {
 			get_SceneMgr().ChangeScene(eScene_Game);/**/
 		s_flag++;
 	}
-	//break;
-
-
 }
 
 void Start::Draw() {
@@ -268,24 +248,21 @@ void Start::Draw() {
 		switch(s_flag){
 		case -1:{
 			startcanvas.view2D();
-			img_DrawXY(Title,0,0,1200,700);
+			//img_DrawXY(Title,0,0,1200,700);
+			image_DrawExRota(Title,600,350,0,2);
 			break;
 		}
 		case 0:{
 			startcanvas.view2D();
 			img_DrawXY(handle[0],0,0,1200,700);
 			glColor3d(1,0,0);
-			//rect_Draw2D(red.leftup.x,red.leftup.y,red.width,red.height);
 			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
 			glColor3d(0,0,1);
-			//rect_Draw2D(blue.leftup.x,blue.leftup.y,blue.width,blue.height);
 			image_DrawExRota(handle[2],blue.leftup.x+blue.width/2,blue.leftup.y+blue.height/2,0,0.5);
 
 			glColor3d(0,0,0);
 			img_DrawXY(handle[4],600-200,200,400,100);
-			//rect_Draw2D(smooth.leftup.x,smooth.leftup.y,smooth.width,smooth.height);
 			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
-			//printf("%d\n",teamnum[0])
 			break;
 		}
 		case 1:{
@@ -306,14 +283,10 @@ void Start::Draw() {
 			glCullFace(GL_BACK);
 
 			gluPerspective(60, (double)w / (double)h,0.1,1200);/*view volume 注意*/
-			/*gluLookAt( position.x,position.y+0.5f,position.z, // 視点の位置x,y,z;
-					position.x+lookat.x, position.y+0.5f+lookat.y,position.z+lookat.z,   // 視界の中心位置の参照点座標x,y,z
-					0,1,0);*/
 			gluLookAt( position.x, position.y, position.z,
 					0, 0.0f, 0,
 					0.0f, 1.0f, 0.0f);
 
-			//glMatrixMode(GL_MODELVIEW);//モデルビュー変換行列
 			/*移動関連これより下 移動関係関数,描画 の順番*/
 
 			glPushMatrix();//保存
@@ -321,7 +294,6 @@ void Start::Draw() {
 			if(ro_flag == 0) {
 				glRotatef(angle,0, 1, 0);
 			}
-			//else glMatrixMode(GL_PROJECTION);
 			mqoCallModel( model[0] );
 
 			glPushMatrix();//保存
@@ -349,19 +321,10 @@ void Start::Draw() {
 			if(ro_flag == 5) {glRotatef(angle,0, 1, 0);}
 			mqoCallModel( model[5] );
 
-			//printf("x:%d  y:%d\n",get_mouseinfo().x,get_mouseinfo().y);
 			if(ro_flag >= 0) {
 				startcanvas.view2D();
 				int img_w = 300;
 				int img_h = 300;
-
-				/*
-				glMatrixMode(GL_PROJECTION);
-				glPushMatrix();
-				glLoadIdentity();
-				glOrtho(0,w,h,0,-1,1);
-				glMatrixMode(GL_MODELVIEW);
-				 */
 
 				/*ステータス表示*/
 				if(ro_flag < 4)
@@ -403,11 +366,7 @@ void Start::Draw() {
 			else
 				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
 		}
-
-
 	}
-
-
 }
 
 
