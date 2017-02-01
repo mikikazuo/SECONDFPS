@@ -52,8 +52,9 @@ void enemyPlayer::Draw() {
 	glRotated(angles.x * 180 /M_PI ,0,1,0);
 	//glRotated(-angles.y * 180 /M_PI ,1,0,0);
 
-	mqoCallModel(enemymodel);
-
+//	mqoCallModel(enemymodel);
+	glTranslated(0,-1,0);   //アニメーション用補正
+	get_chara().walk(4,0,0,0,1);
 	glPopMatrix();
 
 	glColor3f(1,1,1);

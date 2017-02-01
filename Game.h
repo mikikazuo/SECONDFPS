@@ -4,7 +4,7 @@
 #include "ISceneChanger.h"
 #include "map.h"
 #include "mob.h"
-
+#include "charaanimation.h"
 #include "player.h"
 
 #include "enemyPlayer.h"
@@ -32,6 +32,6 @@ Wall **get_allplayerwall();
 player *get_player();
 mob *get_mober();
 int get_mobernum();
-
+chara_animation get_chara();
 enemyPlayer *get_enemy();
 

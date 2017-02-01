@@ -276,8 +276,8 @@ void object::Draw(){
 			break;
 		}
 
-		Line3D(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z,
-				this->m_Pos.x+rate*this->m_NormaDirect[i].x,this->m_Pos.y+rate*this->m_NormaDirect[i].y,this->m_Pos.z+rate*this->m_NormaDirect[i].z);
+	//	Line3D(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z,
+		//		this->m_Pos.x+rate*this->m_NormaDirect[i].x,this->m_Pos.y+rate*this->m_NormaDirect[i].y,this->m_Pos.z+rate*this->m_NormaDirect[i].z);
 
 	}
 	glColor3d(1.0, 1.0, 1.0);

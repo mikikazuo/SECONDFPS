@@ -15,6 +15,7 @@ public:
     void Update() ;				//更新処理をオーバーライド。
     void DrawInitialize();
     void Draw() ;					//描画処理をオーバーライド。
+    void walk(int model_no,double x,double y,double z,int player_no);
     void DrawFinalize();
 	virtual ~chara_animation();
 };

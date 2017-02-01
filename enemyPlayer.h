@@ -11,12 +11,12 @@
 #include "glm.h"
 #include "GLMetaseq.h"
 #include "bullet.h"
-
+#include "charaanimation.h"
 class enemyPlayer {
 private:
 	MQO_MODEL enemymodel;
 	int wallhandle;
-
+	chara_animation mymodel;
 public:
 	int myid;
 	bullet enemybullet;

@@ -20,7 +20,7 @@
 #include "sound.h"
 #include "net_common.h"
 #include "enemyPlayer.h"
-#include "charaanimation.h"
+
 #include "main.h"
 #include "Letter.h"
 #include "net_client.h"
@@ -28,7 +28,6 @@
 #define PLAYERNUM 5
 
 
-MQO_MODEL mqomodel[12];
 
 player player1;
 mob mober[10];
@@ -94,37 +93,6 @@ void Game::DrawInitialize(){
 	player1.DrawInitialize(Gatling);
 
 	chara.DrawInitialize();
-	char *flname=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
-	mqomodel[0]=mqoCreateModel(flname,0.0035);
-
-	flname=(char*)"Data/charamodel/拠点/castle3_exp.mqo";
-	mqomodel[1]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-	mqomodel[2]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";
-	mqomodel[3]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char5/char5_firstside_shooted.mqo";
-	mqomodel[4]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-	mqomodel[5]=mqoCreateModel(flname,0.0035);
-
-
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-	mqomodel[6]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-	mqomodel[7]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
-	mqomodel[8]=mqoCreateModel(flname,0.0035);
-	//エラー表示の原因↓
-	flname=(char*)"Data/charamodel/char2/char2_ene_head.mqo";
-	mqomodel[9]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/char2_ene_leg1.mqo";
-	mqomodel[10]=mqoCreateModel(flname,0.0035);
-	flname=(char*)"Data/charamodel/char2/char2_exp_ver2.mqo";
-	mqomodel[11]=mqoCreateModel(flname,0.0035);
-
-	//	flname=(char*)"Data/charamodel/char5/char5_exp.mqo";
-	//	mqomodel[6]=mqoCreateModel(flname,0.0035);
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -205,6 +173,7 @@ void Game::Draw(){
 	}
 
 //	mapobj.Draw();
+
 	chara.Draw();
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 		mober[i].Draw();
@@ -215,18 +184,6 @@ void Game::Draw(){
 
 	glColor3f(0.5,0.5,0.5);
 
-	for(int i=0;i<12;i++){
-
-		glPushMatrix();
-		if(i>=6)
-			glTranslated(5+(i-6)*5,1,-20);
-		else
-			glTranslated(5+i*5,1,-24);
-		glRotated(180,0,1,0);
-
-		mqoCallModel(mqomodel[i]);
-		glPopMatrix();
-	}
 
 
 	glDisable(GL_LIGHTING);
@@ -263,4 +220,6 @@ int get_mobernum(){
 enemyPlayer *get_enemy(){
 	return enemy;
 }
-
+chara_animation get_chara(){
+	return chara;
+}
