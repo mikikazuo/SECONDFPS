@@ -90,8 +90,8 @@ void Start::DrawInitialize(){
 	float aaa = 0.55;//aaa test
 	char *name;
 	handle[0]=image_Load("Data/image/スタート画面/button1.png");
-	handle[1]=image_Load("Data/image/スタート画面/button2.png");
-	handle[2]=image_Load("Data/image/スタート画面/button3.png");
+	handle[1]=image_Load("Data/image/スタート画面/button3.png");
+	handle[2]=image_Load("Data/image/スタート画面/button2.png");
 	handle[3]=image_Load("Data/image/スタート画面/button4.png");
 	handle[4]=image_Load("Data/image/スタート画面/button5.png");
 
@@ -143,14 +143,14 @@ void Start::Update() {
 			break;
 		}
 		case 0:{
-			/*青*/
+			/**/
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
 						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2	&& teamnum[1] < 5){
 					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
 					s_flag = 1;
-					/*赤*/
+					/**/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
 						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2 && teamnum[0] < 5){
 
@@ -263,6 +263,11 @@ void Start::Draw() {
 			glColor3d(0,0,0);
 			img_DrawXY(handle[4],600-200,200,400,100);
 			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
+
+			glColor3d(1,1,1);
+			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
+			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
+			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
 			break;
 		}
 		case 1:{
@@ -337,9 +342,9 @@ void Start::Draw() {
 			glMatrixMode(GL_PROJECTION);//投影変換行列
 			glPushMatrix();//保存
 			if(get_player()->myteam == BlueTeam)
-				glColor3d(0.65,0.05,0);
-			else
 				glColor3d(0,0,0.65);
+			else
+				glColor3d(0.65,0.05,0);
 			rect_Draw2D(0,0,170,700);
 			rect_Draw2D(170,0,860,50);
 			rect_Draw2D(400,50,100,270);
