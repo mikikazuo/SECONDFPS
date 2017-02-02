@@ -22,7 +22,9 @@ CanvasUI::CanvasUI() {
 CanvasUI::~CanvasUI() {
 	// TODO Auto-generated destructor stub
 }
-
+int get_changestartcount(){
+	return changestartcount;
+}
 //計算関連の初期化
 void CanvasUI::Initialize(){
 	changestartcount=0;
@@ -237,7 +239,7 @@ void CanvasUI::shake(float nowhp){
 	if(fin_mes==3)
 		changestartcount++;
 
-	if(changestartcount>60*3){
+	if(get_changestartcount()>60*5){
 		get_SceneMgr().ChangeScene(eScene_Menu);
 		set_start(false);
 	}

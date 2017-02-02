@@ -61,13 +61,13 @@ void Game::setInfoPlayerWall(){
 
 //初期化
 void Game::Initialize(){
-	glutSetCursor(GLUT_CURSOR_NONE);
+
 	SoundInit();
 	gamecanvas.Initialize();
 	mapobj.Initialize();
 
 	player1.Initialize(vec3(30,10,-10),1);//(*get_argc()==2)?RedTeam:BlueTeam);
-	chara.Initialize();
+
 	//TODO
 	//	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
 	//		mober[i].Initialize(i,vec3(-10,2.5f,-5),1,100,1,30,10);
@@ -81,7 +81,7 @@ void Game::Initialize(){
 
 	//プレイヤーの壁情報初期化
 	player1.wall = 0;
-
+	get_chara().Initialize();
 }
 
 void Game::DrawInitialize(){
@@ -92,7 +92,6 @@ void Game::DrawInitialize(){
 	mapobj.DrawInitialize();
 	player1.DrawInitialize(Gatling);
 
-	chara.DrawInitialize();
 
 
 	for(int i=0;i<(int)(sizeof(mober)/sizeof(mober[0]));i++)
@@ -104,7 +103,7 @@ void Game::DrawInitialize(){
 			continue;
 		enemy[i].DrawInitialize(enemy[i].myrole);
 	}
-
+	get_chara().DrawInitialize();
 }
 
 void Game::DrawFinalize(){
@@ -114,6 +113,7 @@ void Game::DrawFinalize(){
 	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
 	chara.DrawFinalize();
+	get_chara().DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {

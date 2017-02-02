@@ -173,6 +173,14 @@ void chara_animation::DrawInitialize(){
 }
 
 void chara_animation::DrawFinalize(){
+	for(int i=0;i<20;i++){
+		mqoDeleteModel(char1[i]);
+		mqoDeleteModel(char2[i]);
+		mqoDeleteModel(char3[i]);
+		mqoDeleteModel(char4[i]);
+		mqoDeleteModel(char5[i]);
+		mqoDeleteModel(char6[i]);
+	}
 
 }
 void chara_animation::Update() {

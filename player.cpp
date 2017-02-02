@@ -870,7 +870,7 @@ int thread(void *data){
 
 	player *info=(player*)data;
 	while(1){
-		if(get_player()->result==1||get_player()->result==2)
+		if(get_changestartcount()>60*5)
 			break;
 		if(pointerfree)
 			continue;
@@ -944,6 +944,9 @@ void player::Action()
 }
 
 void player::launchBullet(){
+	if(get_player()->result==1||get_player()->result==2)
+				return;
+
 	if(!atkok)
 		atkcount++;
 	//最後の弾だけ音がならないため

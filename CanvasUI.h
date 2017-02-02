@@ -48,5 +48,6 @@ public:
 	void Draw();
 	void shake(float nowhp);
 };
+int get_changestartcount();
 
 #endif /* CANVASUI_H_ */
