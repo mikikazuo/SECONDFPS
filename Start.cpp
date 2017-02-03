@@ -104,13 +104,17 @@ void Start::DrawInitialize(){
 
 	Title=image_Load("Data/image/スタート画面/タイトル.png");//タイトル画面
 
-	name=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
+	name=(char*)"Data/charamodel/char1/char1_exp_ver3.mqo";
 	model[0] = mqoCreateModel( name, aaa );//モデル読み込み
-	//name=(char*)"Data/charamodel/enemy1/enemy2_exp.mqo";
+	name=(char*)"Data/charamodel/char2/char2_exp_ver3.mqo";
 	model[1] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char3/char3_exp_ver3.mqo";
 	model[2] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char4/char4_exp_ver3.mqo";
 	model[3] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char5/char5_exp_ver3.mqo";
 	model[4] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char6/char6_exp_ver3.mqo";
 	model[5] = mqoCreateModel( name, aaa );
 }
 
