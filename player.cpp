@@ -377,12 +377,7 @@ bool get_pointerfree(){
 	return pointerfree;
 }
 void player::Update(){
-
-
-
-
 	dead();
-
 	if(myteam==RedTeam){
 		if(get_mapobj()->basehp[RedTeam]<=0)
 			result=2;
