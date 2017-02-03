@@ -11,7 +11,7 @@ Scene {
 	amb 0.250 0.250 0.250
 }
 Material 4 {
-	"body.004" shader(2) col(1.000 1.000 1.000 1.000) dif(0.800) amb(1.000) emi(0.000) spc(1.000) power(1.00) tex("")
+	"body.004" shader(2) col(1.000 1.000 1.000 1.000) dif(0.800) amb(1.000) emi(0.000) spc(1.000) power(1.00) tex("hihu.bmp")
 	"face" shader(2) col(1.000 1.000 1.000 1.000) dif(0.800) amb(1.000) emi(0.000) spc(1.000) power(1.00) tex("char2_face_tex.bmp")
 	"hair" shader(2) col(1.000 1.000 1.000 1.000) dif(0.800) amb(1.000) emi(0.000) spc(1.000) power(1.00) tex("char2_hair_tex.bmp")
 	"hat" shader(2) col(1.000 1.000 1.000 1.000) dif(0.800) amb(1.000) emi(0.000) spc(1.000) power(0.00) tex("char2_koniro_tex.bmp")
