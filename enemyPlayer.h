@@ -19,6 +19,7 @@ private:
 	chara_animation mymodel;
 public:
 	int myid;
+	int hp;
 	bullet enemybullet;
 	vec3 position;	//座標
 	vec3 angles;	//角度

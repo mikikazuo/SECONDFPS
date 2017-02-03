@@ -106,7 +106,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc061");
+	sprintf(server_name,"clpc003");
 
 	setup_client(server_name,port);
 }
@@ -159,6 +159,7 @@ int control_requests () {
 
 	cdata.my_player.myteam = me.myteam;
 	cdata.my_player.myrole = me.myrole;
+	cdata.my_player.hp = me.hp;
 
 	for(int i=0;i<WALLMAX;i++){
 		cdata.my_player.mywall[i].count=get_player()->mywall[i].count;

@@ -51,6 +51,7 @@ int get_playerdata(S_CONTAINER sdata){
 
 		get_enemy()[i].angles=sdata.players[i].angles;
 		get_enemy()[i].lookat=sdata.players[i].lookat;
+		get_enemy()[i].hp=sdata.players[i].hp;
 
 		for(int j=0;j<WALLMAX;j++){
 			get_enemy()[i].mywall[j].count=sdata.walls[i][j].count;

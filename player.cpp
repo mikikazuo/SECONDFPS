@@ -50,8 +50,22 @@ static bool testcursol=false;  //カーソルの固定外し
 static int modelcount;
 static int shootedcount;
 static int reloadcount;
+static float premousespeed;
+static float mousespeed=0.1f;
+static int red,blue;
+vec3 redalivepos[]={
+		vec3(32,10,-7),
+		vec3(32,10,7),
+		vec3(38,10,-7),
+		vec3(38,10,7)
+};
 
-float mousespeed = 0.1f;
+vec3 bluealivepos[]={
+		vec3(-32,10,-7),
+		vec3(-32,10,7),
+		vec3(-38,10,-7),
+		vec3(-38,10,7)
+};
 ///ここから//////
 //#include <opencv/cv.h>
 //#if defined(WIN32)
@@ -179,8 +193,10 @@ void player::Initialize(vec3 pos,float ra){
 	falag=0;
 	level=0;
 	exp=0;
+	mousespeed=0.1f;
 	playerbullet.bullet_Initialize();
 	atktime=60;
+	premousespeed=mousespeed;
 	switch(myrole){
 	case Crossbow:
 		break;
@@ -199,7 +215,23 @@ void player::Initialize(vec3 pos,float ra){
 		break;
 	}
 	respawntime=0;
-	position=pos;
+	//position=pos;
+	int i=0;
+	red=0,blue=0;
+	for(i=0;i<MAX_CLIENTS;i++){
+		if(i==myid){
+			if(myteam==RedTeam)
+				position=redalivepos[red];
+			else if(myteam==BlueTeam)
+				position=bluealivepos[blue];
+			break;
+		}
+		if(get_enemy()[i].myteam==RedTeam)
+			red++;
+		else if(get_enemy()[i].myteam==BlueTeam)
+			blue++;
+	}
+
 	speed=7;
 	hp=maxhp=100;
 	atk=10;
@@ -215,13 +247,16 @@ void player::Initialize(vec3 pos,float ra){
 
 	reset_Scroll();
 	reset_ScrollLimit();
-	set_ScrollMax(18);
-	set_ScrollMin(0);
-
+	if(myrole==Rifle){
+		set_ScrollMax(5);
+		set_ScrollMin(0);
+	}
+	snipedeg=0;
 }
 void player::DrawInitialize(Role setrole){
-	playerbullet.bullet_DrawInitialize(myrole);
 
+	myrole=Rifle;
+	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
@@ -264,6 +299,7 @@ void player::DrawInitialize(Role setrole){
 		flname[2]=(char*)"Data/charamodel/char6/char6_firstside_shooted.mqo";
 		flname[3]=(char*)"Data/charamodel/char6/char6_ene_shooted.mqo";
 		break;
+
 	default:
 		break;
 	}
@@ -318,7 +354,8 @@ void player::Draw(){
 	glTranslatef(position.x,position.y+0.5f,position.z);
 	glRotated(angles.x* 180 /M_PI ,0,1,0);
 	glRotated(-angles.y* 180 /M_PI ,1,0,0);
-	mqoCallModel(handmodel[nowpoze]);
+	if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)==0)
+		mqoCallModel(handmodel[nowpoze]);
 	glPopMatrix();
 	DrawMyWallWire();
 	DrawMyWall();
@@ -401,17 +438,27 @@ void player::Update(){
 	if(key_getmove(Test)==3)
 		testcursol=!testcursol;
 
-	set_Pers(60-3*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
+
+	//スナイパーモード用
+	set_Pers(60-11*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
+
+	if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)>0){
+		mousespeed=0.02f;
+		snipedeg=get_mousebutton_count(MIDDLE_BUTTON_SCROLL);
+		if(snipedeg==2)
+			snipedeg=1;
+		else if(snipedeg==4)
+			snipedeg=3;
+	}
+	else if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)==0){
+		mousespeed=premousespeed;
+		snipedeg=0;
+	}
+
 }
 //プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
-
-
-
-
-
 	const float movespeed = speed;
-
 
 	// Calculate movement vectors
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
@@ -425,7 +472,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	vec3 sampposition;
 	sampposition=position;
-	if(progress_time==0){
+	if(progress_time==0&&hp>0){
 		if(key_getmove(Left))
 			sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
 		if(key_getmove(Right) )
@@ -797,12 +844,27 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 }
 
 void player::dead(){
+	static bool resetwall;
 	if(respawntime>RESPAWN_TIME){
 		hp=maxhp;
+		playerbullet.launchbulletcount=0;
 		respawntime=0;
+		if(myteam==RedTeam)
+			position=redalivepos[red];
+		else if(myteam==BlueTeam)
+			position=bluealivepos[blue];
+		resetwall=0;
+
 	}
-	if(hp<=0)
+	if(hp<=0){
 		respawntime++;
+		if(resetwall==0){
+			resetwall=1;
+			for(int i=0;i<WALLMAX;i++)
+				mywall[i].count=0;
+		}
+	}
+
 }
 void player::set_wall(){
 	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
@@ -945,7 +1007,7 @@ void player::Action()
 
 void player::launchBullet(){
 	if(get_player()->result==1||get_player()->result==2)
-				return;
+		return;
 
 	if(!atkok)
 		atkcount++;

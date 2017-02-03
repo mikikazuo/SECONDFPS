@@ -24,6 +24,7 @@ void enemyPlayer::Initialize(){
 		mywall[i].count=0;
 
 	}
+	hp=0;
 }
 void enemyPlayer::DrawInitialize(Role setrole){
 
@@ -54,6 +55,7 @@ void enemyPlayer::Draw() {
 
 //	mqoCallModel(enemymodel);
 	glTranslated(0,-1,0);   //アニメーション用補正
+	if(hp>0)
 	get_chara().walk((int)myrole+1,0,0,0,1);
 	glPopMatrix();
 

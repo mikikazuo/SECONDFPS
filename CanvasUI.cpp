@@ -13,6 +13,8 @@
 #include "player.h"
 #include "main.h"
 #include "Start.h"
+#include "mouse.h"
+
 static int changestartcount;
 CanvasUI::CanvasUI() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -76,7 +78,7 @@ void CanvasUI::DrawInitialize(){
 	//handle[13]=image_Load("Data/image/HP_bar_frame.png");//枠
 
 
-	handle[14]=image_Load("Data/image/wall_info.png");//壁情報
+	handle[14]=image_Load("Data/image/3wall_info.png");//壁情報
 
 
 	//数字　30-40
@@ -108,7 +110,9 @@ void CanvasUI::DrawInitialize(){
 	handle[45]=image_Load("Data/image/you_win.png");
 	//YOU LOSE...
 	handle[46]=image_Load("Data/image/you_lose.png");
-
+	//スナイパーエフェクト
+	handle[47]=image_Load("Data/image/sniper.png");
+	handle[48]=image_Load("Data/image/sniper_bar.png");
 }
 
 
@@ -164,6 +168,7 @@ void CanvasUI::Update() {
 	//	}
 
 	shake(get_player()->hp);
+	snipe_per = (double)get_player()->snipedeg/5;
 }
 
 void CanvasUI::shake(float nowhp){
@@ -298,9 +303,9 @@ void CanvasUI::Draw() {
 
 	//image_DrawExRota(handle[3],75+shakeX,680+shakeY,0,2);//Lv
 	if(get_player()->myteam==RedTeam)
-	image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
+		image_DrawExRota(handle[7],75+shakeX,680+shakeY,0,2);//Red
 	else if(get_player()->myteam==BlueTeam)
-	image_DrawExRota(handle[8],75+shakeX,680+shakeY,0,2);//Blue
+		image_DrawExRota(handle[8],75+shakeX,680+shakeY,0,2);//Blue
 
 	int number1,number10;
 	number1 = level%10;//ひとけため
@@ -451,8 +456,16 @@ void CanvasUI::Draw() {
 	//fin_mes = 1;	//第一段階開始
 
 	//}
+	//動作確認(本来は 現在の数値/最大数値 にて算出)
 
 
+	/***スナイパーモード***/
+	//if(スナイパーモード時)
+	if(get_player()->myrole==Rifle&&get_mousebutton_count(MIDDLE_BUTTON_SCROLL)>0){
+	image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
+	image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
+	//}
+	}
 
 
 	//動作確認

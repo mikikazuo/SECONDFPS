@@ -265,7 +265,7 @@ void bullet::EnemyPlayerToPlayer(){
 //
 void bullet::PlayerToEnemy(){
 	for(int i=0;i<MAX_CLIENTS;i++){
-		if(i==get_player()->myid||get_enemy()[i].myteam==get_player()->myteam)
+		if(i==get_player()->myid||get_enemy()[i].myteam==get_player()->myteam||get_enemy()[i].hp<=0)
 			continue;
 		for(int j=0;j<MAXBULLET;j++)
 			if(bullet_info[j].count)
@@ -275,7 +275,6 @@ void bullet::PlayerToEnemy(){
 					break;
 				}
 	}
-
 }
 
 void bullet::PlayerToMob(){

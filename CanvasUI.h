@@ -28,14 +28,15 @@ private:
 	int wall_info[5];
 	int level;
 	double progress_per;	//進捗率
-	int set;	//設置状況
-	int del;	//除去状況
 
-	double res_per;
-	int fin_mes; //ゲーム終了メッセージの表示状況を格納
-	double fin_time; //ゲーム終了メッセージを表示する際に使用
-	double fin_per; //ゲーム終了メッセージを表示する際に使用
-
+	int set;				//設置状況
+	int del;				//除去状況
+	double res_time;		//リスポーン待機経過時間
+	double res_per;			//リスポーン待機進捗
+	int fin_mes; 			//ゲーム終了メッセージの表示状況を格納
+	double fin_time; 		//ゲーム終了メッセージを表示する際に使用
+	double fin_per; 		//ゲーム終了メッセージを表示する際に使用
+	double snipe_per; 		//スナイパーモード時の倍率
 public:
 	CanvasUI();
 	virtual ~CanvasUI();

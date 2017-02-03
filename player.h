@@ -71,6 +71,7 @@ public:
 	int wall;		//壁操作の状況(0:ノーマル，1:設置中,2:除去中)
 	int respawntime;
 	int progress_time;
+	int snipedeg;
 
 	float minushp;
 
