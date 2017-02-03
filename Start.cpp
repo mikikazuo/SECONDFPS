@@ -112,7 +112,7 @@ void Start::DrawInitialize(){
 	model[2] = mqoCreateModel( name, aaa );
 	name=(char*)"Data/charamodel/char4/char4_exp_ver3.mqo";
 	model[3] = mqoCreateModel( name, aaa );
-	name=(char*)"Data/charamodel/char5/char5_exp_ver3.mqo";
+	name=(char*)"Data/charamodel/char5/char5_exp_ver2.mqo";//ver3ありますが反応しません;;
 	model[4] = mqoCreateModel( name, aaa );
 	name=(char*)"Data/charamodel/char6/char6_exp_ver3.mqo";
 	model[5] = mqoCreateModel( name, aaa );
