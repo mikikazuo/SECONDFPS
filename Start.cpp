@@ -106,13 +106,17 @@ void Start::DrawInitialize(){
 
 	Title=image_Load("Data/image/スタート画面/タイトル.png");//タイトル画面
 
-	name=(char*)"Data/charamodel/char1/char1_exp_ver2.mqo";
+	name=(char*)"Data/charamodel/char1/char1_exp_ver3.mqo";
 	model[0] = mqoCreateModel( name, aaa );//モデル読み込み
-	//name=(char*)"Data/charamodel/enemy1/enemy2_exp.mqo";
+	name=(char*)"Data/charamodel/char2/char2_exp_ver3.mqo";
 	model[1] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char3/char3_exp_ver3.mqo";
 	model[2] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char4/char4_exp_ver3.mqo";
 	model[3] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char5/char5_exp_ver2.mqo";//ver3ありますが反応しません;;
 	model[4] = mqoCreateModel( name, aaa );
+	name=(char*)"Data/charamodel/char6/char6_exp_ver3.mqo";
 	model[5] = mqoCreateModel( name, aaa );
 
 
@@ -373,23 +377,27 @@ void Start::Draw() {
 
 			startcanvas.view2D();
 
+			glColor3d(0,0,0);
+
 			img_DrawXY(handle[0],0,0,1200,700);
 			img_DrawXY(handle[4],600-200,200,400,100);
 			glPushMatrix();
 			glColor3d(1,1,1);
+
 			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
 			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
 			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
-
 			glPopMatrix();
 			glDisable(GL_DEPTH_TEST);
+
 			//glColor3d(1,0,0);
 			image_DrawExRota(handle[1],red.leftup.x+red.width/2,red.leftup.y+red.height/2,0,0.5);
 			//glColor3d(0,0,1);
 			image_DrawExRota(handle[2],blue.leftup.x+blue.width/2,blue.leftup.y+blue.height/2,0,0.5);
 			//glColor3d(0,0,0);
-
+			image_DrawExRota(handle[4],600,250,0,1);
 			image_DrawExRota(handle[3],smooth.leftup.x+smooth.width/2,smooth.leftup.y+smooth.height/2,0,1);
+
 
 			break;
 		}
