@@ -12,6 +12,8 @@ MQO_MODEL animation;
 int time;
 int anim_starttime[8];
 int animechu[8];//アニメ中かどうか
+int Ranimechu[8];//リロードアニメ中かどうか
+int Rchu[8];//リロード中かどうか
 int click[8];//各プレイヤーのマウスクリックの状態(もしくはショットの瞬間)を監視
 
 MQO_MODEL char1[20];
@@ -27,6 +29,7 @@ void walk(int model_no,double x,double y,double z,int player_no);
 void n_arm(int model_no,double x,double y,double z);
 void sn_arm(int model_no,double x,double y,double z);
 void shot_arm(int model_no,double x,double y,double z,int player_no);
+void reload_arm(int model_no,double x,double y,double z,int player_no);
 
 chara_animation::chara_animation() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -45,6 +48,8 @@ void chara_animation::Initialize()	{
 	anim_starttime[i]=time;
 	animechu[i]=0;
 	click[i]=0;
+	Rchu[i]=0;
+	Ranimechu[i]=0;
 	}
 
 	//click[8] = 0;//プレイヤーの皆さんのクリック状況(またはショットの瞬間を観測)
@@ -70,6 +75,9 @@ void chara_animation::DrawInitialize(){
 	char2[7]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char2/char2_ene_shooted.mqo";
 	char2[8]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char2/char2_ene_reload.mqo";
+	char2[9]=mqoCreateModel(flname,0.0035);
+
 
 
 
@@ -93,6 +101,9 @@ void chara_animation::DrawInitialize(){
 	char1[8]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char1/char1_ene_shooted.mqo";
 	char1[9]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char1/char1_ene_reload.mqo";
+	char1[10]=mqoCreateModel(flname,0.0035);
+
 
 
 	flname=(char*)"Data/charamodel/char3/char3_ene_body.mqo";
@@ -114,7 +125,6 @@ void chara_animation::DrawInitialize(){
 	//flname=(char*)"Data/charamodel/char3/char3_ene_shooted.mqo";
 	//char3[8]=mqoCreateModel(flname,0.0035);
 
-
 	flname=(char*)"Data/charamodel/char4/char4_ene_body1.mqo";
 	char4[0]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char4/char4_ene_leg1.mqo";
@@ -133,6 +143,9 @@ void chara_animation::DrawInitialize(){
 	char4[7]=mqoCreateModel(flname,0.0035);
 	flname=(char*)"Data/charamodel/char4/char4_ene_arm_shooted.mqo";
 	char4[8]=mqoCreateModel(flname,0.0035);
+	flname=(char*)"Data/charamodel/char4/char4_ene_arm_reload.mqo";
+	char4[9]=mqoCreateModel(flname,0.0035);
+
 
 	flname=(char*)"Data/charamodel/char5/char5_ene_body.mqo";
 	char5[0]=mqoCreateModel(flname,0.0035);
@@ -181,19 +194,36 @@ void chara_animation::Update() {
 	//各プレイヤーがショットている間,１にしてください
 	//各プレイヤーがショットしていない間０にしてください
 	//とりあえずplayer_no=model_noで仮置きしてます
-	click[0] = 1;
-	click[1] = 1;
-	click[2] = 1;
-	click[3] = 1;
-	click[4] = 1;
-	click[5] = 1;
-	click[6] = 1;
-	click[7] = 1;
+	click[0] = 0;
+	click[1] = 0;
+	click[2] = 0;
+	click[3] = 0;
+	click[4] = 0;
+	click[5] = 0;
+	click[6] = 0;
+	click[7] = 0;
+
+	Rchu[0] = 0;
+	Rchu[1] = 0;
+	Rchu[2] = 0;
+	Rchu[3] = 0;
+	Rchu[4] = 0;
+	Rchu[5] = 0;
+	Rchu[6] = 0;
+	Rchu[7] = 0;
+
 
 	int i;
 	if(time % 300 < 150){
 		for(i=0;i<8;i++){
-			click[i]=0;
+			click[i]=1;
+		}
+	}
+
+	//各プレイヤーがりロード中ならRchu[]を１にしてください
+	if(time % 600 > 450 ){
+		for(i=0;i<8;i++){
+			Rchu[i]=1;
 		}
 	}
 }
@@ -253,7 +283,7 @@ void chara_animation::Draw() {
 	walk(6,38,0,-17,6);
 
 	//直立
-	/*
+/*
 	stand(1,28,0,-17,1);
 	stand(2,30,0,-17,2);
 	stand(3,32,0,-17,3);
@@ -289,6 +319,8 @@ void stand(int model_no,double x,double y,double z,int player_no){
 			//modelPP(char1[4],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 				shot_arm(1,x,y,z,player_no);
+			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+				reload_arm(1,x,y,z,player_no);
 			}else{
 				sn_arm(1,x,y,z);
 			}
@@ -303,6 +335,8 @@ void stand(int model_no,double x,double y,double z,int player_no){
 			//modelPP(char2[3],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 				shot_arm(2,x,y,z,player_no);
+			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+				reload_arm(2,x,y,z,player_no);
 			}else{
 				sn_arm(2,x,y,z);
 			}
@@ -331,7 +365,9 @@ void stand(int model_no,double x,double y,double z,int player_no){
 			//modelPP(char4[4],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 				shot_arm(4,x,y,z,player_no);
-			}else{
+			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+				reload_arm(4,x,y,z,player_no);}
+			else{
 				sn_arm(4,x,y,z);
 			}
 			break;
@@ -394,6 +430,8 @@ void walk(int model_no,double x,double y,double z,int player_no){
 		//modelPP(char1[4],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 			shot_arm(1,x,y,z,player_no);
+		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+			reload_arm(1,x,y,z,player_no);
 		}else{
 		n_arm(1,x,y,z);
 		}
@@ -408,6 +446,8 @@ void walk(int model_no,double x,double y,double z,int player_no){
 		//modelPP(char2[3],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 			shot_arm(2,x,y,z,player_no);
+		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+			reload_arm(2,x,y,z,player_no);
 		}else{
 			n_arm(2,x,y,z);
 		}
@@ -436,6 +476,8 @@ void walk(int model_no,double x,double y,double z,int player_no){
 		//modelPP(char4[4],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
 			shot_arm(4,x,y,z,player_no);
+		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
+			reload_arm(4,x,y,z,player_no);
 		}else{
 			n_arm(4,x,y,z);
 		}
@@ -522,7 +564,7 @@ void sn_arm(int model_no,double x,double y,double z){
 	switch(model_no){
 		case 1:
 			arm = leg+0.9;
-			modelPP(char1[8],x,arm,z);//arm
+			modelPP(char1[9],x,arm,z);//arm
 			break;
 		case 2:
 			arm = leg+0.7;
@@ -684,4 +726,39 @@ void shot_arm(int model_no,double x,double y,double z,int player_no){
 	default:break;
 	}
 }
+
+//リロード中のアーム
+void reload_arm(int model_no,double x,double y,double z,int player_no){
+	double leg = y + 0.5;
+	double arm = leg;
+
+	switch(model_no){
+	case 1:
+		arm = leg+0.9;
+		modelPP(char1[10],x,arm,z);//arm
+		break;
+	case 2:
+		arm = leg+0.7;
+		modelPP(char2[9],x,arm,z);//arm
+		break;
+	case 3:
+		arm = leg+0.9;
+		modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+		break;
+	case 4:
+		arm = leg+0.7;
+		modelPP(char4[9],x,arm,z);//arm
+		break;
+	case 5:
+		arm = leg+0.6;
+		modelPP(char5[5],x,arm,z);//arm
+		break;
+	case 6:
+		arm = leg+0.7;
+		modelPP(char6[6],x,arm,z);//arm
+		break;
+	default:break;
+	}
+}
+
 
