@@ -29,6 +29,7 @@ static float angle = 0;
 static vec3 position;
 static int image[6]; //画像
 static int Title;
+static char *str[80]; //ジョブの名前に使用
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -51,6 +52,8 @@ Buttonposi blue={{800,500},200,100};
 Buttonposi smooth={{600-25,200},50,50};
 
 MQO_MODEL model[6];
+
+static char CHG_role(Role name);
 
 Start::Start(ISceneChanger* changer) : BaseScene(changer) {
 
@@ -402,13 +405,49 @@ void Start::Draw() {
 		glColor3d(0,0,0);
 		for(int i=0;i<MAX_CLIENTS;i++){
 			if(i==get_player()->myid)
-				Mozi_DrawM2(100,200+100*teamnum[0],0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定");
+				Mozi_DrawM2(100,200+100*teamnum[0],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定",CHG_role(get_player()->myrole));
 			else
-				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
+				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",CHG_role(get_enemy()[i].myrole));
 		}
 		//glPopMatrix();
 		//glDisable(GL_DEPTH_TEST);
 	}
 }
 
+char CHG_role(Role name){
+
+	switch(name){
+	case Crossbow:{
+		str[80] = (char*)"弩兵";
+		break;
+	}
+	case Rifle:{
+		str[80] = (char*)"狙撃兵";
+		break;
+	}
+	case Gatling:{
+		str[80] = (char*)"銃火器兵";
+		break;
+	}
+	case Spear:{
+		str[80] = (char*)"槍兵";
+		puts("おおおお");
+		printf("name:%s\n",str);
+		break;
+	}
+	case Magicstick:{
+		str[80] = (char*)"魔法使い";
+		break;
+	}
+	case Magic:{
+		str[80] = (char*)"獣人兵";
+		break;
+	}
+	default:{
+		puts("人数待ち画面:ジョブがおかしいです");
+		break;
+	}
+	}
+	return *str[80];
+}
 
