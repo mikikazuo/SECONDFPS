@@ -29,7 +29,7 @@ static float angle = 0;
 static vec3 position;
 static int image[6]; //画像
 static int Title;
-static char *str; //ジョブの名前に使用
+//static char *str; //ジョブの名前に使用
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -53,7 +53,7 @@ Buttonposi smooth={{600-25,200},50,50};
 
 MQO_MODEL model[6];
 
-static char CHG_role(Role name);
+static void CHG_role(Role name ,char *str);
 
 Start::Start(ISceneChanger* changer) : BaseScene(changer) {
 
@@ -401,46 +401,52 @@ void Start::Draw() {
 		glColor3d(0,0,0);
 		Mozi_DrawM2(100,100,0.7,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
 		Mozi_DrawM2(600,100,0.7,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
-		Mozi_DrawM2(300,500,0.8,MOZI_HGMINTYOE,"LOL");
+		//Mozi_DrawM2(300,500,0.8,MOZI_HGMINTYOE,"LOL");
 		glColor3d(0,0,0);
 		for(int i=0;i<MAX_CLIENTS;i++){
-			if(i==get_player()->myid)
-				Mozi_DrawM2(100,200+100*teamnum[0],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定",CHG_role(get_player()->myrole));
-			else
-				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",CHG_role(get_enemy()[i].myrole));
+			char sss[80];
+
+			if(i==get_player()->myid){
+				CHG_role(get_player()->myrole,sss);
+				Mozi_DrawM2(100,200+100*teamnum[0],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定",sss);
+			}
+			else{
+				CHG_role(get_enemy()[i].myrole,sss);
+				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",sss);
+			}
+			//printf("%s\n",sss);
 		}
 		//glPopMatrix();
 		//glDisable(GL_DEPTH_TEST);
+
 	}
 }
 
-char CHG_role(Role name){
+void CHG_role(Role name ,char *str){
 
 	switch(name){
 	case Crossbow:{
-		str = (char*)"弩兵";
+		strcpy(str,"弩兵");
 		break;
 	}
 	case Rifle:{
-		str = (char*)"狙撃兵";
+		strcpy(str,"狙撃兵");
 		break;
 	}
 	case Gatling:{
-		str = (char*)"銃火器兵";
+		strcpy(str,"銃火器兵");
 		break;
 	}
 	case Spear:{
-		str = (char*)"槍兵";
-		puts("おおおお");
-		printf("name:%s\n",str);
+		strcpy(str,"槍兵");
 		break;
 	}
 	case Magicstick:{
-		str = (char*)"魔法使い";
+		strcpy(str,"魔法使い");
 		break;
 	}
 	case Magic:{
-		str = (char*)"獣人兵";
+		strcpy(str,"獣人兵");
 		break;
 	}
 	default:{
@@ -449,6 +455,5 @@ char CHG_role(Role name){
 	}
 	}
 
-	return *str;
 }
 
