@@ -171,6 +171,15 @@ void Mozi_DrawM(const char *mstr, double X, double Y, double scale, int type) {
 	Mozi_Draw(ws, X, Y, scale, type);
 }
 
+void Mozi_DrawMCenter(const char *mstr, double X, double Y, double scale, int type) {
+	wchar_t ws[130];
+	ws[0] = '\0';
+
+	//setlocale( LC_ALL, "ja_JP.UTF-8" );
+	mbstowcs(ws, mstr, 100);
+	Mozi_DrawCenter(ws, X, Y, scale, type);
+}
+
 void Mozi_DrawM_3D(const char *mstr, double X, double Y, double scale, int type) {
 	wchar_t ws[130];
 	ws[0] = '\0';
@@ -246,6 +255,115 @@ void Mozi_Draw(wchar_t *wstr, double X, double Y, double scale, int type) {
 	//バイリニア補間ここまで
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
+
+//２次元文字　中心位置
+void Mozi_DrawCenter(wchar_t *wstr, double X, double Y, double scale, int type) {
+	//バイリニア補間
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	int i;
+	double sumlength=0;
+	Mozi_chInfomation tmpmozi;
+	Mozi_Infomation *tmp2;
+	for (i = 0; wstr[i] != '\0'; i++) {
+		//		tmp = mozi_getMoziNO(wstr[i]);
+		tmp2 = mozi_getMoziPointer(wstr[i]);
+		if (tmp2 == NULL) {//存在しない文字は無視
+		}
+		else {
+			if (type == MOZI_SHOUZANGYOUSYO) {//衡山毛筆フォント行書
+				tmpmozi = tmp2->syouzan_gyousyo;
+			}
+			else if (type == MOZI_SHOUZANSOUSYO) {
+				tmpmozi = tmp2->syouzan_sousyo;
+			}
+			else if (type == MOZI_HGMINTYOE) {
+				tmpmozi = tmp2->HGmintyouE;
+			}
+			else if (type == MOZI_ADOBEFANGSONG) {
+				tmpmozi = tmp2->AdobeFangsong;
+			}
+			//日本語不可
+			else if (type == MOZI_AGENCYBOLD) {
+				tmpmozi = tmp2->AGENCYBold;
+			}
+			else if (type == MOZI_SFSQUAREHEADCONDENSED) {
+				tmpmozi = tmp2->SFSquareHeadCondensed;
+			}
+			else {
+				if (Mozi_ALART_Nommozicolor == 0) {
+					if (MOZI_DEBUG)	printf("存在しない文字種類です:%d(最初の一度のみ警告)\n", type);
+					Mozi_ALART_Nommozicolor = 1;
+				}
+				return;
+			}
+			if (tmpmozi.textureNo > 0) {
+				sumlength += tmpmozi.Width*scale;
+			}
+			else {
+			}
+		}
+	}
+	glPushMatrix();
+	glTranslated(-sumlength/2,0,0);
+
+	glEnable(GL_TEXTURE_2D);//テクスチャ有効
+	glEnable(GL_ALPHA_TEST);//アルファテスト開始
+	for (i = 0; wstr[i] != '\0'; i++) {
+		//		tmp = mozi_getMoziNO(wstr[i]);
+		tmp2 = mozi_getMoziPointer(wstr[i]);
+		if (tmp2 == NULL) {//存在しない文字は無視
+		}
+		else {
+			if (type == MOZI_SHOUZANGYOUSYO) {//衡山毛筆フォント行書
+				tmpmozi = tmp2->syouzan_gyousyo;
+			}
+			else if (type == MOZI_SHOUZANSOUSYO) {
+				tmpmozi = tmp2->syouzan_sousyo;
+			}
+			else if (type == MOZI_HGMINTYOE) {
+				tmpmozi = tmp2->HGmintyouE;
+			}
+			else if (type == MOZI_ADOBEFANGSONG) {
+				tmpmozi = tmp2->AdobeFangsong;
+			}
+			//日本語不可
+			else if (type == MOZI_AGENCYBOLD) {
+				tmpmozi = tmp2->AGENCYBold;
+			}
+			else if (type == MOZI_SFSQUAREHEADCONDENSED) {
+				tmpmozi = tmp2->SFSquareHeadCondensed;
+			}
+			else {
+				if (Mozi_ALART_Nommozicolor == 0) {
+					if (MOZI_DEBUG)	printf("存在しない文字種類です:%d(最初の一度のみ警告)\n", type);
+					Mozi_ALART_Nommozicolor = 1;
+				}
+				return;
+			}
+			if (tmpmozi.textureNo > 0) {
+				glBindTexture(GL_TEXTURE_2D, tmpmozi.textureNo);
+				glBegin(GL_QUADS);
+
+				glTexCoord2f(0.0f, 1.0f);	// 画像の左下と次の頂点を対応させる
+				glVertex2f(X, Y + tmpmozi.Heigh*scale);
+				glTexCoord2f(1.0f, 1.0f);	// 画像の右下と次の頂点を対応させる
+				glVertex2f(X + tmpmozi.Width*scale, Y + tmpmozi.Heigh*scale);
+				glTexCoord2f(1.0f, 0.0f);	// 画像の右上と次の頂点を対応させる
+				glVertex2f(X + tmpmozi.Width*scale, Y);
+				glTexCoord2f(0.0f, 0.0f);	// 画像の左上と次の頂点を対応させる
+				glVertex2f(X, Y);
+				glEnd();
+				X += tmpmozi.Width*scale;
+			}
+			else {
+			}
+		}
+	}
+	glPopMatrix();
+	//バイリニア補間ここまで
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
 
 void Mozi_Draw_3D(wchar_t *wstr, double X, double Y, double scale, int type) {
 	//バイリニア補間
@@ -524,6 +642,20 @@ void Mozi_DrawM2(double X, double Y, double scale, int type, const char *format,
 	vsprintf(str, format, args);
 	va_end(args);
 	Mozi_DrawM(str, X, Y, scale, type);
+}
+
+//文字列の描画(書式設定あり)
+void Mozi_DrawM2Ceneter(double X, double Y, double scale, int type, const char *format, ...)
+{
+	va_list args;
+	char str[100];
+	str[0] = '\0';
+	//        char *strtmp = str;
+
+	va_start(args, format);
+	vsprintf(str, format, args);
+	va_end(args);
+	Mozi_DrawMCenter(str, X, Y, scale, type);
 }
 
 void Mozi_DrawM2_3D(vec3 Center,double rota,vec3 nvec, double scale, int type, const char *format, ...)

@@ -73,7 +73,6 @@ int get_MapData(S_CONTAINER sdata){
 		vec3 pos=vec3(sdata.movablemapobj[i].position.x,sdata.movablemapobj[i].position.y,sdata.movablemapobj[i].position.z);
 		get_mapobj()->get_obj()[sdata.movablemapobj[i].objno].set_m_Pos(pos);
 
-		printf("posy  %d\n",sdata.movablemapobj[i].objno);
 		vec3 rot=vec3(sdata.movablemapobj[i].rotation.x,sdata.movablemapobj[i].rotation.y,sdata.movablemapobj[i].rotation.z);
 		get_mapobj()->get_obj()[sdata.movablemapobj[i].objno].set_m_Rot(rot);
 	}

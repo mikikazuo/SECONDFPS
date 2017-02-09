@@ -44,7 +44,7 @@ public:
 	void Initialize();
 	void DrawInitialize();
 	void DrawFinalize();
-
+	void aliveDraw();
 	void Update();
 	void Draw();
 	void shake(float nowhp);

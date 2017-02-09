@@ -14,6 +14,9 @@
 #include "main.h"
 #include "Start.h"
 #include "mouse.h"
+#include "net_common.h"
+#include "Letter.h"
+#include "net_client.h"
 
 static int changestartcount;
 static int countdowntime;   //制限時間
@@ -173,7 +176,6 @@ void CanvasUI::Update() {
 	//		shakeY = 0;
 	//	}
 
-	printf("制限時間：%d\n",countdowntime);
 	shake(get_player()->hp);
 	snipe_per = (double)get_player()->snipedeg/5;
 }
@@ -255,6 +257,41 @@ void CanvasUI::shake(float nowhp){
 		set_start(false);
 		get_SceneMgr().ChangeScene(eScene_Menu);
 
+	}
+}
+
+//プレイヤーの生死の表示
+void CanvasUI::aliveDraw(){
+	int nowrednum=0;
+	int nowbluenum=0;
+
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(i==get_player()->myid){
+
+			if(get_player()->myteam==RedTeam){
+				if(get_player()->hp>0)
+					image_DrawExRota(handle[1],350+55*nowrednum+shakeX,40+shakeY,0,1);
+				Mozi_DrawM2Ceneter(350+55*nowrednum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+			}
+			else if(get_player()->myteam==BlueTeam){
+				if(get_player()->hp>0)
+					image_DrawExRota(handle[2],850-55*nowbluenum+shakeX,40+shakeY,0,1);
+				Mozi_DrawM2Ceneter(350+55*nowrednum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+			}
+
+		}
+		if(get_enemy()[i].myteam==RedTeam){
+			if(get_enemy()[i].hp>0)
+				image_DrawExRota(handle[1],350+55*nowrednum+shakeX,40+shakeY,0,1);
+			Mozi_DrawM2Ceneter(350+55*nowrednum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+			nowrednum++;
+		}
+		else if(get_enemy()[i].myteam==BlueTeam){
+			if(get_enemy()[i].hp>0)
+				image_DrawExRota(handle[2],850-55*nowbluenum+shakeX,40+shakeY,0,1);
+			Mozi_DrawM2Ceneter(850-55*nowbluenum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+			nowbluenum++;
+		}
 	}
 }
 
@@ -346,11 +383,10 @@ void CanvasUI::Draw() {
 	rect_Draw2D(210+shakeX+(260*0.01*a),640+shakeY,(260*(1-0.01*a)),40);//裏ゲージ
 	image_DrawExRota(handle[6],320+shakeX,650+shakeY,0,1);
 
-	int i;
-	for(i=0;i<4;i++){
-		image_DrawExRota(handle[1],350+55*i+shakeX,40+shakeY,0,1);
-		image_DrawExRota(handle[2],850-55*i+shakeX,40+shakeY,0,1);
-	}
+
+	aliveDraw();
+
+
 
 	//	for(i=0;i<5;i++){
 	//		GLdouble R=0,G=0,B=0;
@@ -367,6 +403,8 @@ void CanvasUI::Draw() {
 	//			break;
 	//		}
 	//	}
+	int i;
+
 	for(i=0;i<WALLMAX;i++){
 		GLdouble R=0,G=0,B=0;
 		if(get_player()->mywall[i].count>0){
@@ -470,9 +508,9 @@ void CanvasUI::Draw() {
 	/***スナイパーモード***/
 	//if(スナイパーモード時)
 	if(get_player()->myrole==Rifle&&get_mousebutton_count(MIDDLE_BUTTON_SCROLL)>0){
-	image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
-	image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
-	//}
+		image_DrawExRota(handle[47],600,350,0,1);	//黒いエフェクト＆倍率バー
+		image_DrawExRota(handle[48],1050,600 - 500 * snipe_per,0,1);	//現在の倍率表示
+		//}
 	}
 
 
