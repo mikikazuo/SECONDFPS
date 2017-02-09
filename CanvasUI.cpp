@@ -58,6 +58,8 @@ void CanvasUI::Initialize(){
 	fin_time = 0;
 	fin_per = 0;
 
+	rest_time = GAME_TIME;
+
 	int i;
 	for(i=0;i<5;i++){
 		wall_info[i]=100;
@@ -122,6 +124,24 @@ void CanvasUI::DrawInitialize(){
 	//スナイパーエフェクト
 	handle[47]=image_Load("Data/image/sniper.png");
 	handle[48]=image_Load("Data/image/sniper_bar.png");
+
+
+	//残り時間の表示に使用する数字画像
+	handle[20]=image_Load("Data/image/rt_num/0.png");
+	handle[21]=image_Load("Data/image/rt_num/1.png");
+	handle[22]=image_Load("Data/image/rt_num/2.png");
+	handle[23]=image_Load("Data/image/rt_num/3.png");
+	handle[24]=image_Load("Data/image/rt_num/4.png");
+	handle[25]=image_Load("Data/image/rt_num/5.png");
+	handle[26]=image_Load("Data/image/rt_num/6.png");
+	handle[27]=image_Load("Data/image/rt_num/7.png");
+	handle[28]=image_Load("Data/image/rt_num/8.png");
+	handle[29]=image_Load("Data/image/rt_num/9.png");
+
+	//タイムオーバー時に残り時間の代わりに表示するメッセージ
+	handle[15]=image_Load("Data/image/fin.png");
+
+
 }
 
 
@@ -149,6 +169,8 @@ void CanvasUI::view2D() {
 //毎フレーム計算
 void CanvasUI::Update() {
 	time += 1;
+
+	rest_time -= 1;	//残り時間を減らす
 
 	//	if(time % 150 >= 149){//一定時間ごとに自動ダメージ
 	//		dam = time;
@@ -293,6 +315,7 @@ void CanvasUI::aliveDraw(){
 			nowbluenum++;
 		}
 	}
+
 }
 
 //毎フレーム描画
@@ -525,6 +548,7 @@ void CanvasUI::Draw() {
 	//if(勝利){
 	glColor3d(1,1,1);		//白指定
 	//}
+
 	//else if(敗北){
 	//glColor3d(0,0,0);		//黒指定
 	//}
@@ -557,6 +581,44 @@ void CanvasUI::Draw() {
 		//}
 		break;
 	}
+
+
+	/***残り時間表示***/
+	int rt;	//残り時間(単位を1/60秒から通常のものへ変更したものを格納)
+	int n1;	//残り時間(秒)の1の位
+	int n2;	//残り時間(秒)の10の位
+	int n3;	//残り時間(秒)の100の位
+	//if(ゲーム進行中 && 残り時間 > 0){
+		rt = rest_time/60;
+		//各位に数字を代入
+		n1 = (rt % 100)%10;
+		n2 = (rt % 100)/10;
+		n3 = rt/100;
+
+		//数字画像貼り付け
+		image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
+		image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
+		image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
+	//}
+
+	//else if(ゲーム終了 || 残り時間 <= 0){
+		//残り時間の代わりに『Fin!!』を表示
+		//image_DrawExRota(handle[15],600,40,0,0.75);
+		//ゲーム終了処理(勝敗判定とか諸々)
+	//}
+
+	//画像確認(不要)
+	/*image_DrawExRota(handle[20],100,150,0,0.75);
+	image_DrawExRota(handle[21],130,150,0,0.75);
+	image_DrawExRota(handle[22],160,150,0,0.75);
+	image_DrawExRota(handle[23],190,150,0,0.75);
+	image_DrawExRota(handle[24],220,150,0,0.75);
+	image_DrawExRota(handle[25],250,150,0,0.75);
+	image_DrawExRota(handle[26],280,150,0,0.75);
+	image_DrawExRota(handle[27],310,150,0,0.75);
+	image_DrawExRota(handle[28],340,150,0,0.75);
+	image_DrawExRota(handle[29],370,150,0,0.75);*/
+
 }
 
 
