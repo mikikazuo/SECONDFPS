@@ -16,6 +16,12 @@
 #include "mouse.h"
 
 static int changestartcount;
+static int countdowntime;   //制限時間
+
+void set_countdowntime(int set){
+	countdowntime=set;
+}
+
 CanvasUI::CanvasUI() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -167,6 +173,7 @@ void CanvasUI::Update() {
 	//		shakeY = 0;
 	//	}
 
+	printf("制限時間：%d\n",countdowntime);
 	shake(get_player()->hp);
 	snipe_per = (double)get_player()->snipedeg/5;
 }
@@ -245,8 +252,9 @@ void CanvasUI::shake(float nowhp){
 		changestartcount++;
 
 	if(get_changestartcount()>60*5){
-		get_SceneMgr().ChangeScene(eScene_Menu);
 		set_start(false);
+		get_SceneMgr().ChangeScene(eScene_Menu);
+
 	}
 }
 

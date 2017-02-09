@@ -113,7 +113,6 @@ void Game::DrawFinalize(){
 	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
 	chara.DrawFinalize();
-	get_chara().DrawFinalize();
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {

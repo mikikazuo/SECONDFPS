@@ -126,6 +126,8 @@ void Start::DrawInitialize(){
 void Start::DrawFinalize(){
 	for(int i=0;i<(int)(sizeof handle/sizeof handle[0]);i++)
 		image_free(handle[i]);
+	for(int i=0;i<(int)(sizeof image/sizeof image[0]);i++)
+		image_free(image[i]);
 	for(int i=0;i<6;i++)
 		mqoDeleteModel(model[i]);
 }

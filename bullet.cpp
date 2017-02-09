@@ -106,6 +106,10 @@ void bullet::bullet_DrawInitialize(Role setbulletmode){
 		break;
 	}
 }
+void bullet::bullet_DrawFinalize(){
+	mqoDeleteModel(bulletmodel);
+
+}
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
 	//vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));

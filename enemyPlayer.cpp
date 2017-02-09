@@ -40,6 +40,7 @@ void enemyPlayer::DrawInitialize(Role setrole){
 void enemyPlayer::DrawFinalize(){
 	image_free(wallhandle);
 	mqoDeleteModel(enemymodel);
+	enemybullet.bullet_DrawFinalize();
 }
 
 void enemyPlayer::Draw() {

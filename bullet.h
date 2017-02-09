@@ -56,6 +56,7 @@ public:
 	bullet();
 	void bullet_Initialize();
 	void bullet_DrawInitialize(Role setbulletmode);
+	void bullet_DrawFinalize();
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
 	void EnemyPlayerToPlayer();

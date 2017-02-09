@@ -13,5 +13,5 @@ extern int get_bulletdata(S_CONTAINER);
 extern int get_playerdata(S_CONTAINER);
 int get_MapData(S_CONTAINER sdata);
 int get_MobData(S_CONTAINER sdata);
-
+void get_countdowntime(S_CONTAINER sdata);
 #endif /* GET_SDATA_H_ */

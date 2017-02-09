@@ -41,7 +41,7 @@ typedef enum{
 
 class map {
 private:
-	int handle[50];
+	int handle[20];
 public:
 
 	float basehp[NoneTeam];

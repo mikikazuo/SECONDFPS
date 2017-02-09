@@ -38,7 +38,7 @@ static int bulletsoundcount;
 
 static bool pointerfree=false;
 SDL_Thread *thr;
-
+static bool resetwall;
 int wallhandle;
 
 
@@ -255,7 +255,7 @@ void player::Initialize(vec3 pos,float ra){
 }
 void player::DrawInitialize(Role setrole){
 
-	myrole=Rifle;
+	myrole=Gatling;
 	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -316,6 +316,7 @@ void player::DrawFinalize(){
 	image_free(wallhandle);
 	for(int i=0;i<nonemodel;i++)
 		mqoDeleteModel(handmodel[i]);
+	playerbullet.bullet_DrawFinalize();
 }
 
 void player::set_Pers(double next){
@@ -839,7 +840,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 }
 
 void player::dead(){
-	static bool resetwall;
+
 	if(respawntime>RESPAWN_TIME){
 		hp=maxhp;
 		playerbullet.launchbulletcount=0;
@@ -848,16 +849,15 @@ void player::dead(){
 			position=redalivepos[red];
 		else if(myteam==BlueTeam)
 			position=bluealivepos[blue];
-		resetwall=0;
+		resetwall=true;
+		level=0;
+		get_player()->exp=0;
 
 	}
 	if(hp<=0){
 		respawntime++;
-		if(resetwall==0){
-			resetwall=1;
-			for(int i=0;i<WALLMAX;i++)
-				mywall[i].count=0;
-		}
+		for(int i=0;i<WALLMAX;i++)
+			mywall[i].count=0;
 	}
 
 }
@@ -1009,7 +1009,7 @@ void player::launchBullet(){
 	//最後の弾だけ音がならないため
 	static bool lastbullet=false;
 
-	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0&&hp>0){
 
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 

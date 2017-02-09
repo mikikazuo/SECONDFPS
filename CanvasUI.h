@@ -50,5 +50,6 @@ public:
 	void shake(float nowhp);
 };
 int get_changestartcount();
+void set_countdowntime(int set);
 
 #endif /* CANVASUI_H_ */

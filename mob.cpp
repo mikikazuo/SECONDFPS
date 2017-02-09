@@ -80,7 +80,7 @@ void mob::DrawInitialize(char *filename){
 void mob::DrawFinalize(){
 
 	mqoDeleteModel(mobmqo);
-
+	mobbullet.bullet_DrawFinalize();
 }
 //void mob::Update(){
 //	movecount++;

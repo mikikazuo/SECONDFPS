@@ -106,6 +106,7 @@ typedef struct{
 	mob2 mob[MOBNUM];
 	float basehp[2];
 	bool start[MAX_CLIENTS];
+	int countdowntime;   //制限時間
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ

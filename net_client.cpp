@@ -106,7 +106,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc003");
+	sprintf(server_name,"clpc099");
 
 	setup_client(server_name,port);
 }
@@ -220,6 +220,7 @@ static int execute_command() {
 		get_playerdata(data);
 		get_MapData(data);
 		get_MobData(data);
+		get_countdowntime(data);
 		break;
 	default:
 		fprintf(stderr, "execute_command(): %c is not a valid command.\n", data.command);
@@ -242,7 +243,6 @@ static void send_data(void *data, int size) {
 			//  close(fd);
 			printf("write error:%d\n",n);
 			handle_error();
-
 			return ;
 		}
 		else
