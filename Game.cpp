@@ -174,7 +174,7 @@ void Game::Draw(){
 	//BaseScene::Draw();//親クラスの描画メソッドを呼ぶ
 	player1.Draw();
 	for(int i=0;i<MAX_CLIENTS;i++)
-	enemy[i].Draw();
+	//enemy[i].Draw();
 
 	mapobj.Draw();
 	chara.Draw();

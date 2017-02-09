@@ -20,6 +20,10 @@ int Ranimechu[8];//リロードアニメ中かどうか
 int Rchu[8];//リロード中かどうか
 int click[8];//各プレイヤーのマウスクリックの状態(もしくはショットの瞬間)を監視
 
+int walkflag[8];//各プレイヤーの歩行を監視します,
+double lastx[8];
+double lastz[8];//前のフレームのxz座標
+
 MQO_MODEL char1[20];
 MQO_MODEL char2[20];
 MQO_MODEL char3[20];
@@ -27,13 +31,13 @@ MQO_MODEL char4[20];
 MQO_MODEL char5[20];
 MQO_MODEL char6[20];
 
-void modelPP(MQO_MODEL MODEL,double x,double y,double z);
-void stand(int model_no,double x,double y,double z,int player_no);
-void walk(int model_no,double x,double y,double z,int player_no);
-void n_arm(int model_no,double x,double y,double z);
-void sn_arm(int model_no,double x,double y,double z);
-void shot_arm(int model_no,double x,double y,double z,int player_no);
-void reload_arm(int model_no,double x,double y,double z,int player_no);
+void modelPP(MQO_MODEL MODEL,double x,double y,double z,double ax);
+void stand(int model_no,double x,double y,double z,double ax,int player_no);
+void walk(int model_no,double x,double y,double z,double ax,int player_no);
+void n_arm(int model_no,double x,double y,double z,double ax);
+void sn_arm(int model_no,double x,double y,double z,double ax);
+void shot_arm(int model_no,double x,double y,double z,double ax,int player_no);
+void reload_arm(int model_no,double x,double y,double z,double ax,int player_no);
 
 chara_animation::chara_animation() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -54,6 +58,7 @@ void chara_animation::Initialize()	{
 	click[i]=0;
 	Rchu[i]=0;
 	Ranimechu[i]=0;
+	walkflag[i]=0;
 	}
 
 	//click[8] = 0;//プレイヤーの皆さんのクリック状況(またはショットの瞬間を観測)
@@ -225,12 +230,17 @@ void chara_animation::Update() {
 		}
 	}
 
+
+
+
 	//各プレイヤーがりロード中ならRchu[]を１にしてください
+/*
 	if(time % 600 > 450 ){
 		for(i=0;i<8;i++){
 			Rchu[i]=1;
 		}
 	}
+	*/
 }
 
 void chara_animation::Draw() {
@@ -296,29 +306,59 @@ void chara_animation::Draw() {
 	stand(4,34,0,-17,4);
 	stand(5,36,0,-17,5);
 	stand(6,38,0,-17,6);
-*/
-	vec3 v3;
-	double x,y,z;
-	v3 = get_enemy()[0].position;
-	x = v3.x;
-	y = v3.y-1.0;
-	z = v3.z;
-	//printf("player[%d]=(%f,%f,%f)\n",0,x,y,z);
-	walk(1,x,y,z,0);
+ */
+
+
+
+
+	int i;
+
+
+
+
+	for(i=0;i<MAX_CLIENTS;i++){
+		int job=2;//キャラモデル番号
+		vec3 v3;
+		double ang;
+		double x,y,z;
+		v3 = get_enemy()[i].position;
+		ang = get_enemy()[i].angles.x;
+		x = v3.x;
+		y = v3.y-1.0;
+		z = v3.z;
+		//printf("player[%d]=(%f,%f,%f)\n",0,x,y,z);
+
+		//歩行チェック
+
+		if(lastx[i]!=x || lastz[i]!=z){//ｘｚ座標いずれかが変化した場合歩きとみなす
+			walkflag[i] = 1;
+		}else{
+			walkflag[i] = 0;
+		}
+		lastx[i] = x;
+		lastz[i] = z;
+
+		if(walkflag[i]==1){
+			walk(job,x,y,z,ang,i);
+		}else{
+			stand(job,x,y,z,ang,i);
+		}
+
+	}
 
 	///*********************
 }
 
-void modelPP(MQO_MODEL MODEL,double x,double y,double z){
+void modelPP(MQO_MODEL MODEL,double x,double y,double z,double ax){
 	glPushMatrix();
 	glTranslated(x,y,z);
 	//glRotated(angles.x * 180 /M_PI ,0,1,0);
-	glRotated(100 * 180 /3.14 ,0,1,0);
+	glRotated(ax * 180 /3.14 ,0,1,0);
 	mqoCallModel(MODEL);
 	glPopMatrix();
 }
 
-void stand(int model_no,double x,double y,double z,int player_no){
+void stand(int model_no,double x,double y,double z,double ax,int player_no){
 	double leg = y+0.5;
 	double arm=0;
 	arm = arm+1;
@@ -330,90 +370,90 @@ void stand(int model_no,double x,double y,double z,int player_no){
 			body = leg+0.8;
 			arm = leg+0.9;
 			head = leg+1.5;
-			modelPP(char1[0],x,body,z);//body
-			modelPP(char1[1],x,leg,z);//leg
-			modelPP(char1[7],x,head,z);//head
+			modelPP(char1[0],x,body,z,ax);//body
+			modelPP(char1[1],x,leg,z,ax);//leg
+			modelPP(char1[7],x,head,z,ax);//head
 			//modelPP(char1[4],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(1,x,y,z,player_no);
+				shot_arm(1,x,y,z,ax,player_no);
 			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-				reload_arm(1,x,y,z,player_no);
+				reload_arm(1,x,y,z,ax,player_no);
 			}else{
-				sn_arm(1,x,y,z);
+				sn_arm(1,x,y,z,ax);
 			}
 			break;
 		case 2:
 			body = leg+0.7;
 			arm = leg+0.7;
 			head = leg+1.5;
-			modelPP(char2[0],x,body,z);//body
-			modelPP(char2[4],x,leg,z);//leg
-			modelPP(char2[2],x,head,z);//head
+			modelPP(char2[0],x,body,z,ax);//body
+			modelPP(char2[4],x,leg,z,ax);//leg
+			modelPP(char2[2],x,head,z,ax);//head
 			//modelPP(char2[3],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(2,x,y,z,player_no);
+				shot_arm(2,x,y,z,ax,player_no);
 			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-				reload_arm(2,x,y,z,player_no);
+				reload_arm(2,x,y,z,ax,player_no);
 			}else{
-				sn_arm(2,x,y,z);
+				sn_arm(2,x,y,z,ax);
 			}
 			break;
 		case 3:
 			body = leg+0.7;
 			arm = leg+0.9;
 			head = leg+1.2;
-			modelPP(char3[0],x,body,z);//body
-			modelPP(char3[1],x,leg,z);//leg
-			modelPP(char3[6],x,head,z);//head
+			modelPP(char3[0],x,body,z,ax);//body
+			modelPP(char3[1],x,leg,z,ax);//leg
+			modelPP(char3[6],x,head,z,ax);//head
 			//modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(3,x,y,z,player_no);
+				shot_arm(3,x,y,z,ax,player_no);
 			}else{
-				sn_arm(3,x,y,z);
+				sn_arm(3,x,y,z,ax);
 			}
 			break;
 		case 4:
 			body = leg+0.5;
 			arm = leg+0.7;
 			head = leg+1.1;
-			modelPP(char4[0],x,body,z);//body
-			modelPP(char4[1],x,leg,z);//leg
-			modelPP(char4[6],x,head,z);//head
+			modelPP(char4[0],x,body,z,ax);//body
+			modelPP(char4[1],x,leg,z,ax);//leg
+			modelPP(char4[6],x,head,z,ax);//head
 			//modelPP(char4[4],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(4,x,y,z,player_no);
+				shot_arm(4,x,y,z,ax,player_no);
 			}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-				reload_arm(4,x,y,z,player_no);}
+				reload_arm(4,x,y,z,ax,player_no);}
 			else{
-				sn_arm(4,x,y,z);
+				sn_arm(4,x,y,z,ax);
 			}
 			break;
 		case 5:
 			body = leg+0.5;
 			arm = leg+0.6;
 			head = leg+1.2;
-			modelPP(char5[0],x,body,z);//body
-			modelPP(char5[1],x,leg,z);//leg
-			modelPP(char5[7],x,head,z);//head
+			modelPP(char5[0],x,body,z,ax);//body
+			modelPP(char5[1],x,leg,z,ax);//leg
+			modelPP(char5[7],x,head,z,ax);//head
 			//modelPP(char5[4],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(5,x,y,z,player_no);
+				shot_arm(5,x,y,z,ax,player_no);
 			}else{
-				sn_arm(5,x,y,z);
+				sn_arm(5,x,y,z,ax);
 			}
 			break;
 		case 6:
 			body = leg+0.4;
 			arm = leg+0.7;
 			head = leg+1.4;
-			modelPP(char6[2],x,body,z);//body
-			modelPP(char6[3],x,leg,z);//leg
-			modelPP(char6[5],x,head,z);//head
+			modelPP(char6[2],x,body,z,ax);//body
+			modelPP(char6[3],x,leg,z,ax);//leg
+			modelPP(char6[5],x,head,z,ax);//head
 			//modelPP(char6[6],x,arm,z);//arm
 			if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-				shot_arm(6,x,y,z,player_no);
+				shot_arm(6,x,y,z,ax,player_no);
 			}else{
-				sn_arm(6,x,y,z);
+				sn_arm(6,x,y,z,ax);
 			}
 			break;
 		default:break;
@@ -421,7 +461,7 @@ void stand(int model_no,double x,double y,double z,int player_no){
 }
 
 //歩かせる
-void walk(int model_no,double x,double y,double z,int player_no){
+void walk(int model_no,double x,double y,double z,double ax,int player_no){
 	//歩行用アニメーション番号　no
 	int no = 0;
 	if(time%60<15) no = 0;
@@ -441,90 +481,90 @@ void walk(int model_no,double x,double y,double z,int player_no){
 		body = leg+0.8;
 		arm = leg+0.9;
 		head = leg+1.5;
-		modelPP(char1[0],x,body,z);//body
-		modelPP(char1[1+no],x,leg,z);//leg
-		modelPP(char1[7],x,head,z);//head
+		modelPP(char1[0],x,body,z,ax);//body
+		modelPP(char1[1+no],x,leg,z,ax);//leg
+		modelPP(char1[7],x,head,z,ax);//head
 		//modelPP(char1[4],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(1,x,y,z,player_no);
+			shot_arm(1,x,y,z,ax,player_no);
 		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-			reload_arm(1,x,y,z,player_no);
+			reload_arm(1,x,y,z,ax,player_no);
 		}else{
-		n_arm(1,x,y,z);
+		n_arm(1,x,y,z,ax);
 		}
 		break;
 	case 2:
 		body = leg+0.7;
 		arm = leg+0.7;
 		head = leg+1.5;
-		modelPP(char2[0],x,body,z);//body
-		modelPP(char2[4+no],x,leg,z);//leg
-		modelPP(char2[2],x,head,z);//head
+		modelPP(char2[0],x,body,z,ax);//body
+		modelPP(char2[4+no],x,leg,z,ax);//leg
+		modelPP(char2[2],x,head,z,ax);//head
 		//modelPP(char2[3],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(2,x,y,z,player_no);
+			shot_arm(2,x,y,z,ax,player_no);
 		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-			reload_arm(2,x,y,z,player_no);
+			reload_arm(2,x,y,z,ax,player_no);
 		}else{
-			n_arm(2,x,y,z);
+			n_arm(2,x,y,z,ax);
 		}
 		break;
 	case 3:
 		body = leg+0.7;
 		arm = leg+0.9;
 		head = leg+1.2;
-		modelPP(char3[0],x,body,z);//body
-		modelPP(char3[1+no],x,leg,z);//leg
-		modelPP(char3[6],x,head,z);//head
+		modelPP(char3[0],x,body,z,ax);//body
+		modelPP(char3[1+no],x,leg,z,ax);//leg
+		modelPP(char3[6],x,head,z,ax);//head
 		//modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(3,x,y,z,player_no);
+			shot_arm(3,x,y,z,ax,player_no);
 		}else{
-			n_arm(3,x,y,z);
+			n_arm(3,x,y,z,ax);
 		}
 		break;
 	case 4:
 		body = leg+0.5;
 		arm = leg+0.7;
 		head = leg+1.1;
-		modelPP(char4[0],x,body,z);//body
-		modelPP(char4[1+no],x,leg,z);//leg
-		modelPP(char4[6],x,head,z);//head
+		modelPP(char4[0],x,body,z,ax);//body
+		modelPP(char4[1+no],x,leg,z,ax);//leg
+		modelPP(char4[6],x,head,z,ax);//head
 		//modelPP(char4[4],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(4,x,y,z,player_no);
+			shot_arm(4,x,y,z,ax,player_no);
 		}else if(Rchu[player_no]==1){//ショット中でなく,リロード中ならリロード
-			reload_arm(4,x,y,z,player_no);
+			reload_arm(4,x,y,z,ax,player_no);
 		}else{
-			n_arm(4,x,y,z);
+			n_arm(4,x,y,z,ax);
 		}
 		break;
 	case 5:
 		body = leg+0.5;
 		arm = leg+0.6;
 		head = leg+1.2;
-		modelPP(char5[0],x,body,z);//body
-		modelPP(char5[1+no],x,leg,z);//leg
-		modelPP(char5[7],x,head,z);//head
+		modelPP(char5[0],x,body,z,ax);//body
+		modelPP(char5[1+no],x,leg,z,ax);//leg
+		modelPP(char5[7],x,head,z,ax);//head
 		//modelPP(char5[4+no],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(5,x,y,z,player_no);
+			shot_arm(5,x,y,z,ax,player_no);
 		}else{
-			n_arm(5,x,y,z);
+			n_arm(5,x,y,z,ax);
 		}
 		break;
 	case 6:
 		body = leg+0.4;
 		arm = leg+0.7;
 		head = leg+1.4;
-		modelPP(char6[2],x,body,z);//body
-		modelPP(char6[3+no%2],x,leg,z);//leg
-		modelPP(char6[5],x,head,z);//head
+		modelPP(char6[2],x,body,z,ax);//body
+		modelPP(char6[3+no%2],x,leg,z,ax);//leg
+		modelPP(char6[5],x,head,z,ax);//head
 		//modelPP(char6[6],x,arm,z);//arm
 		if(click[player_no] == 1 || animechu[player_no] == 1){//画面クリック中かアニメ中ならショット用の腕
-			shot_arm(6,x,y,z,player_no);
+			shot_arm(6,x,y,z,ax,player_no);
 		}else{
-			n_arm(6,x,y,z);
+			n_arm(6,x,y,z,ax);
 		}
 		break;
 	default:break;
@@ -533,7 +573,7 @@ void walk(int model_no,double x,double y,double z,int player_no){
 }
 
 //歩行中のニュートラルな腕
-void n_arm(int model_no,double x,double y,double z){
+void n_arm(int model_no,double x,double y,double z,double ax){
 	//歩行用アニメーション番号　no
 	int no = 0;
 	if(time%60<15) no = 0;
@@ -547,68 +587,68 @@ void n_arm(int model_no,double x,double y,double z){
 	switch(model_no){
 		case 1:
 			arm = leg+0.9;
-			modelPP(char1[5+no%2],x,arm,z);//arm
+			modelPP(char1[5+no%2],x,arm,z,ax);//arm
 			break;
 		case 2:
 			arm = leg+0.7;
-			modelPP(char2[3],x,arm,z);//arm
+			modelPP(char2[3],x,arm,z,ax);//arm
 			break;
 		case 3:
 			arm = leg+0.9;
-			modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+			modelPP(char3[4],x,arm,z+0.2,ax);//arm 腕がもげるのでｚも補正
 			break;
 		case 4:
 			arm = leg+0.7;
-			modelPP(char4[4],x,arm,z);//arm
+			modelPP(char4[4],x,arm,z,ax);//arm
 			break;
 		case 5:
 			arm = leg+0.6;
-			modelPP(char5[4+no],x,arm,z);//arm
+			modelPP(char5[4+no],x,arm,z,ax);//arm
 			break;
 		case 6:
 			arm = leg+0.7;
-			modelPP(char6[6],x,arm,z);//arm
+			modelPP(char6[6],x,arm,z,ax);//arm
 			break;
 		default:break;
 		}
 }
 
 //直立中のニュートラルなうで
-void sn_arm(int model_no,double x,double y,double z){
+void sn_arm(int model_no,double x,double y,double z,double ax){
 	double leg = y + 0.5;
 	double arm = leg;
 
 	switch(model_no){
 		case 1:
 			arm = leg+0.9;
-			modelPP(char1[9],x,arm,z);//arm
+			modelPP(char1[9],x,arm,z,ax);//arm
 			break;
 		case 2:
 			arm = leg+0.7;
-			modelPP(char2[3],x,arm,z);//arm
+			modelPP(char2[3],x,arm,z,ax);//arm
 			break;
 		case 3:
 			arm = leg+0.9;
-			modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+			modelPP(char3[4],x,arm,z+0.2,ax);//arm 腕がもげるのでｚも補正
 			break;
 		case 4:
 			arm = leg+0.7;
-			modelPP(char4[4],x,arm,z);//arm
+			modelPP(char4[4],x,arm,z,ax);//arm
 			break;
 		case 5:
 			arm = leg+0.6;
-			modelPP(char5[5],x,arm,z);//arm
+			modelPP(char5[5],x,arm,z,ax);//arm
 			break;
 		case 6:
 			arm = leg+0.7;
-			modelPP(char6[6],x,arm,z);//arm
+			modelPP(char6[6],x,arm,z,ax);//arm
 			break;
 		default:break;
 		}
 }
 
 //ショット中のアーム
-void shot_arm(int model_no,double x,double y,double z,int player_no){
+void shot_arm(int model_no,double x,double y,double z,double ax,int player_no){
 	int arm_no = 0;
 
 	int anim = animechu[player_no];
@@ -718,61 +758,61 @@ void shot_arm(int model_no,double x,double y,double z,int player_no){
 	switch(model_no){
 	case 1:
 		arm = leg+0.9;
-		modelPP(char1[arm_no],x,arm,z);//arm
+		modelPP(char1[arm_no],x,arm,z,ax);//arm
 		break;
 	case 2:
 		arm = leg+0.7;
-		modelPP(char2[arm_no],x,arm,z);//arm
+		modelPP(char2[arm_no],x,arm,z,ax);//arm
 		break;
 	case 3:
 		arm = leg+0.9;
-		modelPP(char3[arm_no],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+		modelPP(char3[arm_no],x,arm,z+0.2,ax);//arm 腕がもげるのでｚも補正
 		break;
 	case 4:
 		arm = leg+0.7;
-		modelPP(char4[arm_no],x-0.2,arm,z);//arm 槍が顔に刺さるのでxも補正
+		modelPP(char4[arm_no],x-0.2,arm,z,ax);//arm 槍が顔に刺さるのでxも補正
 		break;
 	case 5:
 		arm = leg+0.6;
-		modelPP(char5[arm_no],x,arm,z);//arm
+		modelPP(char5[arm_no],x,arm,z,ax);//arm
 		break;
 	case 6:
 		arm = leg+0.7;
-		modelPP(char6[arm_no],x,arm,z);//arm
+		modelPP(char6[arm_no],x,arm,z,ax);//arm
 		break;
 	default:break;
 	}
 }
 
 //リロード中のアーム
-void reload_arm(int model_no,double x,double y,double z,int player_no){
+void reload_arm(int model_no,double x,double y,double z,double ax,int player_no){
 	double leg = y + 0.5;
 	double arm = leg;
 
 	switch(model_no){
 	case 1:
 		arm = leg+0.9;
-		modelPP(char1[10],x,arm,z);//arm
+		modelPP(char1[10],x,arm,z,ax);//arm
 		break;
 	case 2:
 		arm = leg+0.7;
-		modelPP(char2[9],x,arm,z);//arm
+		modelPP(char2[9],x,arm,z,ax);//arm
 		break;
 	case 3:
 		arm = leg+0.9;
-		modelPP(char3[4],x,arm,z+0.2);//arm 腕がもげるのでｚも補正
+		modelPP(char3[4],x,arm,z+0.2,ax);//arm 腕がもげるのでｚも補正
 		break;
 	case 4:
 		arm = leg+0.7;
-		modelPP(char4[9],x,arm,z);//arm
+		modelPP(char4[9],x,arm,z,ax);//arm
 		break;
 	case 5:
 		arm = leg+0.6;
-		modelPP(char5[5],x,arm,z);//arm
+		modelPP(char5[5],x,arm,z,ax);//arm
 		break;
 	case 6:
 		arm = leg+0.7;
-		modelPP(char6[6],x,arm,z);//arm
+		modelPP(char6[6],x,arm,z,ax);//arm
 		break;
 	default:break;
 	}
