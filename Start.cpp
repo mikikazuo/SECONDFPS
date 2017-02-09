@@ -29,7 +29,7 @@ static float angle = 0;
 static vec3 position;
 static int image[6]; //画像
 static int Title;
-static char *str[80]; //ジョブの名前に使用
+static char *str; //ジョブの名前に使用
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -418,29 +418,29 @@ char CHG_role(Role name){
 
 	switch(name){
 	case Crossbow:{
-		str[80] = (char*)"弩兵";
+		str = (char*)"弩兵";
 		break;
 	}
 	case Rifle:{
-		str[80] = (char*)"狙撃兵";
+		str = (char*)"狙撃兵";
 		break;
 	}
 	case Gatling:{
-		str[80] = (char*)"銃火器兵";
+		str = (char*)"銃火器兵";
 		break;
 	}
 	case Spear:{
-		str[80] = (char*)"槍兵";
+		str = (char*)"槍兵";
 		puts("おおおお");
 		printf("name:%s\n",str);
 		break;
 	}
 	case Magicstick:{
-		str[80] = (char*)"魔法使い";
+		str = (char*)"魔法使い";
 		break;
 	}
 	case Magic:{
-		str[80] = (char*)"獣人兵";
+		str = (char*)"獣人兵";
 		break;
 	}
 	default:{
@@ -448,6 +448,6 @@ char CHG_role(Role name){
 		break;
 	}
 	}
-	return *str[80];
+	return *str;
 }
 
