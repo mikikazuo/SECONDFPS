@@ -448,6 +448,7 @@ char CHG_role(Role name){
 		break;
 	}
 	}
+
 	return *str;
 }
 
