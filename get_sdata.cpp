@@ -48,7 +48,15 @@ int get_playerdata(S_CONTAINER sdata){
 			get_enemy()[i].mywall[j].wall.set_m_Pos(sdata.walls[i][j].pos);
 			get_enemy()[i].mywall[j].wall.set_m_Rot(sdata.walls[i][j].angles);
 		}
-		//printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
+		/*
+		vec3 v3;
+		double x,y,z;
+		v3 = get_enemy()[i].position;
+		x = v3.x;
+		y = v3.y;
+		z = v3.z;
+		printf("player[%d]=(%f,%f,%f)\n",i,x,y,z);
+	*/
 	}
 	return 0;
 }

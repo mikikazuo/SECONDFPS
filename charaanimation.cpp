@@ -7,8 +7,12 @@
 
 #include "charaanimation.h"
 #include "GLMetaseq.h"
+#include "Game.h"
+#include "enemyPlayer.h"
+#include "net_common.h"
 
 MQO_MODEL animation;
+extern enemyPlayer enemy[MAX_CLIENTS];
 int time;
 int anim_starttime[8];
 int animechu[8];//アニメ中かどうか
@@ -191,6 +195,7 @@ void chara_animation::DrawFinalize(){
 void chara_animation::Update() {
 	time += 1;
 
+
 	//各プレイヤーがショットている間,１にしてください
 	//各プレイヤーがショットしていない間０にしてください
 	//とりあえずplayer_no=model_noで仮置きしてます
@@ -274,13 +279,14 @@ void chara_animation::Draw() {
 	*/
 
 	//歩く
-
+	/*
 	walk(1,28,0,-17,1);
 	walk(2,30,0,-17,2);
 	walk(3,32,0,-17,3);
 	walk(4,34,0,-17,4);
 	walk(5,36,0,-17,5);
 	walk(6,38,0,-17,6);
+	*/
 
 	//直立
 /*
@@ -291,12 +297,23 @@ void chara_animation::Draw() {
 	stand(5,36,0,-17,5);
 	stand(6,38,0,-17,6);
 */
+	vec3 v3;
+	double x,y,z;
+	v3 = get_enemy()[0].position;
+	x = v3.x;
+	y = v3.y-1.0;
+	z = v3.z;
+	//printf("player[%d]=(%f,%f,%f)\n",0,x,y,z);
+	walk(1,x,y,z,0);
+
 	///*********************
 }
 
 void modelPP(MQO_MODEL MODEL,double x,double y,double z){
 	glPushMatrix();
 	glTranslated(x,y,z);
+	//glRotated(angles.x * 180 /M_PI ,0,1,0);
+	glRotated(100 * 180 /3.14 ,0,1,0);
 	mqoCallModel(MODEL);
 	glPopMatrix();
 }
