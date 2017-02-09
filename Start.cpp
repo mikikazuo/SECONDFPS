@@ -30,7 +30,7 @@ static vec3 position;
 static int image[6]; //画像
 static int Title;
 
-static bool start=true;
+static bool start=false;
 static int teammemfaze[MAX_CLIENTS];
 static int startcount;
 
@@ -198,7 +198,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 
 					get_player()->myrole=Crossbow;
-					set_start(true);
+
 
 					s_flag = 1;
 					//set_start(true);

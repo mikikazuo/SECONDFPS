@@ -1,0 +1,8 @@
+19:45:27 **** インクリメンタル・ビルド of configuration Debug for project server ****
+make all 
+make: 警告: ファイル `src/subdir.mk' の修正時刻が 0.0073 秒分未来の時刻です
+make: 警告:  時刻のずれを検出. 不完全なビルド結果になるかもしれません.
+make: `all' に対して行うべき事はありません.
+
+19:45:27 Build Finished (took 62ms)
+
