@@ -680,7 +680,7 @@ void shot_arm(int model_no,double x,double y,double z,double ax,int player_no){
 		}
 	}
 
-	double leg = 0.5;
+	double leg = y+0.5;
 	double arm = 0;
 
 	if(anim == 1){
