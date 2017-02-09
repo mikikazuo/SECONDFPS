@@ -170,7 +170,23 @@ void CanvasUI::view2D() {
 void CanvasUI::Update() {
 	time += 1;
 
-	rest_time -= 1;	//残り時間を減らす
+	//rest_time -= 1;	//残り時間を減らす
+	rest_time=60*30*1-countdowntime;
+
+	if(rest_time<=0){
+		if(get_player()->myteam==RedTeam){
+			if(get_mapobj()->basehp[RedTeam]>=get_mapobj()->basehp[BlueTeam])
+				get_player()->result=2;
+			else if(get_mapobj()->basehp[RedTeam]<get_mapobj()->basehp[BlueTeam])
+				get_player()->result=1;
+		}else if(get_player()->myteam==BlueTeam){
+			if(get_mapobj()->basehp[RedTeam]<=get_mapobj()->basehp[BlueTeam])
+				get_player()->result=1;
+			else if(get_mapobj()->basehp[RedTeam]>get_mapobj()->basehp[BlueTeam])
+				get_player()->result=2;
+		}
+	}
+
 
 	//	if(time % 150 >= 149){//一定時間ごとに自動ダメージ
 	//		dam = time;
@@ -588,8 +604,8 @@ void CanvasUI::Draw() {
 	int n1;	//残り時間(秒)の1の位
 	int n2;	//残り時間(秒)の10の位
 	int n3;	//残り時間(秒)の100の位
-	//if(ゲーム進行中 && 残り時間 > 0){
-		rt = rest_time/60;
+	if(rest_time> 0){
+		rt = (double)rest_time/60;
 		//各位に数字を代入
 		n1 = (rt % 100)%10;
 		n2 = (rt % 100)/10;
@@ -599,13 +615,11 @@ void CanvasUI::Draw() {
 		image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
 		image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
 		image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
-	//}
+	}
 
-	//else if(ゲーム終了 || 残り時間 <= 0){
-		//残り時間の代わりに『Fin!!』を表示
-		//image_DrawExRota(handle[15],600,40,0,0.75);
-		//ゲーム終了処理(勝敗判定とか諸々)
-	//}
+	else {
+		image_DrawExRota(handle[15],600,40,0,0.75);
+	}
 
 	//画像確認(不要)
 	/*image_DrawExRota(handle[20],100,150,0,0.75);

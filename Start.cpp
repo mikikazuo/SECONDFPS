@@ -405,6 +405,7 @@ void Start::Draw() {
 		}
 		}
 	}else{
+
 		glColor3d(0,0,0);
 		Mozi_DrawM2(100,100,0.8,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
 		Mozi_DrawM2(100,300,0.8,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
@@ -414,6 +415,7 @@ void Start::Draw() {
 			else
 				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
 		}
+
 	}
 }
 
