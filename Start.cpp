@@ -362,7 +362,6 @@ void Start::Draw() {
 			break;
 		}
 		case 1:{
-
 			startcanvas.view2D();
 
 			glColor3d(0,0,0);
@@ -393,15 +392,22 @@ void Start::Draw() {
 		}
 		}
 	}else{
+		startcanvas.view2D();
+
+		//glPushMatrix();
 		glColor3d(0,0,0);
-		Mozi_DrawM2(100,100,0.8,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
-		Mozi_DrawM2(100,300,0.8,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
+		Mozi_DrawM2(100,100,0.7,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
+		Mozi_DrawM2(600,100,0.7,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
+		Mozi_DrawM2(300,500,0.8,MOZI_HGMINTYOE,"LOL");
+		glColor3d(0,0,0);
 		for(int i=0;i<MAX_CLIENTS;i++){
 			if(i==get_player()->myid)
-				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定");
+				Mozi_DrawM2(100,200+100*teamnum[0],0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定");
 			else
-				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
+				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
 		}
+		//glPopMatrix();
+		//glDisable(GL_DEPTH_TEST);
 	}
 }
 
