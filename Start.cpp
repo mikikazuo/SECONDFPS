@@ -301,7 +301,7 @@ void Start::Draw() {
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
 
-			gluPerspective(60, (double)w / (double)h,0.1,1200);/*view volume 注意*/
+			gluPerspective(60, (double)w / (double)h,0.1,1400);/*view volume 注意, 最後はもとは1200だった*/
 			gluLookAt( position.x, position.y, position.z,
 					0, 0.0f, 0,
 					0.0f, 1.0f, 0.0f);
@@ -387,6 +387,8 @@ void Start::Draw() {
 			glColor3d(1,1,1);
 
 			Mozi_DrawM2(280,90,0.7,MOZI_HGMINTYOE,"マウス感度調整バー");
+			Mozi_DrawM2(260,220,0.7,MOZI_HGMINTYOE,"鈍");
+			Mozi_DrawM2(890,220,0.7,MOZI_HGMINTYOE,"速");
 			Mozi_DrawM2(120,400,0.65,MOZI_HGMINTYOE,"赤チーム(%d/4)",teamnum[0]);
 			Mozi_DrawM2(720,400,0.65,MOZI_HGMINTYOE,"青チーム(%d/4)",teamnum[1]);
 			glPopMatrix();
