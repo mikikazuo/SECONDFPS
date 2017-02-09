@@ -117,6 +117,9 @@ void CanvasUI::DrawInitialize(){
 	handle[28]=image_Load("Data/image/rt_num/8.png");
 	handle[29]=image_Load("Data/image/rt_num/9.png");
 
+	//タイムオーバー時に残り時間の代わりに表示するメッセージ
+	handle[15]=image_Load("Data/image/fin.png");
+
 }
 
 
@@ -414,7 +417,7 @@ void CanvasUI::Draw() {
 	int n1;	//残り時間(秒)の1の位
 	int n2;	//残り時間(秒)の10の位
 	int n3;	//残り時間(秒)の100の位
-	//if(ゲーム進行中){
+	//if(ゲーム進行中 && 残り時間 > 0){
 		rt = rest_time/60;
 		//各位に数字を代入
 		n1 = (rt % 100)%10;
@@ -422,13 +425,15 @@ void CanvasUI::Draw() {
 		n3 = rt/100;
 
 		//数字画像貼り付け
-		image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
-		image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
-		image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
+		//image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
+		//image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
+		//image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
 	//}
 
-	//else if(ゲーム終了){
-		//ゲーム終了処理
+	//else if(ゲーム終了 || 残り時間 <= 0){
+		//残り時間の代わりに『Fin!!』を表示
+		image_DrawExRota(handle[15],600,40,0,0.75);	//1の位
+		//ゲーム終了処理(勝敗判定とか諸々)
 	//}
 
 	//画像確認(不要)
