@@ -20,14 +20,14 @@
 #include <math.h>
 #include "key.h"
 
-
+#include "Letter.h"
 #include "fps.h"
 #include "main.h"
 
 #include "mouse.h"
 #include "image.h"
 #include "SceneMgr.h"
-
+#include "player.h"
 #include "net_client.h"
 
 #define LOOK_DISTANT 1000            //見える距離
@@ -35,7 +35,8 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=true;    //sever connect
+static bool debug=false;    //sever connect
+
 
 
 
@@ -74,19 +75,19 @@ void myInit(char *progname)
 		//printf("error");
 		exit(-1);
 	}
-
+	initMozi() ;
 	mainfps.fps_Initialize();
 
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(width,height);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
 	glutCreateWindow(progname);
-	glClearColor(0.0,0.2,0.5,1.0);
+	glClearColor(1.0,1.0,1.0,1.0);//glClearColor(0.0,0.2,0.5,1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60.0,aspect,0.1,LOOK_DISTANT);//view volume 注意
 	glMatrixMode(GL_MODELVIEW);
-	glutSetCursor(GLUT_CURSOR_NONE);
+	//glutSetCursor(GLUT_CURSOR_NONE);
 
 	glutMouseFunc(mouse);
 
@@ -126,6 +127,9 @@ int thread_Update(void *arg){
 
 	sceneMgr.Initialize();
 	while(1){
+		if(key_getmove(Test)==2)
+			 set_pointerfree(!get_pointerfree());
+
 		mainfps.UpdateUpDatefps();
 		mainfps.fps_UpdateDeltaTime();
 
@@ -175,6 +179,10 @@ int *get_argc(){
 char** get_argv(){
 	return argvi;
 };
+
+SceneMgr get_SceneMgr(){
+	return sceneMgr;
+}
 
 
 

@@ -3,14 +3,12 @@
 #include "GL/glut.h"
 #include "glm.h"
 
-
 static int move = 0;
 static int keycount[none];
 void key_Update(){
 	for(int i=0;i<none;i++)
 		if(keycount[i])
 			keycount[i]++;
-
 }
 void normal(unsigned char key , int x, int y){
 	if(key =='a')
@@ -29,7 +27,6 @@ void normal(unsigned char key , int x, int y){
 		keycount[Removewall]++;
 	if(key == 'r')
 		keycount[Reload]++;
-
 	if(key == 't')
 		keycount[Test]++;
 
@@ -55,12 +52,12 @@ void normalup(unsigned char key , int x, int y){
 		keycount[Setwall]=0;
 	if(key == 'q')
 		keycount[Removewall]=0;
-
 	if(key == 'r')
 		keycount[Reload]=0;
-
 	if(key == 't')
-			keycount[Test]=0;
+		keycount[Test]=0;
+
+
 
 
 }

@@ -15,7 +15,7 @@ class SceneMgr : public ISceneChanger, Task {
 
 private:
     BaseScene* mScene    ;    //シーン管理変数
-    eScene mNextScene;    //次のシーン管理変数
+
 
 public:
     Request_flag get_stop_falag();

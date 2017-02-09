@@ -9,13 +9,13 @@
 #define MAIN_H_
 
 #include "fps.h"
-
+#include "SceneMgr.h"
 
 
 
  fps get_mainfps();
 int *get_argc();
 char** get_argv();
-
+SceneMgr get_SceneMgr();
 
 #endif /* MAIN_H_ */

@@ -25,25 +25,47 @@
 #include "GLMetaseq.h"
 #include "bullet.h"
 #include "net_common.h"
+#include "GL/glut.h"
+#include "CanvasUI.h"
 
 #define HP 100
 #define BULLETNUM 10
-
+static int falag;
 static int count = 0;
 static bool wrap = false;
 
+static int bulletsoundcount;
 
-
-
+static bool pointerfree=false;
 SDL_Thread *thr;
-
+static bool resetwall;
 int wallhandle;
 
 
 bullet playerbullet;
-
+object mywire;
+bool drawmywire;    //Eキーを押してワイヤーの位置を表示するかどうか
 static bool testcursol=false;  //カーソルの固定外し
 
+static int modelcount;
+static int shootedcount;
+static int reloadcount;
+static float premousespeed;
+static float mousespeed=0.1f;
+static int red,blue;
+vec3 redalivepos[]={
+		vec3(32,10,-7),
+		vec3(32,10,7),
+		vec3(38,10,-7),
+		vec3(38,10,7)
+};
+
+vec3 bluealivepos[]={
+		vec3(-32,10,-7),
+		vec3(-32,10,7),
+		vec3(-38,10,-7),
+		vec3(-38,10,7)
+};
 ///ここから//////
 //#include <opencv/cv.h>
 //#if defined(WIN32)
@@ -131,6 +153,7 @@ static bool testcursol=false;  //カーソルの固定外し
 //////////////////////////////////
 #define LOOK_DISTANT 1200           //見える距離
 
+
 checkObjectHit movechecker;
 
 //static GLfloat ground[][4] = {
@@ -143,12 +166,21 @@ GLuint m_iFBODepth;        //!< 光源から見たときのデプスを格納す
 GLuint m_iTexDepth;        //!< m_iFBODepthにattachするテクスチャ
 double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイズ
 
-MQO_MODEL handmodel;
+MQO_MODEL handmodel[nonemodel];
 
 Wall *player::get_mywall(){
 	return mywall;
 }
-
+vec3 setposition[]={
+		vec3(30,10,-10),
+		vec3(30,10,-5),
+		vec3(30,10,0),
+		vec3(30,10,5),
+		vec3(-30,10,-10),
+		vec3(-30,10,-5),
+		vec3(-30,10,0),
+		vec3(-30,10,5),
+};
 
 player::player() {
 	// TODO 自動生成されたコンストラクター・スタブ
@@ -157,17 +189,22 @@ player::player() {
 
 }
 
-void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
-
-
-
-	playerbullet.bullet_Initialize(setrole);
-	switch(setrole){
+void player::Initialize(vec3 pos,float ra){
+	falag=0;
+	level=0;
+	exp=0;
+	mousespeed=0.1f;
+	playerbullet.bullet_Initialize();
+	atktime=60;
+	premousespeed=mousespeed;
+	switch(myrole){
 	case Crossbow:
 		break;
 	case Rifle:
 		break;
 	case Gatling:
+		atktime=5;
+		break;
 	case Spear:
 		break;
 	case Magicstick:
@@ -177,17 +214,32 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 	default:
 		break;
 	}
+	respawntime=0;
+	//position=pos;
+	int i=0;
+	red=0,blue=0;
+	for(i=0;i<MAX_CLIENTS;i++){
+		if(i==myid){
+			if(myteam==RedTeam)
+				position=redalivepos[red];
+			else if(myteam==BlueTeam)
+				position=bluealivepos[blue];
+			break;
+		}
+		if(get_enemy()[i].myteam==RedTeam)
+			red++;
+		else if(get_enemy()[i].myteam==BlueTeam)
+			blue++;
+	}
 
-	position=pos;
 	speed=7;
 	hp=maxhp=100;
-	atk=50;
-	atktime=60;
+	atk=10;
+	bulletsoundcount=0;
 	atkok=true;
-
+	result=0;
 
 	radi=ra;
-	myteam=setteam;
 
 	pers=60.0;
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -195,27 +247,76 @@ void player::Initialize(vec3 pos,float ra,Role setrole,Team setteam){
 
 	reset_Scroll();
 	reset_ScrollLimit();
-	set_ScrollMax(18);
-	set_ScrollMin(0);
-
+	if(myrole==Rifle){
+		set_ScrollMax(5);
+		set_ScrollMin(0);
+	}
+	snipedeg=0;
 }
-void player::DrawInitialize(){
-	playerbullet.bullet_DrawInitialize();
+void player::DrawInitialize(Role setrole){
 
+	myrole=Gatling;
+	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
+	char *flname[nonemodel];
 
-	char *flname=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+	switch(myrole){
+	case Crossbow:
+		flname[0]=(char*)"Data/charamodel/char1/char1_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char1/char1_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char1/char1_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char1/char1_firstside_reload.mqo";
+		break;
+	case Rifle:
+		flname[0]=(char*)"Data/charamodel/char2/char2_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char2/char2_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char2/char2_firstside_reload.mqo";
+		break;
+	case Gatling:
+		flname[0]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[1]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		flname[3]=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo";
+		break;
+	case Spear:
+		flname[0]=(char*)"Data/charamodel/char4/char4_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char4/char4_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char4/char4_firstside_reload.mqo";
+		break;
+	case Magicstick:
+		flname[0]=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char5/char5_firstside_defalt.mqo";
+		flname[2]=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
+		flname[3]=(char*)"Data/charamodel/char5/char5_firstside_shoot.mqo";
+		break;
+	case Magic:
+		flname[0]=(char*)"Data/charamodel/char6/char6_firstside_defalt.mqo";
+		flname[1]=(char*)"Data/charamodel/char6/char6_firstside_shoot.mqo";
+		flname[2]=(char*)"Data/charamodel/char6/char6_firstside_shooted.mqo";
+		flname[3]=(char*)"Data/charamodel/char6/char6_ene_shooted.mqo";
+		break;
+
+	default:
+		break;
+	}
+	for(int i=0;i<nonemodel;i++)
+		handmodel[i]=mqoCreateModel(flname[i],0.0035);
 	//	char *flname=(char*)"Data/charamodel/char2/char2_firstside_shooted.mqo";
 	//char *flname=(char*)"Data/charamodel/char3/char3_firstside_shoot.mqo"
 	//char *flname=(char*)"Data/charamodel/char4/char4_firstside_shooted.mqo";;
-	handmodel=mqoCreateModel(flname,0.0035);
+
 	//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
 void player::DrawFinalize(){
 	image_free(wallhandle);
+	for(int i=0;i<nonemodel;i++)
+		mqoDeleteModel(handmodel[i]);
+	playerbullet.bullet_DrawFinalize();
 }
 
 void player::set_Pers(double next){
@@ -248,31 +349,75 @@ void player::Draw(){
 
 
 	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
 
+	glPushMatrix();
 	//glTranslatef(position.x-0.1,position.y+0.48f,position.z+0.3);
 	glTranslatef(position.x,position.y+0.5f,position.z);
 	glRotated(angles.x* 180 /M_PI ,0,1,0);
 	glRotated(-angles.y* 180 /M_PI ,1,0,0);
-
-
-	mqoCallModel(handmodel);
+	if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)==0)
+		mqoCallModel(handmodel[nowpoze]);
 	glPopMatrix();
+	DrawMyWallWire();
+	DrawMyWall();
+
+
+	get_mapobj()->Draw();
+
+
 
 	playerbullet.Draw();
-	DrawMyWall();
 
 }
 
+bool set_pointerfree(bool set){
+	pointerfree=set;
+}
+
+bool get_pointerfree(){
+	return pointerfree;
+}
 void player::Update(){
+	dead();
+	if(myteam==RedTeam){
+		if(get_mapobj()->basehp[RedTeam]<=0)
+			result=2;
+		else if(get_mapobj()->basehp[BlueTeam]<=0)
+			result=1;
+	}else if(myteam==BlueTeam)
+		if(get_mapobj()->basehp[RedTeam]<=0)
+			result=1;
+		else if(get_mapobj()->basehp[BlueTeam]<=0)
+			result=2;
+
+	if(modelcount>0)
+		modelcount--;
+	if(shootedcount>0)
+		shootedcount--;
+	if(reloadcount>0)
+		reloadcount--;
+
+
+	if(shootedcount>0&&playerbullet.launchbulletcount<=playerbullet.reloadmax)
+		nowpoze=shootedmodel;
+	else if(reloadcount>0)
+		nowpoze=reloadmodel;
+	else if(modelcount>0)
+		nowpoze=shootmodel;
+	else
+		nowpoze=defaultmodel;
+
+	if(key_getmove(Reload)==2&&playerbullet.launchbulletcount!=0)
+		reloadcount=60*3;
+
+	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
 	playerbullet.PlayerToEnemy();
 
 	launchBullet();
-	if(myteam==RedTeam){
+	if(myteam==RedTeam)
 		playerbullet.HitObj(BlueTeam,atk);
-	}
 	else
 		playerbullet.HitObj(RedTeam,atk);
 	playerbullet.PlayerToMob();
@@ -283,19 +428,33 @@ void player::Update(){
 	remove_wall();
 	static vec3 nowdel;
 	nowdel=get_player()->delmove;
-	get_player()->position+=nowdel*get_mainfps().fps_getDeltaTime();
-
+	get_player()->position+=nowdel;
+	get_player()->delmove=vec3(0,0,0);
 
 	if(key_getmove(Test)==3)
 		testcursol=!testcursol;
 
-	set_Pers(60-3*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
+
+	//スナイパーモード用
+	set_Pers(60-11*get_mousebutton_count(MIDDLE_BUTTON_SCROLL));
+
+	if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)>0){
+		mousespeed=0.02f;
+		snipedeg=get_mousebutton_count(MIDDLE_BUTTON_SCROLL);
+		if(snipedeg==2)
+			snipedeg=1;
+		else if(snipedeg==4)
+			snipedeg=3;
+	}
+	else if(get_mousebutton_count(MIDDLE_BUTTON_SCROLL)==0){
+		mousespeed=premousespeed;
+		snipedeg=0;
+	}
+
 }
 //プレイヤーとあたり判定
 bool player::Move(object *mapobject,int mapn,Wall *playerwall){
-
 	const float movespeed = speed;
-
 
 	// Calculate movement vectors
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
@@ -309,15 +468,20 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	vec3 sampposition;
 	sampposition=position;
-
-	if(key_getmove(Left))
-		sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Right) )
-		sampposition += right_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Forward))
-		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-	if(key_getmove(Backward))
-		sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+	if(progress_time==0&&hp>0){
+		if(key_getmove(Left))
+			sampposition -= right_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Right) )
+			sampposition += right_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Forward))
+			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Backward))
+			sampposition -= forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
+		if(key_getmove(Left)||key_getmove(Right)||key_getmove(Forward)||key_getmove(Backward)){
+			modelcount=60*2;
+		}
+	}else if(progress_time>0)
+		modelcount=0;
 
 	playerfoot_collider=position;
 	playerfoot_collider.y-=0.7;
@@ -353,7 +517,7 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 
 	int hitnum=0;
 	//オブジェクトとの当たり判定
-	for(int i=0;i<mapn;i++)
+	for(int i=0;i<mapn;i++){
 		if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi){
 			//if(movechecker.LenOBBToPoint(mapobject[i],  player_collider) <= radi || movechecker.LenOBBToPoint_move(mapobject[i],  player_collider) <= radi){
 			upflag = true;
@@ -362,6 +526,10 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 			goto brex;
 		}
 
+
+		//else
+		//hitnum = 0;
+	}
 
 	//hitnum = 0;
 	for(int k=0;k<MAX_CLIENTS;k++)
@@ -452,38 +620,22 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	//if(!hitmap)
 	//hitnum = -1;
 
-	//オブジェクトの移動先 = 現在位置 + 進行方向&速度
-	mapobject[hitnum].Pos_move = mapobject[hitnum].get_m_Pos() + mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	//mapobject[hitnum].Pos_move += (mapobject[hitnum].get_m_Pos() + (mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime() ));
-	//printf("%lf %lf %lf\n",mapobject[hitnum].Pos_move.x,mapobject[hitnum].Pos_move.y,mapobject[hitnum].Pos_move.z);
+	//動作確認
 
-	//移動するオブジェクトから衝突してきた時のプレイヤーを押し寄せる処理(x軸z軸方向は完成)
-	//if(mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0){
-	if((mapobject[hitnum].speed.x != 0 || mapobject[hitnum].speed.y != 0 || mapobject[hitnum].speed.z != 0)
-			&& movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) <= radi){
-		printf("ABCDE\n");
-		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	}
 
-	//LenOBBToPoint_moveのy座標1下げ
-	//踏んでいるオブジェクトが移動タイプの時，その移動量をキャラクターも得る
-	//else if(mapobject[hitnum].type == MOVE){
-	else if(mapobject[hitnum].type == MOVE
-			&& movechecker.LenOBBToPoint_move(mapobject[hitnum],player_collider) <= radi){
-		printf("12345\n");
-		position += mapobject[hitnum].speed * get_mainfps().fps_getDeltaTime();
-	}
 
-	//衝突したオブジェクトの番号
-	//printf("hitnum = %d\n",hitnum);
-	//オブジェクトの位置
-	//printf("m_Pos.x = %lf m_Pos.y = %lf m_Pos.z =%lf\n",Pos.x,Pos.y,Pos.z);
-	//移動後のオブジェクトの位置
-	//printf("move.x = %lf move.y = %lf move.z =%lf\n",mapobject[hitnum].Pos_move.x,mapobject[hitnum].Pos_move.y,mapobject[hitnum].Pos_move.z);
-	//オブジェクトの進行速度
-	//printf("mapobject[%d] speed.x = %lf speed.y = %lf speed.z = %lf\n",hitnum,mapobject[hitnum].speed.x,mapobject[hitnum].speed.y,mapobject[hitnum].speed.z);
-	//オブジェクトのタイプ
-	//printf("type = %d\n",mapobject[hitnum].type);
+
+	//動作確認
+
+
+
+	//	//頭衝突時
+	//	for(int i=0;i<mapn;i++){
+	//		if(	movechecker.LenOBBToPoint( mapobject[i],  playerhead_collider)<=1    ){
+	//			upflag=false;
+	//			break;
+	//		}
+	//	}
 
 
 	int i;
@@ -591,8 +743,16 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 		//			}
 	}
 
+
 	gravity+=0.3f;
 	sampposition.y-=(gravity*get_mainfps().fps_getDeltaTime());
+
+	//重力による下降処理
+	//if(mapobject[hitnum].type != MOVE && mapobject[hitnum].speed.y >= 0 && movechecker.LenOBBToPoint(mapobject[hitnum],player_collider) >= radi){
+	//if(down == 0){
+	//printf("重力\n");
+	//}
+
 
 
 	//y座標の補正
@@ -678,26 +838,76 @@ bool player::Move(object *mapobject,int mapn,Wall *playerwall){
 	return false;
 
 }
+
+void player::dead(){
+
+	if(respawntime>RESPAWN_TIME){
+		hp=maxhp;
+		playerbullet.launchbulletcount=0;
+		respawntime=0;
+		if(myteam==RedTeam)
+			position=redalivepos[red];
+		else if(myteam==BlueTeam)
+			position=bluealivepos[blue];
+		resetwall=true;
+		level=0;
+		get_player()->exp=0;
+
+	}
+	if(hp<=0){
+		respawntime++;
+		for(int i=0;i<WALLMAX;i++)
+			mywall[i].count=0;
+	}
+
+}
 void player::set_wall(){
-	if(key_getmove(Setwall)==2)
+	if(drawmywire&&get_mousebutton_count(RIGHT_BUTTON)==2){
+		for(int i=0;i<WALLMAX;i++)
+			if(mywall[i].count==0){
+				progress_time++;
+				break;
+			}
+	}
+	if(progress_time>0)
+		progress_time++;
+
+	if(progress_time>WALL_SET){
+		progress_time=0;
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 
-				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
+				mywall[i].wall.setobject(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0),vec4(0.5f,0.5f,0.5f,1));
 				mywall[i].count++;
 				break;
 			}
-
+	}
 
 
 }
+
 void player::remove_wall(){
 	if(key_getmove(Removewall)==2)
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count!=0)
 				if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
-					mywall[i].count=0;
+					progress_time--;
+					break;
 				}
+	if(progress_time<0)
+		progress_time--;
+
+
+	for(int i=0;i<WALLMAX;i++)
+		if(progress_time<-WALL_DELETE){
+			progress_time=0;
+			for(int i=0;i<WALLMAX;i++)
+				if(mywall[i].count!=0)
+					if(	movechecker.LenOBBToPoint( mywall[i].wall,  position+vec3(lookat.x, lookat.y, lookat.z)*4)<=1){
+						mywall[i].count=0;
+						break;
+					}
+		}
 
 }
 void player::DrawMyWall(){
@@ -706,15 +916,24 @@ void player::DrawMyWall(){
 			mywall[i].wall.Draw();
 }
 
-int thread(void *data){
+void player::DrawMyWallWire(){
+	if(key_getmove(Setwall)==2)
+		drawmywire=!drawmywire;
+	if(drawmywire)
+		mywire.DrawWire(position+vec3(lookat.x, lookat.y+0.1f, lookat.z)*4,vec3(4,4,0.5f),vec3(0, atan2(lookat.x,lookat.z)*180/M_PI, 0));
+}
 
+int thread(void *data){
 
 	player *info=(player*)data;
 	while(1){
+		if(get_changestartcount()>60*5)
+			break;
+		if(pointerfree)
+			continue;
 
-		if(testcursol){
-
-		}
+		if(get_player()->progress_time!=0)
+			glutWarpPointer(1200 / 2, 700 / 2);
 
 		else if(!wrap) {
 			float ww = 1200;//glutGet(GLUT_WINDOW_WIDTH);
@@ -732,7 +951,7 @@ int thread(void *data){
 
 
 			//このあたいで初期視野に影響あり
-			const float mousespeed = 0.1f;
+
 
 			info->angles.x -= info->dx * mousespeed*get_mainfps().fps_getDeltaTime();
 			info->angles.y -= info->dy * mousespeed*get_mainfps().fps_getDeltaTime();
@@ -763,12 +982,13 @@ int thread(void *data){
 
 		SDL_Delay(10);
 	}
+
 	return 0;
 }
 void player::MouseMove()
 {
 
-	static int falag;
+
 	if(falag==0){
 		thr = SDL_CreateThread(thread, this);
 		falag=1;
@@ -781,28 +1001,44 @@ void player::Action()
 }
 
 void player::launchBullet(){
+	if(get_player()->result==1||get_player()->result==2)
+		return;
+
 	if(!atkok)
 		atkcount++;
 	//最後の弾だけ音がならないため
 	static bool lastbullet=false;
 
-	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0){
+	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0&&hp>0){
+
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 
-		if(playerbullet.launchbulletcount<playerbullet.reloadmax)
-			lastbullet=false;
 
-		if(playerbullet.launchbulletcount<=playerbullet.reloadmax&&lastbullet==false)
-			ChangeSE(1);
+		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
+			shootedcount=20;
+			playerbullet.launchbulletcount++;
+			if(bulletsoundcount==0){
+				ChangeSE(17);
+				bulletsoundcount++;
+			}
 
-		if(playerbullet.launchbulletcount==playerbullet.reloadmax&& lastbullet==false){
-			lastbullet=true;
+
+
 		}
-
-
-
 		atkok=false;
+	}else if(get_mousebutton_count(LEFT_BUTTON)==0){
+		StopMusic(17);
+		bulletsoundcount=0;
 	}
+	double musicsoundset;
+	switch(myrole){
+	case Gatling:
+		break;
+	}
+	if(bulletsoundcount>60*1.7)
+		bulletsoundcount=0;
+	else if(bulletsoundcount>0)
+		bulletsoundcount++;
 
 	//攻撃間隔
 	if(atkcount>atktime){
@@ -812,6 +1048,14 @@ void player::launchBullet(){
 
 	//	playerbullet.Update();
 }
+
+////死亡から復活まで
+//void player::dead(){
+//	static int deadcount;
+//	deadcount++;
+//
+//}
+
 //TODO
 //ポインタなし？
 bullet get_playerbullet(){
@@ -820,5 +1064,9 @@ bullet get_playerbullet(){
 
 player::~player() {
 	// TODO Auto-generated destructor stub
+}
+
+void set_mousespeed(float set){
+	mousespeed=set;
 }
 

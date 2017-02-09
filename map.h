@@ -26,11 +26,11 @@
 #define WALL_HEIGHT 30
 
 //拠点のx座標の長さ(縦)
-#define BASE_X_LENGTH 2
+#define BASE_X_LENGTH 3
 //拠点のy座標の長さ(高さ)
 #define BASE_Y_LENGTH 4
 //拠点のz座標の長さ(横)
-#define BASE_Z_LENGTH 6
+#define BASE_Z_LENGTH 3
 
 #define MOVABLE 20
 typedef enum{
@@ -41,8 +41,9 @@ typedef enum{
 
 class map {
 private:
-	int handle[50];
+	int handle[20];
 public:
+
 	float basehp[NoneTeam];
 	float basemaxhp[NoneTeam];
 	int baseno[NoneTeam][BASENUM];			//object配列の何番目が拠点かどうかを保存
@@ -62,6 +63,8 @@ public:
 	void DrawFinalize();
 	void Update();
 	void Draw();
+	void DrawBase();
+
 
 
 

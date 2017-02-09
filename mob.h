@@ -11,7 +11,7 @@
 
 #include "player.h"
 #include "bullet.h"
-
+#define GETEXP 30
 typedef enum{
 	sidestep,
 	sidestephard,
@@ -41,6 +41,7 @@ private:
 	vsplayer vsinfo;
 
 public:
+	int hitred;
 	bullet mobbullet;
 	vec3 position;
 	vec3 angles;

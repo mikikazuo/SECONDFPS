@@ -17,7 +17,7 @@
 #define PORT	(u_short)65531	/* ポート番号 */
 #define MAX_CLIENTS	2	/* クライアント数の最大値 */
 #define MAX_LEN_NAME 20
-
+#define MOBNUM 10
 
 
 
@@ -81,6 +81,7 @@ typedef struct{
 	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
 	Team myteam;
+	Role myrole;
 	vec3 delmove;//慣性による移動
 }PLAYER_DATA;
 
@@ -90,7 +91,7 @@ typedef struct{
 	shot2 bullet_info[MAXBULLET];
 	//TODO   要素数の設定
 	//弾によるhpマイナス値
-	float minusmobhp[10];
+	float minusmobhp[MOBNUM];
 	float minusbasehp[2];
 	float minusplayerhp[MAX_CLIENTS];		//クライアント数-1の配列予定
 }BULLET_DATA;
@@ -102,13 +103,16 @@ typedef struct{
 	BULLET_DATA bullets[MAX_CLIENTS];
 	wall2 walls[MAX_CLIENTS][WALLMAX];
 	Mapobj movablemapobj[MOVABLE];
-	mob2 mob[10];
+	mob2 mob[MOBNUM];
 	float basehp[2];
+	bool start[MAX_CLIENTS];
+	int countdowntime;   //制限時間
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
 typedef struct{
 	char command;//コマンド
+	bool start;  //decide team
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
 }C_CONTAINER;

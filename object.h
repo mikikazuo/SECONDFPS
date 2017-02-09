@@ -30,6 +30,7 @@ public:
 	void move(float x,float y,float z);
 	void rotate(float x,float y,float z);
 	void Draw();
+	void DrawWire(vec3 position,vec3 size,vec3 rota);
 	virtual ~object();
 	void Line3D(float x1,float y1,float z1,float x2,float y2,float z2);
 	void set_imgno(int no,int imgsize);

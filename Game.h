@@ -4,7 +4,7 @@
 #include "ISceneChanger.h"
 #include "map.h"
 #include "mob.h"
-
+#include "charaanimation.h"
 #include "player.h"
 
 #include "enemyPlayer.h"
@@ -14,6 +14,7 @@
 class Game : public BaseScene {
 
 public :
+
     Game(ISceneChanger* changer);
     void Initialize();			//初期化処理をオーバーライド。
     //void Finalize() override;		//終了処理をオーバーライド。
@@ -31,6 +32,6 @@ Wall **get_allplayerwall();
 player *get_player();
 mob *get_mober();
 int get_mobernum();
-
+chara_animation get_chara();
 enemyPlayer *get_enemy();
 

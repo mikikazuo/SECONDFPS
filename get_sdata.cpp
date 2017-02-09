@@ -9,6 +9,9 @@
 #include "net_client.h"
 #include "Game.h"
 #include "sound.h"
+#include "Start.h"
+#include "CanvasUI.h"
+
 int get_bulletdata(S_CONTAINER sdata){
 
 	for(int i=0;i<MAX_CLIENTS;i++){
@@ -34,16 +37,23 @@ int get_bulletdata(S_CONTAINER sdata){
 int get_playerdata(S_CONTAINER sdata){
 	int i;
 	for(i=0;i<MAX_CLIENTS;i++){
+		if(get_teammemfaze()[i]==0&&sdata.start[i])
+				get_teammemfaze()[i]=1;
+
 		if(i==get_player()->myid){
 			get_player()->delmove+=sdata.players[i].delmove;
 			continue;
 		}
+
+
 		get_enemy()[i].myteam=sdata.players[i].myteam;
+		get_enemy()[i].myrole=sdata.players[i].myrole;
 
 		get_enemy()[i].position=sdata.players[i].position;
 
 		get_enemy()[i].angles=sdata.players[i].angles;
 		get_enemy()[i].lookat=sdata.players[i].lookat;
+		get_enemy()[i].hp=sdata.players[i].hp;
 
 		for(int j=0;j<WALLMAX;j++){
 			get_enemy()[i].mywall[j].count=sdata.walls[i][j].count;
@@ -59,6 +69,7 @@ int get_MapData(S_CONTAINER sdata){
 	for(int i=0;i<MOVABLE;i++){
 		if(sdata.movablemapobj[i].objno==-1)
 			break;
+
 		vec3 pos=vec3(sdata.movablemapobj[i].position.x,sdata.movablemapobj[i].position.y,sdata.movablemapobj[i].position.z);
 		get_mapobj()->get_obj()[sdata.movablemapobj[i].objno].set_m_Pos(pos);
 
@@ -73,7 +84,7 @@ int get_MapData(S_CONTAINER sdata){
 }
 
 int get_MobData(S_CONTAINER sdata){
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MOBNUM;i++){
 		get_mober()[i].position=sdata.mob[i].position;
 		setMobSound(i,	get_mober()[i].position);
 		get_mober()[i].angles=sdata.mob[i].angles;
@@ -85,7 +96,7 @@ int get_MobData(S_CONTAINER sdata){
 
 				//TODO　時間調整
 				if(1<sdata.mob[i].mobbullet[j].count&&3>sdata.mob[i].mobbullet[j].count)
-				PlayMobMusic(i);
+					PlayMobMusic(i);
 				get_mober()[i].mobbullet.bullet_info[j].count=sdata.mob[i].mobbullet[j].count;
 				get_mober()[i].mobbullet.bullet_info[j].position=sdata.mob[i].mobbullet[j].pos;
 				get_mober()[i].mobbullet.bullet_info[j].angles=sdata.mob[i].mobbullet[j].angles;
@@ -94,6 +105,10 @@ int get_MobData(S_CONTAINER sdata){
 		}
 	}
 	return 0;
+}
+
+void get_countdowntime(S_CONTAINER sdata){
+	set_countdowntime(sdata.countdowntime);
 }
 
 
