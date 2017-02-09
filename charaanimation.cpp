@@ -203,7 +203,6 @@ void chara_animation::Update() {
 
 	//各プレイヤーがショットている間,１にしてください
 	//各プレイヤーがショットしていない間０にしてください
-	//とりあえずplayer_no=model_noで仮置きしてます
 	click[0] = 0;
 	click[1] = 0;
 	click[2] = 0;
@@ -213,6 +212,8 @@ void chara_animation::Update() {
 	click[6] = 0;
 	click[7] = 0;
 
+	//各プレイヤーがリロードしている間１にしてください
+	//書くプレイヤーがリロードしていない間０にしてください
 	Rchu[0] = 0;
 	Rchu[1] = 0;
 	Rchu[2] = 0;
@@ -222,13 +223,14 @@ void chara_animation::Update() {
 	Rchu[6] = 0;
 	Rchu[7] = 0;
 
-
+	/*
 	int i;
 	if(time % 300 < 150){
 		for(i=0;i<8;i++){
 			click[i]=1;
 		}
 	}
+	*/
 
 
 
@@ -317,7 +319,7 @@ void chara_animation::Draw() {
 
 
 	for(i=0;i<MAX_CLIENTS;i++){
-		int job=2;//キャラモデル番号
+		int job=2;//ここでキャラモデル番号を取得する
 		vec3 v3;
 		double ang;
 		double x,y,z;
