@@ -13,6 +13,7 @@
 
 MQO_MODEL animation;
 extern enemyPlayer enemy[MAX_CLIENTS];
+extern int Bullets_number[8];
 int time;
 int anim_starttime[8];
 int animechu[8];//アニメ中かどうか
@@ -212,6 +213,13 @@ void chara_animation::Update() {
 	click[6] = 0;
 	click[7] = 0;
 
+	int i;
+	for(i=0;i<8;i++){//画面上に弾があれば発射中と判断
+		if(Bullets_number[i]>0){
+			//printf("BN=%d",Bullets_number[i]);
+			click[i]=1;
+		}
+	}
 	//各プレイヤーがリロードしている間１にしてください
 	//書くプレイヤーがリロードしていない間０にしてください
 	Rchu[0] = 0;
@@ -224,7 +232,6 @@ void chara_animation::Update() {
 	Rchu[7] = 0;
 
 	/*
-	int i;
 	if(time % 300 < 150){
 		for(i=0;i<8;i++){
 			click[i]=1;

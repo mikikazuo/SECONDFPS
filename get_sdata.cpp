@@ -9,16 +9,19 @@
 #include "net_client.h"
 #include "Game.h"
 
+int Bullets_number[8];
+
 int get_bulletdata(S_CONTAINER sdata){
 
 	for(int i=0;i<MAX_CLIENTS;i++){
 		if(i==get_player()->myid)
 			continue;
 
-
+		Bullets_number[i]=0;
 		get_player()->hp-=sdata.bullets[i].minusplayerhp[get_player()->myid];
 		for(int j=0;j<MAXBULLET;j++){
 			if(sdata.bullets[i].bullet_info[j].count>0){
+				Bullets_number[i] += 1;
 				get_enemy()[i].enemybullet.bullet_info[j].count=sdata.bullets[i].bullet_info[j].count;
 				get_enemy()[i].enemybullet.bullet_info[j].position=sdata.bullets[i].bullet_info[j].pos;
 				get_enemy()[i].enemybullet.bullet_info[j].angles=sdata.bullets[i].bullet_info[j].angles;
@@ -26,6 +29,7 @@ int get_bulletdata(S_CONTAINER sdata){
 				get_enemy()[i].enemybullet.bullet_info[j].count=0;
 			//弾の数の表示
 			//	printf("bullets number = %d\n",j);
+
 
 		}
 	}
