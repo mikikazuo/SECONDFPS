@@ -425,14 +425,14 @@ void CanvasUI::Draw() {
 		n3 = rt/100;
 
 		//数字画像貼り付け
-		//image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
-		//image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
-		//image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
+		image_DrawExRota(handle[20+n1],635,40,0,0.75);	//1の位
+		image_DrawExRota(handle[20+n2],600,40,0,0.75);	//10の位
+		image_DrawExRota(handle[20+n3],565,40,0,0.75);	//100の位
 	//}
 
 	//else if(ゲーム終了 || 残り時間 <= 0){
 		//残り時間の代わりに『Fin!!』を表示
-		image_DrawExRota(handle[15],600,40,0,0.75);	//1の位
+		//image_DrawExRota(handle[15],600,40,0,0.75);
 		//ゲーム終了処理(勝敗判定とか諸々)
 	//}
 
