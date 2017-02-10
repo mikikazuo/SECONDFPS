@@ -29,6 +29,7 @@ static float angle = 0;
 static vec3 position;
 static int image[6]; //画像
 static int Title;
+//static char *str; //ジョブの名前に使用
 
 static bool start=true;
 static int teammemfaze[MAX_CLIENTS];
@@ -51,6 +52,8 @@ Buttonposi blue={{800,500},200,100};
 Buttonposi smooth={{600-25,200},50,50};
 
 MQO_MODEL model[6];
+
+static void CHG_role(Role name ,char *str);
 
 Start::Start(ISceneChanger* changer) : BaseScene(changer) {
 
@@ -376,7 +379,6 @@ void Start::Draw() {
 			break;
 		}
 		case 1:{
-
 			startcanvas.view2D();
 
 			glColor3d(0,0,0);
@@ -405,18 +407,93 @@ void Start::Draw() {
 		}
 		}
 	}else{
+		startcanvas.view2D();
+
+		//glPushMatrix();
 
 		glColor3d(0,0,0);
-		Mozi_DrawM2(100,100,0.8,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
-		Mozi_DrawM2(100,300,0.8,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
+		Mozi_DrawM2(100,100,0.7,MOZI_HGMINTYOE,"赤：%d人/4人 ",teamnum[0]);
+		Mozi_DrawM2(600,100,0.7,MOZI_HGMINTYOE,"青：%d人/4人 ",teamnum[1]);
+		//Mozi_DrawM2(300,500,0.8,MOZI_HGMINTYOE,"LOL");
+		glColor3d(0,0,0);
+		//		for(int i=0;i<MAX_CLIENTS;i++){
+		//
+		//
+		//			if(i==get_player()->myid){
+		//
+		//			}
+		//			else{
+		//				CHG_role(get_enemy()[i].myrole,sss);
+		//				Mozi_DrawM2(600,200+100*teamnum[1],0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",sss);
+		//			}
+		//			//printf("%s\n",sss);
+		//		}
+		char sss[80];
+		int nowrednum=0,nowbluenum=0;
 		for(int i=0;i<MAX_CLIENTS;i++){
-			if(i==get_player()->myid)
-				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定");
-			else
-				Mozi_DrawM2(700,100+100*i,0.5,MOZI_HGMINTYOE,"%s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定");
-		}
+			if(i==get_player()->myid){
 
+				if(get_player()->myteam==RedTeam){
+					CHG_role(get_player()->myrole,sss);
+					Mozi_DrawM2(100,200+100*nowrednum,0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定",sss);
+					nowrednum++;
+				}
+				else if(get_player()->myteam==BlueTeam){
+					CHG_role(get_player()->myrole,sss);
+					Mozi_DrawM2(600,200+100*nowbluenum,0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_player()->myteam==RedTeam?"赤":get_player()->myteam==BlueTeam?"青":"未決定",sss);
+					nowbluenum++;
+				}
+
+			}
+			if(get_enemy()[i].myteam==RedTeam){
+				CHG_role(get_player()->myrole,sss);
+				Mozi_DrawM2(100,200+100*nowrednum,0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",sss);
+				nowrednum++;
+			}
+			else if(get_enemy()[i].myteam==BlueTeam){
+				CHG_role(get_enemy()[i].myrole,sss);
+				Mozi_DrawM2(600,200+100*nowbluenum,0.5,MOZI_HGMINTYOE,"%s %s %s",get_clients()[i].name,get_enemy()[i].myteam==RedTeam?"赤":get_enemy()[i].myteam==BlueTeam?"青":"未決定",sss);
+				nowbluenum++;
+			}
+			//glPopMatrix();
+			//glDisable(GL_DEPTH_TEST);
+
+
+		}
 	}
 }
+void CHG_role(Role name ,char *str){
 
+	switch(name){
+	case Crossbow:{
+		strcpy(str,"弩兵");
+		break;
+	}
+	case Rifle:{
+		strcpy(str,"狙撃兵");
+		break;
+	}
+	case Gatling:{
+		strcpy(str,"銃火器兵");
+		break;
+	}
+	case Spear:{
+		strcpy(str,"槍兵");
+		break;
+	}
+	case Magicstick:{
+		strcpy(str,"魔法使い");
+		break;
+	}
+	case Magic:{
+		strcpy(str,"獣人兵");
+		break;
+	}
+	default:{
+		puts("人数待ち画面:ジョブがおかしいです");
+		break;
+	}
+	}
+
+}
 
