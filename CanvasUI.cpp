@@ -20,7 +20,7 @@
 
 static int changestartcount;
 static int countdowntime;   //制限時間
-
+#define RESTTIMEMIN 3
 void set_countdowntime(int set){
 	countdowntime=set;
 }
@@ -176,9 +176,9 @@ void CanvasUI::Update() {
 	if(rest_time<=0){
 		if(get_player()->myteam==RedTeam){
 			if(get_mapobj()->basehp[RedTeam]>=get_mapobj()->basehp[BlueTeam])
-				get_player()->result=2;
-			else if(get_mapobj()->basehp[RedTeam]<get_mapobj()->basehp[BlueTeam])
 				get_player()->result=1;
+			else if(get_mapobj()->basehp[RedTeam]<get_mapobj()->basehp[BlueTeam])
+				get_player()->result=2;
 		}else if(get_player()->myteam==BlueTeam){
 			if(get_mapobj()->basehp[RedTeam]<=get_mapobj()->basehp[BlueTeam])
 				get_player()->result=1;
@@ -294,8 +294,8 @@ void CanvasUI::shake(float nowhp){
 	if(get_changestartcount()>60*5){
 		set_start(false);
 		get_SceneMgr().ChangeScene(eScene_Menu);
-
-	}
+	}else
+		set_start(true);
 }
 
 //プレイヤーの生死の表示
@@ -310,11 +310,13 @@ void CanvasUI::aliveDraw(){
 				if(get_player()->hp>0)
 					image_DrawExRota(handle[1],350+55*nowrednum+shakeX,40+shakeY,0,1);
 				Mozi_DrawM2Ceneter(350+55*nowrednum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+				nowrednum++;
 			}
 			else if(get_player()->myteam==BlueTeam){
 				if(get_player()->hp>0)
 					image_DrawExRota(handle[2],850-55*nowbluenum+shakeX,40+shakeY,0,1);
-				Mozi_DrawM2Ceneter(350+55*nowrednum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+				Mozi_DrawM2Ceneter(850-55*nowbluenum+shakeX,70+shakeY,0.15,MOZI_HGMINTYOE,"%s",get_clients()[i].name);
+				nowbluenum++;
 			}
 
 		}

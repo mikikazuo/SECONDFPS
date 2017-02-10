@@ -106,7 +106,7 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc062");
+	sprintf(server_name,"clpc097");
 
 	setup_client(server_name,port);
 }

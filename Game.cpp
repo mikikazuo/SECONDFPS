@@ -24,7 +24,7 @@
 #include "main.h"
 #include "Letter.h"
 #include "net_client.h"
-
+#include "Start.h"
 #define PLAYERNUM 5
 
 
@@ -104,6 +104,7 @@ void Game::DrawInitialize(){
 		enemy[i].DrawInitialize(enemy[i].myrole);
 	}
 	get_chara().DrawInitialize();
+	set_start(false);
 }
 
 void Game::DrawFinalize(){

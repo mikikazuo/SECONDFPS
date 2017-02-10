@@ -198,7 +198,7 @@ void Start::Update() {
 				if(get_mousebutton_count(LEFT_BUTTON)==2){
 
 					get_player()->myrole=Crossbow;
-					set_start(true);
+					//set_start(true);
 
 					s_flag = 1;
 					//set_start(true);
