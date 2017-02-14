@@ -270,7 +270,7 @@ void player::Initialize(vec3 pos,float ra){
 }
 void player::DrawInitialize(Role setrole){
 
-    myrole=Gatling;
+    myrole=Rifle;
 	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/mywall.png");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -399,12 +399,12 @@ void player::Update(){
 			result=2;
 		else if(get_mapobj()->basehp[BlueTeam]<=0)
 			result=1;
-	}else if(myteam==BlueTeam)
+	}else if(myteam==BlueTeam){
 		if(get_mapobj()->basehp[RedTeam]<=0)
 			result=1;
 		else if(get_mapobj()->basehp[BlueTeam]<=0)
 			result=2;
-
+	}
 	if(modelcount>0)
 		modelcount--;
 	if(shootedcount>0)

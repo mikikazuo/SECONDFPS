@@ -37,7 +37,7 @@ void bullet::bullet_Initialize(){
 	switch(mode){
 	case Crossbow:
 		reloadmax=10;
-		speed=50;
+		speed=30;
 		break;
 	case Rifle:
 		reloadmax=10;
@@ -45,19 +45,20 @@ void bullet::bullet_Initialize(){
 		break;
 	case Gatling:
 		reloadmax=100;
-		speed=20;
+		speed=50;
 		break;
 	case Spear:
 		reloadmax=1;
 		speed=40;
+
 		break;
 	case Magicstick:
 		reloadmax=5;
-		speed=15;
+		speed=40;
 		break;
 	case Magic:
 		reloadmax=20;
-		speed=15;
+		speed=30;
 		break;
 	case Mob:
 		reloadmax=30;
