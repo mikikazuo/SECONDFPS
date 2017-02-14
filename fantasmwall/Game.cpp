@@ -114,6 +114,11 @@ void Game::DrawFinalize(){
 	//モデルの読み込みを最低限に抑えたため添字０の文だけでよい
 	mober[0].DrawFinalize();
 	chara.DrawFinalize();
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(get_player()->myid==i)
+			continue;
+		enemy[i].DrawFinalize();
+	}
 }
 
 Game::Game(ISceneChanger* changer) : BaseScene(changer) {
@@ -172,6 +177,11 @@ void Game::Draw(){
 
 	}
 
+	for(int i=0;i<MAX_CLIENTS;i++){
+		if(get_player()->myid==i)
+			continue;
+		enemy[i].DrawName();
+	}
 //	mapobj.Draw();
 
 	chara.Draw();

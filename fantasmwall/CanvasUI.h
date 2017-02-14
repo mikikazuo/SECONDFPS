@@ -10,7 +10,7 @@
 
 //単位は1/60秒
 #define WALL_SET 		300		//壁の設置にかかる時間
-#define WALL_DELETE 	600		//壁の除去にかかる時間
+#define WALL_DELETE 	150		//壁の除去にかかる時間
 #define RESPAWN_TIME	600		//死亡してからリスポーンするまでの待機時間
 
 #define FIN_MES1 50		//ゲーム終了メッセージ表示領域を横方向に伸ばす際に使用

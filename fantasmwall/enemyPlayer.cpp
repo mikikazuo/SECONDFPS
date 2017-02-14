@@ -28,7 +28,7 @@ void enemyPlayer::Initialize(){
 }
 void enemyPlayer::DrawInitialize(Role setrole){
 
-	wallhandle=image_Load("Data/image/2079.jpg");
+	wallhandle=image_Load((myteam==RedTeam)?"Data/image/redwall.png":"Data/image/bluewall.png");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 
@@ -60,14 +60,18 @@ void enemyPlayer::Draw() {
 	get_chara().walk((int)myrole+1,0,0,0,1);
 	glPopMatrix();
 
-	glColor3f(1,1,1);
-	if(myteam==get_player()->myteam)
-		Mozi_DrawM2_3D(vec3(position.x,position.y+1.3f,position.z),30,vec3(0,1,0),0.005,MOZI_HGMINTYOE,get_clients()[myid].name);
 
 	enemybullet.Draw();
 	DrawMyWall();
-}
 
+
+
+}
+void enemyPlayer::DrawName(){
+	glColor3f(1,1,1);
+	if(myteam==get_player()->myteam)
+		Mozi_DrawM2_3D(vec3(position.x,position.y+1.5f,position.z),30,vec3(0,1,0),0.005,MOZI_HGMINTYOE,get_clients()[myid].name);
+}
 void enemyPlayer::DrawMyWall(){
 	for(int i=0;i<WALLMAX;i++)
 		if(mywall[i].count>0){

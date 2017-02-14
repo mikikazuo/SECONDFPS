@@ -21,6 +21,7 @@
 static int changestartcount;
 static int countdowntime;   //制限時間
 #define RESTTIMEMIN 3
+static int reloadx;
 void set_countdowntime(int set){
 	countdowntime=set;
 }
@@ -45,7 +46,7 @@ void CanvasUI::Initialize(){
 	shakeX = 0;
 	shakeY = 0;
 	level = 0;
-
+	reloadx=0;
 
 	progress_per  = 0;
 
@@ -125,7 +126,7 @@ void CanvasUI::DrawInitialize(){
 	handle[47]=image_Load("Data/image/sniper.png");
 	handle[48]=image_Load("Data/image/sniper_bar.png");
 
-
+	handle[49]=image_Load("Data/image/reload.png");
 	//残り時間の表示に使用する数字画像
 	handle[20]=image_Load("Data/image/rt_num/0.png");
 	handle[21]=image_Load("Data/image/rt_num/1.png");
@@ -171,7 +172,7 @@ void CanvasUI::Update() {
 	time += 1;
 
 	//rest_time -= 1;	//残り時間を減らす
-	rest_time=60*30*1-countdowntime;
+	rest_time=60*60*RESTTIMEMIN -countdowntime;
 
 	if(rest_time<=0){
 		if(get_player()->myteam==RedTeam){
@@ -216,6 +217,12 @@ void CanvasUI::Update() {
 
 	shake(get_player()->hp);
 	snipe_per = (double)get_player()->snipedeg/5;
+
+	if(get_playerbullet().reloadtime>0){
+		reloadx++;
+		reloadx%=60;
+	}else
+		reloadx=0;
 }
 
 void CanvasUI::shake(float nowhp){
@@ -418,6 +425,17 @@ void CanvasUI::Draw() {
 	rect_Draw2D(510+shakeX+(260*0.01*a),660+shakeY,(260*(1-0.01*a)),40);//裏ゲージ描画
 	image_DrawExRota(handle[5],620+shakeX,680+shakeY,0,1);//bullet
 
+	if(reloadx>0)
+		image_DrawExRota(handle[49],reloadx-30+640+shakeX,679+shakeY,0,0.5);//bullet
+
+	if(get_playerbullet().launchbulletcount>=get_playerbullet().reloadmax){
+		if(reloadx>0){
+
+		}
+		else
+			image_DrawExRota(handle[49],640+shakeX,679+shakeY,0,0.5);//bullet
+	}
+
 	glColor3d(0.1,0.8,0.5);
 	rect_Draw2D(210+shakeX,640+shakeY,260*0.01*get_player()->exp,20);//ゲージ描画
 	glColor3d(0.1,0.1,0.1);
@@ -444,6 +462,8 @@ void CanvasUI::Draw() {
 	//			break;
 	//		}
 	//	}
+
+	image_DrawExRota(handle[41],105,520,0,1.0);//操作方法
 	int i;
 
 	for(i=0;i<WALLMAX;i++){
@@ -468,8 +488,6 @@ void CanvasUI::Draw() {
 	image_DrawExRota(handle[14],948+shakeX,668+shakeY,0,1);//壁情報枠
 
 
-	image_DrawExRota(handle[41],105,520,0,1.0);//操作方法
-
 	/***壁設置・除去進捗バー***/
 	//if(壁に関する動作中){
 
@@ -489,8 +507,8 @@ void CanvasUI::Draw() {
 		glColor3d(0.486,1.0,0.333);	//緑指定
 		rect_Draw2D(510+shakeX,640+shakeY,260 * progress_per,20); //進捗バー(左から右へ増加)
 	}
-	glColor3d(0.0,0.0,0.0);		//黒指定
-	rect_Draw2D(510+shakeX,640+shakeY,260,20); //裏ゲージ
+	//	glColor3d(0.0,0.0,0.0);		//黒指定
+	//	rect_Draw2D(510+shakeX,640+shakeY,260,20); //裏ゲージ
 
 
 	//}
@@ -498,10 +516,10 @@ void CanvasUI::Draw() {
 
 
 
-
-	glColor3d(0.0,0.0,0.0);		//黒指定
-	//引数補足:不要，左上の座標(x,y),横幅，高さ
-	rect_Draw2D(510+shakeX,640+shakeY,260,20); //裏ゲージ
+	//
+	//	glColor3d(0.0,0.0,0.0);		//黒指定
+	//	//引数補足:不要，左上の座標(x,y),横幅，高さ
+	//	rect_Draw2D(510+shakeX,640+shakeY,260,20); //裏ゲージ
 
 	//進捗バーの枠表示
 	//画像番号，中心の座標(x,y),回転(そのままなら0)，大きさ(等倍なら1)

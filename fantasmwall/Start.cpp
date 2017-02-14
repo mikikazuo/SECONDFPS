@@ -84,7 +84,9 @@ void Start::Initialize(){
 	for(int i=0;i<MAX_CLIENTS;i++)
 		get_enemy()[i].myteam=NoneTeam;
 	s_flag=-1;
-
+	for(int i=0;i<MAX_CLIENTS;i++){
+		teammemfaze[i]=0;
+	}
 }
 
 void Start::DrawInitialize(){
@@ -161,14 +163,14 @@ void Start::Update() {
 			/**/
 			if(get_mousebutton_count(LEFT_BUTTON)==2){
 				if(red.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<red.leftup.x+red.width&&
-						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<=MAX_CLIENTS/2){
+						red.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<red.leftup.y+red.height&&teamnum[0]<MAX_CLIENTS/2){
 					get_player()->myteam=RedTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));
 					set_start(true);
 					//s_flag = 0;
 					/**/
 				}else if(blue.leftup.x<get_mouseinfo().x&&get_mouseinfo().x<blue.leftup.x+blue.width&&
-						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<=MAX_CLIENTS/2){
+						blue.leftup.y<get_mouseinfo().y&&get_mouseinfo().y<blue.leftup.y+blue.height&&teamnum[1]<MAX_CLIENTS/2){
 
 					get_player()->myteam=BlueTeam;
 					set_mousespeed(0.08+0.02*(smoothvalue-2));

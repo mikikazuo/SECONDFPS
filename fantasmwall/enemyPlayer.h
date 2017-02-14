@@ -37,6 +37,7 @@ public:
 	void Draw();
 	void resetminushp();
 	void DrawMyWall();
+	void DrawName();
 	virtual ~enemyPlayer();
 };
 

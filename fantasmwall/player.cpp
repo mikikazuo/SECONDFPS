@@ -40,7 +40,7 @@ static bool pointerfree=false;
 SDL_Thread *thr;
 static bool resetwall;
 int wallhandle;
-
+static int iniatk;
 
 bullet playerbullet;
 object mywire;
@@ -197,19 +197,34 @@ void player::Initialize(vec3 pos,float ra){
 	playerbullet.bullet_Initialize();
 	atktime=60;
 	premousespeed=mousespeed;
+	iniatk=10;
+	speed=7;
 	switch(myrole){
 	case Crossbow:
+		iniatk=5;
+		atktime=30;
 		break;
 	case Rifle:
+		iniatk=10;
+
 		break;
 	case Gatling:
 		atktime=5;
+		iniatk=1;
+		speed=5;
 		break;
 	case Spear:
+		iniatk=10;
 		break;
 	case Magicstick:
+		iniatk=20;
+		speed=6;
+		atktime=120;
 		break;
 	case Magic:
+		iniatk=10;
+		speed=8;
+		atktime=45;
 		break;
 	default:
 		break;
@@ -232,9 +247,9 @@ void player::Initialize(vec3 pos,float ra){
 			blue++;
 	}
 
-	speed=7;
+
 	hp=maxhp=100;
-	atk=10;
+
 	bulletsoundcount=0;
 	atkok=true;
 	result=0;
@@ -255,9 +270,9 @@ void player::Initialize(vec3 pos,float ra){
 }
 void player::DrawInitialize(Role setrole){
 
-	myrole=Gatling;
+    myrole=Gatling;
 	playerbullet.bullet_DrawInitialize(myrole);
-	wallhandle=image_Load("Data/image/2079.jpg");
+	wallhandle=image_Load("Data/image/mywall.png");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
 		mywall[i].wall.set_imgno(wallhandle,100);
 	char *flname[nonemodel];
