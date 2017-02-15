@@ -2,8 +2,10 @@
  * map.cpp
  *
  *  Created on: 2016/11/11
- *      Author: user
+ *  Last edit: 2017/2/9
+ *      Author: 大西・三木
  */
+
 
 #include "map.h"
 

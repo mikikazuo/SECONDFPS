@@ -1,3 +1,10 @@
+/*
+ * SceneMgr.cpp
+ *
+ *  Last edit: 2017/1/31
+ *      Author: 三木
+ */
+
 #include "Game.h"
 #include "SceneMgr.h"
 #include "Start.h"
@@ -17,7 +24,7 @@ SceneMgr::SceneMgr() //:
 		//mNextScene(eScene_None) //次のシーン管理変数
 {
 
-	mScene = (BaseScene*) new Game(this);
+	mScene = (BaseScene*) new Start(this);
 }
 
 //初期化

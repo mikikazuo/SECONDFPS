@@ -2,7 +2,8 @@
  * server_client.h
  *
  *  Created on: 2016/11/25
- *      Author: c501506026
+ *  Last edit: 2017/2/9
+ *      Author: 尾崎
  */
 //***********************************/
 //サーバーとクライアントで使用する定数の宣言
@@ -15,7 +16,7 @@
 #include "bullet.h"
 
 #define PORT	(u_short)65531	/* ポート番号 */
-#define MAX_CLIENTS	4	/* クライアント数の最大値 */
+#define MAX_CLIENTS	8	/* クライアント数の最大値 */
 #define MAX_LEN_NAME 20
 #define MOBNUM 10
 

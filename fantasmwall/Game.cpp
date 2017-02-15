@@ -1,4 +1,9 @@
-
+/*
+ * Game.cpp
+ *
+ *  Last edit: 2017/2/10
+ *      Author: 三木
+ */
 
 
 #include "Game.h"
@@ -84,6 +89,7 @@ void Game::Initialize(){
 	get_chara().Initialize();
 }
 
+//描画初期化
 void Game::DrawInitialize(){
 	//mqoInitは1回だけでいい模様
 	mqoInit();
@@ -106,7 +112,7 @@ void Game::DrawInitialize(){
 	get_chara().DrawInitialize();
 	set_start(false);
 }
-
+//描画終了処理
 void Game::DrawFinalize(){
 	gamecanvas.DrawFinalize();
 	mapobj.DrawFinalize();
@@ -152,6 +158,7 @@ void Game::Update(){
 }
 
 
+//四角形の描画
 void Square2D(int x1,int y1,int x2, int y2,float size){
 	glLineWidth(size);
 	glBegin(GL_LINE_LOOP);
@@ -215,21 +222,26 @@ map *get_mapobj(){
 	return &mapobj;
 }
 
-
+//プレイヤーのインスタンスを取得
 player *get_player(){
 	return &player1;
 }
+
+//mobのインスタンスを取得
 mob *get_mober(){
 	return mober;
 }
+
+//mobの数を取得
 int get_mobernum(){
 	return (int)(sizeof(mober)/sizeof(mober[0]));
 }
 
-
+//敵・味方のインスタンスを取得
 enemyPlayer *get_enemy(){
 	return enemy;
 }
+
 chara_animation get_chara(){
 	return chara;
 }

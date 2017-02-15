@@ -1,3 +1,9 @@
+/*
+ * key.cpp
+ *
+ *  Last edit: 2017/1/31
+ *      Author: 三木
+ */
 
 #include "key.h"
 #include "GL/glut.h"

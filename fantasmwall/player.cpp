@@ -2,7 +2,8 @@
  * player.cpp
  *
  *  Created on: 2016/09/12
- *      Author: user
+ *  Last edit: 2017/2/9
+ *      Author: 三木
  */
 
 #include "player.h"
@@ -53,6 +54,8 @@ static int reloadcount;
 static float premousespeed;
 static float mousespeed=0.1f;
 static int red,blue;
+
+//リスポーン位置
 vec3 redalivepos[]={
 		vec3(32,10,-7),
 		vec3(32,10,7),
@@ -168,6 +171,7 @@ double m_fDepthSize[2];    //!< デプスを格納するテクスチャのサイ
 
 MQO_MODEL handmodel[nonemodel];
 
+//自分の壁のインスタンス取得
 Wall *player::get_mywall(){
 	return mywall;
 }
@@ -189,6 +193,7 @@ player::player() {
 
 }
 
+//初期化
 void player::Initialize(vec3 pos,float ra){
 	falag=0;
 	level=0;
@@ -268,9 +273,9 @@ void player::Initialize(vec3 pos,float ra){
 	}
 	snipedeg=0;
 }
+//描画の初期化
 void player::DrawInitialize(Role setrole){
 
-	myrole=Magicstick;
 	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/mywall.png");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -327,12 +332,14 @@ void player::DrawInitialize(Role setrole){
 	//	handmodel=mqoCreateModel(flname,0.0010);
 }
 
+//終了処理
 void player::DrawFinalize(){
 	image_free(wallhandle);
 	for(int i=0;i<nonemodel;i++)
 		mqoDeleteModel(handmodel[i]);
 	playerbullet.bullet_DrawFinalize();
 }
+
 
 void player::set_Pers(double next){
 	pers=next;

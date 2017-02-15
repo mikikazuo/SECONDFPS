@@ -2,7 +2,8 @@
  * Start.cpp
  *
  *  Created on: 2017/01/19
- *      Author: c501506022
+ *  Last edit: 2017/2/9
+ *      Author: 横山・三木
  */
 
 #include "Start.h"

@@ -2,8 +2,10 @@
  * get_sdata.cpp
  *
  *  Created on: 2016/12/02
- *      Author: c501506026
+ *  Last edit: 2017/2/9
+ *      Author: 尾崎
  */
+
 #include "stdio.h"
 #include "net_common.h"
 #include "net_client.h"
@@ -12,6 +14,8 @@
 #include "Start.h"
 #include "CanvasUI.h"
 
+
+//敵・味方の弾の情報を取得
 int get_bulletdata(S_CONTAINER sdata){
 
 	for(int i=0;i<MAX_CLIENTS;i++){
@@ -34,6 +38,7 @@ int get_bulletdata(S_CONTAINER sdata){
 	return 0;
 }
 
+//
 int get_playerdata(S_CONTAINER sdata){
 	int i;
 	for(i=0;i<MAX_CLIENTS;i++){

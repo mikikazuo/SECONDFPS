@@ -3,7 +3,8 @@
 
  *
  *  Created on: 2016/09/12
- *      Author: user
+ *  Last edit: 2017/1/22
+ *      Author: 三木
  */
 #include "mouse.h"
 #include  "GL/glut.h"

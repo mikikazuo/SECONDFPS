@@ -2,7 +2,8 @@
  * sound.c
  *
  *  Created on: 2016/01/19
- *      Author: c501406006
+ *  Last edit: 2017/1/27
+ *      Author: 三木
  */
 #include "sound.h"
 #include <cstddef>

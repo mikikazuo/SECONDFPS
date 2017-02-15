@@ -2,7 +2,8 @@
  * enemyPlayer.cpp
  *
  *  Created on: 2016/12/09
- *      Author: c501506022
+ *  Last edit: 2017/02/9
+ *      Author: 三木
  */
 
 #include "enemyPlayer.h"
@@ -16,7 +17,7 @@ enemyPlayer::enemyPlayer() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
 }
-
+//初期化処理
 void enemyPlayer::Initialize(){
 	enemybullet.bullet_Initialize();
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++){
@@ -26,6 +27,7 @@ void enemyPlayer::Initialize(){
 	}
 	hp=0;
 }
+//描画初期化
 void enemyPlayer::DrawInitialize(Role setrole){
 
 	wallhandle=image_Load((myteam==RedTeam)?"Data/image/redwall.png":"Data/image/bluewall.png");
@@ -37,12 +39,14 @@ void enemyPlayer::DrawInitialize(Role setrole){
 
 	enemybullet.bullet_DrawInitialize(setrole);
 }
+
+//描画終了処理
 void enemyPlayer::DrawFinalize(){
 	image_free(wallhandle);
 	mqoDeleteModel(enemymodel);
 	enemybullet.bullet_DrawFinalize();
 }
-
+//描画処理
 void enemyPlayer::Draw() {
 	//	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 	//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
@@ -67,11 +71,15 @@ void enemyPlayer::Draw() {
 
 
 }
+
+//味方の名前を3Dモデルの頭上に表示する
 void enemyPlayer::DrawName(){
 	glColor3f(1,1,1);
 	if(myteam==get_player()->myteam)
 		Mozi_DrawM2_3D(vec3(position.x,position.y+1.5f,position.z),30,vec3(0,1,0),0.005,MOZI_HGMINTYOE,get_clients()[myid].name);
 }
+
+//敵・味方が作った壁の描画
 void enemyPlayer::DrawMyWall(){
 	for(int i=0;i<WALLMAX;i++)
 		if(mywall[i].count>0){
@@ -79,7 +87,7 @@ void enemyPlayer::DrawMyWall(){
 		}
 
 }
-
+//敵に対するhp減少フラグをリセット
 void enemyPlayer::resetminushp(){
 	serverminushp=0;
 }

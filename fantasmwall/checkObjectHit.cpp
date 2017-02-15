@@ -2,7 +2,8 @@
  * checkObjectHit.cpp
  *
  *  Created on: 2016/09/21
- *      Author: user
+ *  Last edit: 2017/01/22
+ *      Author: 三木
  */
 
 #include "checkObjectHit.h"
@@ -22,7 +23,8 @@ checkObjectHit::~checkObjectHit() {
 }
 
 
-//1：壁やマップオブジェクトの数　2：壁やオブジェクトそのもの　3：点座標  4：点座標から広がる半径
+//球と直方体の当たり判定　当たっていればtrueを返す
+//1：マップオブジェクトの数　2：オブジェクトそのもの　3：点座標  4：点座標から広がる半径
 bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
 	bool hit=false;
 
@@ -33,7 +35,8 @@ bool checkObjectHit::sethitcheck(int num,object *obb,vec3 pointpos,float radi){
 		}
 	return hit;
 }
-
+//球と直方体の当たり判定　当たっていればtrueを返す
+//1：壁の数　2：壁そのもの　3：点座標  4：点座標から広がる半径
 bool checkObjectHit::sethitcheck(int num,Wall *obb,vec3 pointpos,float radi){
 	bool hit=false;
 

@@ -1,5 +1,9 @@
-/* C4-2.c */
-
+/*
+ * main.cpp
+ *
+ *  Last edit: 2017/1/31
+ *      Author: 三木
+ */
 
 
 //#include "ShaderLoader.h"
@@ -35,7 +39,7 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=true;    //sever connect
+static bool debug=false;    //sever connect
 
 
 

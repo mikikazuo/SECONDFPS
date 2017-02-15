@@ -1,3 +1,10 @@
+/*
+ * OBB.cpp
+
+ *  Last edit: 2016/11/25
+ *      Author: 三木
+ */
+
 #include "OBB.h"
 #include <math.h>
 const float MTXLIB_PI = 3.14159265f;

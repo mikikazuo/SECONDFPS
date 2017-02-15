@@ -2,7 +2,8 @@
  * glm.cpp
  *
  *  Created on: 2016/10/24
- *      Author: c501506022
+ *  Last edit: 2016/11/18
+ *      Author: 三木
  */
 #include "glm.h"
 

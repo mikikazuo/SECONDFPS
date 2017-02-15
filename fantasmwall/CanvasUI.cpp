@@ -2,7 +2,8 @@
  * CanvasUI.cpp
  *
  *  Created on: 2016/11/09
- *      Author: user
+ *  Last edit: 2017/02/10
+ *      Author: 尾崎・大西
  */
 
 #include "CanvasUI.h"
@@ -225,6 +226,7 @@ void CanvasUI::Update() {
 		reloadx=0;
 }
 
+//被ダメージ時の画面の振動
 void CanvasUI::shake(float nowhp){
 	static int shakecount;
 	static float prehp=prehp==0?nowhp:prehp;

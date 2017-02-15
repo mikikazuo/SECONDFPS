@@ -2,7 +2,8 @@
  * bullet.cpp
  *
  *  Created on: 2016/09/23
- *      Author: user
+ *  Last edit: 2017/02/9
+ *      Author: 三木
  */
 
 #include "bullet.h"
@@ -21,6 +22,8 @@ checkObjectHit bulletmovechecker;
 bullet::bullet() {
 	// TODO 自動生成されたコンストラクター・スタブ
 }
+
+//初期化
 void bullet::bullet_Initialize(){
 	bulletradi=0.01f;
 
@@ -70,6 +73,7 @@ void bullet::bullet_Initialize(){
 
 }
 
+//描画初期化
 void bullet::bullet_DrawInitialize(Role setbulletmode){
 	char *flname=(char*)"Data/charamodel/char5/char5_tama.mqo";
 
@@ -107,10 +111,12 @@ void bullet::bullet_DrawInitialize(Role setbulletmode){
 		break;
 	}
 }
+///描画終了処理
 void bullet::bullet_DrawFinalize(){
 	mqoDeleteModel(bulletmodel);
 
 }
+//弾の初期位置・方向セット
 void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
 	//vec3 forward_dir = vec3(sinf(get_player()->angles.x), 0, cosf(get_player()->angles.x));
@@ -162,6 +168,7 @@ void bullet::setInfo(vec3 playerposition,vec3 playerdir){
 
 }
 
+//弾のリロード
 void bullet::reload(){
 
 	if(key_getmove(Reload)==2&&reloadtime==0&&launchbulletcount!=0){
@@ -255,7 +262,7 @@ void bullet::HitObj(Team enemyteam,float atk){
 
 }
 
-//
+//敵からプレイヤーへの弾
 void bullet::EnemyPlayerToPlayer(){
 	for(int j=0;j<MAXBULLET;j++)
 		if(bullet_info[j].count)
@@ -267,7 +274,7 @@ void bullet::EnemyPlayerToPlayer(){
 
 }
 
-//
+//プレイヤーから敵への弾
 void bullet::PlayerToEnemy(){
 	for(int i=0;i<MAX_CLIENTS;i++){
 		if(i==get_player()->myid||get_enemy()[i].myteam==get_player()->myteam||get_enemy()[i].hp<=0)
@@ -282,6 +289,8 @@ void bullet::PlayerToEnemy(){
 	}
 }
 
+
+//プレイヤーからMOb敵への弾
 void bullet::PlayerToMob(){
 	for(int i=0;i<get_mobernum();i++){
 		for(int j=0;j<MAXBULLET;j++)
@@ -308,6 +317,7 @@ void bullet::PlayerToMob(){
 	}
 }
 
+//MOB敵からプレイヤーへの弾
 void bullet::MobToPlayer(int atk){
 	for(int j=0;j<MAXBULLET;j++)
 		if(bullet_info[j].count)
@@ -321,7 +331,7 @@ void bullet::MobToPlayer(int atk){
 
 
 
-
+//計算処理
 void bullet::Update(){
 	const float movespeed=speed;
 	for(int i=0;i<MAXBULLET;i++)
@@ -382,6 +392,7 @@ void bullet::Update(){
 	reload();
 }
 
+//描画処理
 void bullet::Draw(){
 
 	glEnable(GL_LIGHT0);

@@ -2,8 +2,10 @@
  * mob.cpp
  *
  *  Created on: 2016/11/15
- *      Author: c501506022
+ *  Last edit: 2017/2/9
+ *      Author: 三木
  */
+
 
 #include "mob.h"
 #include <math.h>

@@ -2,7 +2,8 @@
  * charaanimation.cpp
  *
  *  Created on: 2016/12/16
- *      Author: c501506022
+ *  Last edit: 2017/02/9
+ *      Author: 尾崎
  */
 
 #include "charaanimation.h"
@@ -37,6 +38,7 @@ chara_animation::~chara_animation() {
 	// TODO Auto-generated destructor stub
 }
 
+//初期化処理
 void chara_animation::Initialize()	{
 	timee = 0;
 
@@ -50,6 +52,7 @@ void chara_animation::Initialize()	{
 	//click[8] = 0;//プレイヤーの皆さんのクリック状況(またはショットの瞬間を観測)
 }
 
+//描画初期化
 void chara_animation::DrawInitialize(){
 	char *flname=(char*)"Data/charamodel/char2/char2_ene_body1.mqo";
 	char2[0]=mqoCreateModel(flname,0.0035);
@@ -171,7 +174,7 @@ void chara_animation::DrawInitialize(){
 	flname=(char*)"Data/charamodel/char6/char6_ene_shooted.mqo";
 	char6[7]=mqoCreateModel(flname,0.0035);
 }
-
+//描画終了処理
 void chara_animation::DrawFinalize(){
 	for(int i=0;i<20;i++){
 		if(char1[i]!=NULL)
@@ -189,6 +192,8 @@ void chara_animation::DrawFinalize(){
 	}
 
 }
+
+//計算処理
 void chara_animation::Update() {
 	timee += 1;
 
@@ -212,6 +217,7 @@ void chara_animation::Update() {
 	}
 }
 
+//描画処理
 void chara_animation::Draw() {
 	//glPushMatrix();
 	//glTranslated(5+(11-6)*5,1+1,-17);
@@ -277,6 +283,7 @@ void chara_animation::Draw() {
 	 */
 	///*********************
 }
+
 
 void modelPP(MQO_MODEL MODEL,double x,double y,double z){
 	glPushMatrix();

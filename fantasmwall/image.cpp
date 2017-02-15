@@ -1,3 +1,9 @@
+/*
+ * image.cpp
+ *  Last edit: 2017/1/20
+ *      Author: 三木
+ */
+
 #include "image.h"
 #include "math.h"
 

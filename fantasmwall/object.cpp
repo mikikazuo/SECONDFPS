@@ -2,7 +2,8 @@
  * object.cpp
  *
  *  Created on: 2016/09/13
- *      Author: user
+ *  Last edit: 2017/1/31
+ *      Author: 三木
  */
 
 #include "object.h"
@@ -49,6 +50,7 @@ void object::setobject(vec3 position,vec3 size,vec3 rota,vec4 color){
 
 
 }
+
 object::object(vec3 position,vec3 size,vec3 rota,vec4 color) {
 	// TODO 自動生成されたコンストラクター・スタブ
 
@@ -76,6 +78,7 @@ object::object(vec3 position,vec3 size,vec3 rota,vec4 color) {
 
 }
 
+//テクスチャの割り当て
 void object::set_imgno(int no,int imgsize){
 	this->imgno=no;
 	this->imgresize=imgsize;
@@ -226,6 +229,7 @@ void object::make_cuboid(float width,float height,float depth)
 
 }
 
+//描画
 void object::Draw(){
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
@@ -283,6 +287,7 @@ void object::Draw(){
 	glColor3d(1.0, 1.0, 1.0);
 }
 
+//直方体のワイヤー描画
 void object::DrawWire(vec3 position,vec3 size,vec3 rota){
 
 	float width=size.x;
@@ -411,7 +416,7 @@ object::~object() {
 	// TODO Auto-generated destructor stub
 }
 
-
+//
 void object::Line3D(float x1,float y1,float z1,float x2,float y2,float z2){
 	//線幅
 	glLineWidth(5.0);

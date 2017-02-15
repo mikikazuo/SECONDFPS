@@ -1,3 +1,10 @@
+/*
+ * Letter.cpp
+ *
+ *  Last edit: 2017/2/9
+ *      Author: 三木
+ */
+
 #include "Letter.h"
 #include "locale.h"
 #include <SDL/SDL_opengl.h>

@@ -2,7 +2,8 @@
  * fps.cpp
  *
  *  Created on: 2016/09/12
- *      Author: user
+ *  Last edit: 2016/11/18
+ *      Author: 三木
  */
 #include  "fps.h"
 #include <SDL/SDL.h>

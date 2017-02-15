@@ -1,3 +1,8 @@
+/*
+ * GLMetaseq.c
+ *  Last edit: 2017/1/20
+ *      Author: 三木
+ */
 
 #define __GLMETASEQ_C__
 #include "GLMetaseq.h"
