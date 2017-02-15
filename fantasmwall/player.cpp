@@ -270,7 +270,7 @@ void player::Initialize(vec3 pos,float ra){
 }
 void player::DrawInitialize(Role setrole){
 
-    myrole=Rifle;
+	myrole=Magicstick;
 	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/mywall.png");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)
@@ -425,7 +425,8 @@ void player::Update(){
 	if(key_getmove(Reload)==2&&playerbullet.launchbulletcount!=0)
 		reloadcount=60*3;
 
-	atk=level*10+10;
+	atk=level*iniatk+iniatk;
+
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
 	playerbullet.Update();
 	playerbullet.PlayerToEnemy();
@@ -1022,7 +1023,7 @@ void player::launchBullet(){
 	if(!atkok)
 		atkcount++;
 	//最後の弾だけ音がならないため
-	static bool lastbullet=false;
+	//static bool lastbullet=false;
 
 	if(get_mousebutton_count(LEFT_BUTTON)>=2&&atkok&&playerbullet.reloadtime==0&&hp>0){
 
@@ -1032,12 +1033,29 @@ void player::launchBullet(){
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
 			shootedcount=20;
 			playerbullet.launchbulletcount++;
-			if(bulletsoundcount==0){
-				ChangeSE(17);
-				bulletsoundcount++;
+			switch(myrole){
+			case Crossbow:
+			case Spear:
+				ChangeSE(13);
+				break;
+			case Rifle:
+				ChangeSE(9);
+				break;
+			case Gatling:
+				if(bulletsoundcount==0){
+					ChangeSE(17);
+					bulletsoundcount++;
+				}
+				break;
+			case Magic:
+				ChangeSE(15);
+				break;
+			case Magicstick:
+				ChangeSE(16);
+				break;
+			default:
+				break;
 			}
-
-
 
 		}
 		atkok=false;
@@ -1045,11 +1063,7 @@ void player::launchBullet(){
 		StopMusic(17);
 		bulletsoundcount=0;
 	}
-	double musicsoundset;
-	switch(myrole){
-	case Gatling:
-		break;
-	}
+
 	if(bulletsoundcount>60*1.7)
 		bulletsoundcount=0;
 	else if(bulletsoundcount>0)
