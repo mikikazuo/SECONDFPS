@@ -255,7 +255,7 @@ void player::Initialize(vec3 pos,float ra){
 }
 void player::DrawInitialize(Role setrole){
 
-	myrole=Gatling;
+	myrole=setrole;
 	playerbullet.bullet_DrawInitialize(myrole);
 	wallhandle=image_Load("Data/image/2079.jpg");
 	for(int i=0;i<(int)(sizeof mywall/sizeof mywall[0]);i++)

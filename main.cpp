@@ -35,7 +35,7 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=false;    //sever connect
+static bool debug=true;    //sever connect
 
 
 

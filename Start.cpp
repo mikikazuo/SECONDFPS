@@ -264,7 +264,7 @@ void Start::Update() {
 		}
 		}
 	}else{
-		if(teamnum[0]+teamnum[1]==MAX_CLIENTS)
+		if(teamnum[0]+teamnum[1]==MAX_CLIENTS ||MAX_CLIENTS <=1)
 			startcount++;
 		if(startcount>60*2){
 			get_SceneMgr().ChangeScene(eScene_Game);/**/

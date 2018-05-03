@@ -90,7 +90,7 @@ void Game::DrawInitialize(){
 
 	gamecanvas.DrawInitialize();
 	mapobj.DrawInitialize();
-	player1.DrawInitialize(Gatling);
+	player1.DrawInitialize(get_player()->myrole);
 
 
 
