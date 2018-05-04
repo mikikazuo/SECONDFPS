@@ -197,19 +197,31 @@ void player::Initialize(vec3 pos,float ra){
 	playerbullet.bullet_Initialize();
 	atktime=60;
 	premousespeed=mousespeed;
+	speed=7;
+	atk=10;
+	hp=maxhp=100;
 	switch(myrole){
 	case Crossbow:
 		break;
 	case Rifle:
+		atk=50;
 		break;
 	case Gatling:
 		atktime=5;
+		atk=5;
+		speed=4;
 		break;
 	case Spear:
+		hp=maxhp=200;
+		atk=30;
+		speed=7;
 		break;
 	case Magicstick:
+		atk=25;
 		break;
 	case Magic:
+		speed=10;
+		atk=20;
 		break;
 	default:
 		break;
@@ -232,9 +244,7 @@ void player::Initialize(vec3 pos,float ra){
 			blue++;
 	}
 
-	speed=7;
-	hp=maxhp=100;
-	atk=10;
+
 	bulletsoundcount=0;
 	atkok=true;
 	result=0;
@@ -407,8 +417,10 @@ void player::Update(){
 	else
 		nowpoze=defaultmodel;
 
-	if(key_getmove(Reload)==2&&playerbullet.launchbulletcount!=0)
+	if(key_getmove(Reload)==2&&playerbullet.launchbulletcount!=0){
 		reloadcount=60*3;
+		ChangeSE(16);
+	}
 
 	atk=level*10+10;
 	setPlayerListen(position,vec3(sinf(angles.x), 0, cosf(angles.x)));
@@ -866,14 +878,21 @@ void player::set_wall(){
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 				progress_time++;
+				ChangeSE(24);
 				break;
 			}
 	}
-	if(progress_time>0)
+	if(progress_time>0){
+
 		progress_time++;
+		if(progress_time%40 == 0)
+				ChangeSE(24);
+
+	}
 
 	if(progress_time>WALL_SET){
 		progress_time=0;
+		ChangeSE(25);
 		for(int i=0;i<WALLMAX;i++)
 			if(mywall[i].count==0){
 
@@ -1013,21 +1032,40 @@ void player::launchBullet(){
 
 		playerbullet.setInfo(position+vec3(lookat.x, lookat.y+0.5f, lookat.z),vec3(cosf(angles.y)*sinf(angles.x), sinf(angles.y), cosf(angles.y)*cosf(angles.x)));
 
-
 		if(playerbullet.launchbulletcount<playerbullet.reloadmax){
 			shootedcount=20;
 			playerbullet.launchbulletcount++;
-			if(bulletsoundcount==0){
-				ChangeSE(17);
-				bulletsoundcount++;
+			switch(myrole){
+
+			case Crossbow:
+				ChangeSE(19);
+				break;
+			case Rifle:
+				ChangeSE(21);
+				break;
+			case Spear:
+				ChangeSE(22);
+				break;
+			case Magicstick:
+				ChangeSE(20);
+				break;
+			case Magic:
+				ChangeSE(23);
+				break;
+			case Gatling:
+
+
+				if(bulletsoundcount==0){
+					ChangeSE(18);
+					bulletsoundcount++;
+				}
+				break;
 			}
-
-
-
 		}
+
 		atkok=false;
-	}else if(get_mousebutton_count(LEFT_BUTTON)==0){
-		StopMusic(17);
+	}else if(get_mousebutton_count(LEFT_BUTTON)==0 ||playerbullet.launchbulletcount>=playerbullet.reloadmax){
+		StopMusic(18);
 		bulletsoundcount=0;
 	}
 	double musicsoundset;

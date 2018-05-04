@@ -10,7 +10,7 @@
 #include <AL/alure.h>
 #include "net_common.h"
 
-#define MAXSE 20
+#define MAXSE 26
 
 static ALuint bgm_src;
 static ALuint se_src[MAXSE];
@@ -81,7 +81,15 @@ void SoundInit() {
 	se_buf[15] = alureCreateBufferFromFile("Data/SE/charging.wav");
 	se_buf[16] = alureCreateBufferFromFile("Data/SE/charged.wav");
 	se_buf[17] = alureCreateBufferFromFile("Data/SE/efe.wav");
-	se_buf[17] = alureCreateBufferFromFile("Data/SE/heavy-machine-gun1.wav");
+	se_buf[18] = alureCreateBufferFromFile("Data/SE/heavy-machine-gun1.wav");
+	se_buf[19] = alureCreateBufferFromFile("Data/SE/bow.wav");
+	se_buf[20] = alureCreateBufferFromFile("Data/SE/fire.wav");
+	se_buf[21] = alureCreateBufferFromFile("Data/SE/gun.wav");
+	se_buf[22] = alureCreateBufferFromFile("Data/SE/yari.wav");
+	se_buf[23] = alureCreateBufferFromFile("Data/SE/magic.wav");
+	se_buf[24] = alureCreateBufferFromFile("Data/SE/flypan.wav");
+	se_buf[25] = alureCreateBufferFromFile("Data/SE/wallset.wav");
+
 //	se_buf[18] = alureCreateBufferFromFile("Data/sound/se/se_extend.wav");
 //	se_buf[19] = alureCreateBufferFromFile("Data/sound/se/se_cardget.wav");
 	for (i = 0; i < MAXSE; i++) {
