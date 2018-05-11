@@ -25,7 +25,7 @@
 #include "Letter.h"
 #include "net_client.h"
 
-#define PLAYERNUM 5
+
 
 
 
@@ -53,10 +53,6 @@ GLfloat shininess = 65.0;
 
 void Game::setInfoPlayerWall(){
 
-	for(int i=1;i<PLAYERNUM;i++)
-		for(int j=0;j<WALLMAX;j++){
-
-		}
 }
 
 //初期化

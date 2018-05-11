@@ -106,7 +106,14 @@ void client_start(void){
 	u_short port = PORT;
 	char server_name[MAX_LEN_NAME];
 
-	sprintf(server_name,"clpc062");
+	//sprintf(server_name,"clpc108");
+
+	fprintf(stderr, "Input server_name: ");
+
+	if(fgets(server_name, sizeof(server_name), stdin) == NULL) {
+		handle_error();
+	}
+	server_name[strlen(server_name) - 1] = '\0';     /* 余分な改行コードを削除 */
 
 	setup_client(server_name,port);
 }
