@@ -67,7 +67,7 @@ void setup_client(char *server_name, u_short port) {
 		handle_error();
 	}
 
-	fprintf(stderr, "Input your name: ");
+	fprintf(stderr, "プレイヤー名を入力してください: ");
 	char user_name[MAX_LEN_NAME];
 	//  if(fgets(user_name, sizeof(user_name), stdin) == NULL) {
 	//    handle_error();
@@ -108,7 +108,7 @@ void client_start(void){
 
 	//sprintf(server_name,"clpc108");
 
-	fprintf(stderr, "Input server_name: ");
+	fprintf(stderr, "ホスト名を入力してください: ");
 
 	if(fgets(server_name, sizeof(server_name), stdin) == NULL) {
 		handle_error();

@@ -38,7 +38,7 @@
 /*クライアントだけで動かしたいとき
  * debug = true かつ　net_common.hのMAX_CLIENTS = 1 にすること
  */
-static bool debug=true;    //sever connect
+static bool debug=false;    //sever connect
 
 
 
