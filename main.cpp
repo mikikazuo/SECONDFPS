@@ -35,7 +35,10 @@
 #define TEXHEIGHT 512
 
 
-static bool debug=false;    //sever connect
+/*クライアントだけで動かしたいとき
+ * debug = true かつ　net_common.hのMAX_CLIENTS = 1 にすること
+ */
+static bool debug=true;    //sever connect
 
 
 

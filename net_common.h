@@ -15,7 +15,7 @@
 #include "bullet.h"
 
 #define PORT	(u_short)65531	/* ポート番号 */
-#define MAX_CLIENTS	2	/* クライアント数の最大値 */
+#define MAX_CLIENTS	1	/* クライアント数の最大値 */
 #define MAX_LEN_NAME 20
 #define MOBNUM 10
 
