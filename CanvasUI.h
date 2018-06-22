@@ -17,7 +17,7 @@
 #define FIN_MES2 15		//ゲーム終了メッセージ表示領域を縦方向に伸ばす際に使用
 #define FIN_MES_HEIGHT 100 //ゲーム終了メッセージを表示する領域の高さ
 
-#define GAME_TIME 36000	//ゲームの時間(1秒:60 1分:3600)
+#define GAME_TIME 3600 * 3	//ゲームの時間(1秒:60 1分:3600)
 
 class CanvasUI {
 private:

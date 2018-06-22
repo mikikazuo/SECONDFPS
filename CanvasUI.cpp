@@ -58,7 +58,7 @@ void CanvasUI::Initialize(){
 	fin_time = 0;
 	fin_per = 0;
 
-	rest_time = GAME_TIME;
+	//rest_time = GAME_TIME;
 
 	int i;
 	for(i=0;i<5;i++){
@@ -171,7 +171,7 @@ void CanvasUI::Update() {
 	time += 1;
 
 	//rest_time -= 1;	//残り時間を減らす
-	rest_time=60*30*1-countdowntime;
+	rest_time=GAME_TIME-countdowntime;
 
 	if(rest_time<=0){
 		if(get_player()->myteam==RedTeam){
