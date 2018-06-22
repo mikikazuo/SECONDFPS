@@ -1,4 +1,5 @@
 /*
+
  * map.cpp
  *
  *  Created on: 2016/11/11
@@ -6,8 +7,17 @@
  */
 
 #include "map.h"
+#include <stdio.h>
+static bool movablecount;  //動的なオブジェクトを調べ終わったかどうか
 
-#include "image.h"
+bool get_movablecount(){
+	return movablecount;
+}
+static int movableno[20];
+
+int *get_movableno(){
+	return movableno;
+}
 
 
 //多人数戦用obj
@@ -17,7 +27,7 @@ object obj[]={
 		//座標・各座標におけるサイズ・回転・色(テクスチャを貼らない場合)
 		//f...float型
 		//地面
-		object(vec3(0,-0.1,0),vec3(150,0.001f,150),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,-0.1,0),vec3(100,0.001f,100),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//坂
 		object(vec3(10,9990,0),vec3(1,10,5),vec3(0,0,60),vec4(0.5f,0.5f,0.5f,1)),
 		//天空のテクスチャ物体
@@ -33,21 +43,21 @@ object obj[]={
 
 		//追加
 		//直方体 7,8
-		object(vec3(-2.5,0.5,-10),vec3(1,1,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
-		object(vec3(-4,1,-10),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(-2.5,9990.5,-10),vec3(1,1,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(-4,99991,-10),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
 		//壁 9〜12
 		//中心は(0,0,0)
 		//フィールドの大きさ，壁の厚みによる自動入力
 		//四隅での被りをさせないために前後の壁を左右の壁をより少し(壁の厚みだけ)長くしている
 		//前
-		object(vec3((MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3((MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//後
-		object(vec3(-(MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(-(MAP_X_LENGTH + WALL_THICKNESS)/2,WALL_HEIGHT/2,0),vec3(WALL_THICKNESS,WALL_HEIGHT,(MAP_Z_LENGTH + WALL_THICKNESS*2)),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//右
-		object(vec3(0,WALL_HEIGHT/2,(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,WALL_HEIGHT/2,(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 		//左
-		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,WALL_HEIGHT/2,-(MAP_Z_LENGTH + WALL_THICKNESS)/2),vec3(MAP_X_LENGTH,WALL_HEIGHT,WALL_THICKNESS),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,0)),
 
 		//拠点1(前方:赤) 13
 		object(vec3((MAP_X_LENGTH - BASE_X_LENGTH)/2,BASE_Y_LENGTH/2,0),vec3(BASE_X_LENGTH,BASE_Y_LENGTH,BASE_Z_LENGTH),vec3(0,0,0),vec4(256,0,0,1)),
@@ -56,9 +66,9 @@ object obj[]={
 
 		//マップ分割
 		//縦 15
-		object(vec3(0,0,0),vec3(MAP_X_LENGTH,0.1,0.1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,9999999990,0),vec3(MAP_X_LENGTH,0.1,0.1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 		//横 16
-		object(vec3(0,0,0),vec3(0.1,0.1,MAP_Z_LENGTH),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
+		object(vec3(0,9999999990,0),vec3(0.1,0.1,MAP_Z_LENGTH),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
 
 		//高台 前方(赤) 17
 		object(vec3(49,10,-49),vec3(2,20,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1)),
@@ -95,15 +105,12 @@ object obj[]={
 		//天空足場へ登るエレベーター 34
 
 		,object(vec3(3,11,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-		,object(vec3(5,0,7),vec3(2,5,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
-
-		,object(vec3(3,14,-9.5),vec3(2,0.1,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//x軸方向の当たり判定用オブジェクト 35
-		,object(vec3(15,1,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(15,99999991,15),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//z軸方向の当たり判定用オブジェクト 36
-		,object(vec3(17,1,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(17,99999991,17),vec3(2,2,2),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//天空足場へのエレベーターと通路を囲む壁
 		//側面1(赤側) 37
@@ -119,13 +126,13 @@ object obj[]={
 		//後(青側)
 		,object(vec3(-19.75,7.5,0),vec3(0.5,15,40),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//右前
-		,object(vec3( 12.5,1, 19.75),vec3(15,2,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3( 12.5,7.5, 19.75),vec3(15,15,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//右後
-		,object(vec3(-12.5,1, 19.75),vec3(15,2,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(-12.5,7.5, 19.75),vec3(15,15,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//左前
-		,object(vec3( 12.5,1,-19.75),vec3(15,2,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3( 12.5,7.5,-19.75),vec3(15,15,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//左後 46
-		,object(vec3(-12.5,1,-19.75),vec3(15,2,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(-12.5,7.5,-19.75),vec3(15,15,0.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//建物1(中央右) 47
 		,object(vec3(0,2,40),vec3(20,4,20),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -194,13 +201,13 @@ object obj[]={
 		//左側面
 		,object(vec3(-40,1,-10.05),vec3(20,2,0.1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//右前方
-		,object(vec3(-30.05,1,-7.5),vec3(0.1,2,5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+		,object(vec3(-30.05,1,7.5),vec3(0.1,2,5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//左前方
 		,object(vec3(-30.05,1,-7.5),vec3(0.1,2,5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//拠点前壁 78
 		,object(vec3(-45.05,1,0),vec3(0.1,2,10),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
-		//赤拠点右側通路
+		//青拠点右側通路
 		//縦壁 79
 		,object(vec3(-30,2,20.5),vec3(20,4,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//横壁
@@ -210,7 +217,7 @@ object obj[]={
 		//仕切り壁(奥) 82
 		,object(vec3(-20.5,2,30.25),vec3(1,4,19.5),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
-		//赤拠点左側広場
+		//青拠点左側広場
 		//***広場外側***
 		//縦壁 83
 		,object(vec3(-32.5,2,-20.5),vec3(25,4,1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
@@ -229,6 +236,9 @@ object obj[]={
 		,object(vec3(-27.5,9999992,-40.5),vec3(5,4,0.1),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 		//横壁 89
 		,object(vec3(-29.5,99999992,-42.75),vec3(0.1,4,4.95),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
+
+		//真ん中床 90
+		,object(vec3(0,0.005,0),vec3(39,0.005,39),vec3(0,0,0),vec4(0.5f,0.5f,0.5f,1))
 
 		//天空足場の壁
 		//前
@@ -409,29 +419,26 @@ int map::get_objnum(){
 	return (int)(sizeof obj/sizeof obj[0]);
 }
 
+
 //拠点にするobjectの添字を設定
-void map::set_Base(Team team,int objectno){
+void map::set_Baseno(Team team,int objectno){
 	for(int j=0;j<BASENUM;j++){
 		if(baseno[team][j]==-1)
 			baseno[team][j]=objectno;
 	}
 }
-
-//拠点のhpminusリセット
-void map::resetminushp(){
-	serverminushp[0]=0;          //sa-ba-=0;
-	serverminushp[1]=0;          //sa-ba-=0;
-}
-
-
 int *map::get_Base(Team enemyteam){
 	return baseno[enemyteam];
 }
 
-void map::minus_BaseHp(Team attacedteam,float atk){
-	basehp[attacedteam]-=atk;
+void map::minus_BaseHp(){
+	for(int i=0;i<2;i++){
+		if(minushp[i]>0){
+			basehp[i]-=minushp[i];
+			minushp[i]=0;
+		}
+	}
 }
-
 void map::Initialize(){
 	for(int i=0;i<NoneTeam;i++)
 		basehp[i]=basemaxhp[i]=BASEHP;
@@ -440,93 +447,93 @@ void map::Initialize(){
 		for(int j=0;j<BASENUM;j++)
 			baseno[i][j]=-1;
 
-	set_Base(RedTeam,13);
-	set_Base(BlueTeam,14);
-}
+	set_Baseno(RedTeam,13);
+	set_Baseno(BlueTeam,14);
 
-void map::DrawInitialize(){
+	for(int i=0;i<(int)(sizeof(obj)/sizeof(obj[0]));i++)
+		obj[i].myno=i;
 
-
-	//描画初期化関数
-	handle[0] = image_Load("Data/image/capture2.png");
-	handle[1] = image_Load("Data/image/2079.jpg");
-	handle[2] = image_Load("Data/image/20791.jpg");
-	handle[3] = image_Load("Data/image/147.jpg");
-	handle[4] = image_Load("Data/image/11.jpg");
-	handle[5] = image_Load("Data/image/12.jpg");
-	handle[6] = image_Load("Data/image/13.jpg");
-	handle[7] = image_Load("Data/image/14.jpg");
-
-	img[0]=image_Load("Data/skybox/skyX53+x.png");
-	img[1]=image_Load("Data/skybox/skyX53-x.png");
-	img[2]=image_Load("Data/skybox/skyX53+y.png");
-	img[3]=image_Load("Data/skybox/skyX53-y.png");
-	img[4]=image_Load("Data/skybox/skyX53+z.png");
-	img[5]=image_Load("Data/skybox/skyX53-z.png");
-
-	obj[0].set_imgno(handle[1],50);
-	obj[1].set_imgno(handle[1],100);
-	obj[2].set_imgno(handle[1],100);
-	obj[3].set_imgno(handle[1],100);
-	obj[4].set_imgno(handle[1],100);
-
-	obj[6].set_imgno(handle[1],100);
-
-	//追加??
-	obj[7].set_imgno(handle[1],100);
-
-	//壁
-	obj[9].set_imgno(handle[2],50);
-	obj[10].set_imgno(handle[2],50);
-	obj[11].set_imgno(handle[2],50);
-	obj[12].set_imgno(handle[2],50);
-
-	//拠点横の高台
-	obj[17].set_imgno(handle[5],100);
-	obj[19].set_imgno(handle[5],100);
-
-	//拠点横の高台へ登るエレベーター
-	obj[18].set_imgno(handle[1],100);
-	obj[20].set_imgno(handle[1],100);
-
-	//中央柱
-	obj[21].set_imgno(handle[1],100);
-	//天空足場
-	obj[22].set_imgno(handle[1],100);
-	//螺旋階段
-	obj[23].set_imgno(handle[3],100);
-	obj[24].set_imgno(handle[3],100);
-	obj[25].set_imgno(handle[3],100);
-	obj[26].set_imgno(handle[3],100);
-	obj[27].set_imgno(handle[3],100);
-	obj[28].set_imgno(handle[3],100);
-	obj[29].set_imgno(handle[3],100);
-	obj[30].set_imgno(handle[3],100);
-	obj[31].set_imgno(handle[3],100);
-	obj[32].set_imgno(handle[3],100);
-
-	obj[33].set_imgno(handle[1],100);
-
-	//天空足場へのエレベーター
-	obj[34].set_imgno(handle[3],100);
-
-	//赤拠点を囲む壁
-	obj[40].set_imgno(handle[1],100);
-
-	//柱群
-	obj[54].set_imgno(handle[4],100);
-	obj[55].set_imgno(handle[4],100);
-	obj[56].set_imgno(handle[4],100);
-	obj[57].set_imgno(handle[4],100);
-	obj[58].set_imgno(handle[4],100);
-	obj[59].set_imgno(handle[4],100);
-	obj[60].set_imgno(handle[4],100);
-	obj[61].set_imgno(handle[4],100);
-
-	//天井
-	obj[62].set_imgno(handle[6],10);
+	for(int i=0;i<(int)(sizeof(movableno)/sizeof(movableno[0]));i++)
+		movableno[i]=-1;
 
 }
+
+//void map::DrawInitialize(){
+//
+////描画初期化関数
+//	handle[0] = image_Load("Data/image/capture2.png");
+//	handle[1] = image_Load("Data/image/2079.jpg");
+//	handle[2] = image_Load("Data/image/20791.jpg");
+//	handle[3] = image_Load("Data/image/147.jpg");
+//	handle[4] = image_Load("Data/image/11.jpg");
+//	handle[5] = image_Load("Data/image/12.jpg");
+//	handle[6] = image_Load("Data/image/13.jpg");
+//	handle[7] = image_Load("Data/image/14.jpg");
+//
+//
+//	obj[0].set_imgno(handle[1],50);
+//	obj[1].set_imgno(handle[1],100);
+//	obj[2].set_imgno(handle[1],100);
+//	obj[3].set_imgno(handle[1],100);
+//	obj[4].set_imgno(handle[1],100);
+//
+//	obj[6].set_imgno(handle[1],100);
+//
+//	//追加??
+//	obj[7].set_imgno(handle[1],100);
+//
+//	//壁
+//	obj[9].set_imgno(handle[2],50);
+//	obj[10].set_imgno(handle[2],50);
+//	obj[11].set_imgno(handle[2],50);
+//	obj[12].set_imgno(handle[2],50);
+//
+//	//拠点横の高台
+//	obj[17].set_imgno(handle[5],100);
+//	obj[19].set_imgno(handle[5],100);
+//
+//	//拠点横の高台へ登るエレベーター
+//	obj[18].set_imgno(handle[1],100);
+//	obj[20].set_imgno(handle[1],100);
+//
+//	//中央柱
+//	obj[21].set_imgno(handle[1],100);
+//	//天空足場
+//	obj[22].set_imgno(handle[1],100);
+//	//螺旋階段
+//	obj[23].set_imgno(handle[3],100);
+//	obj[24].set_imgno(handle[3],100);
+//	obj[25].set_imgno(handle[3],100);
+//	obj[26].set_imgno(handle[3],100);
+//	obj[27].set_imgno(handle[3],100);
+//	obj[28].set_imgno(handle[3],100);
+//	obj[29].set_imgno(handle[3],100);
+//	obj[30].set_imgno(handle[3],100);
+//	obj[31].set_imgno(handle[3],100);
+//	obj[32].set_imgno(handle[3],100);
+//
+//	obj[33].set_imgno(handle[1],100);
+//
+//	//天空足場へのエレベーター
+//	obj[34].set_imgno(handle[3],100);
+//
+//	//赤拠点を囲む壁
+//	obj[40].set_imgno(handle[1],100);
+//
+//	//柱群
+//	obj[54].set_imgno(handle[4],100);
+//	obj[55].set_imgno(handle[4],100);
+//	obj[56].set_imgno(handle[4],100);
+//	obj[57].set_imgno(handle[4],100);
+//	obj[58].set_imgno(handle[4],100);
+//	obj[59].set_imgno(handle[4],100);
+//	obj[60].set_imgno(handle[4],100);
+//	obj[61].set_imgno(handle[4],100);
+//
+//	//天井
+//	obj[62].set_imgno(handle[6],10);
+//
+//}
 void map::DrawFinalize(){
 
 }
@@ -573,9 +580,6 @@ void map::Update(){
 
 	obj[35].move(3.5*dirs[1],0,0);
 
-	//天空足場へのエレベーター
-	obj[34].move(0,2.0*dirs[1],0);
-
 	//動作確認
 	//obj[7].move(0.5*dir,0.5*dir,0.5*dir);
 
@@ -590,21 +594,12 @@ void map::Update(){
 	obj[35].x_side_move(2.0,15,20,1);
 	obj[36].z_side_move(2.0,13,15,1);
 
-
 }
 
-void map::Draw(){
-	for(int i=0;get_objnum()>i;i++)
-		obj[i].Draw();
-
-	image_DrawExRota3D(img[0],vec3(-512,0,0),90,vec3(0,1,0),1);
-	image_DrawExRota3D(img[1],vec3(512,0,0),-90,vec3(0,1,0),1);
-
-	image_DrawExRota3D(img[2],vec3(0,512,0),90,vec3(1,0,0),1);
-	image_DrawExRota3D(img[3],vec3(0,-512,0),-90,vec3(1,0,0),1);
-
-	image_DrawExRota3D(img[4],vec3(0,0,512),180,vec3(0,1,0),1);
-	image_DrawExRota3D(img[5],vec3(0,0,-512),0,vec3(0,1,0),1);
-	//フィールド内に3D画像表示
-	//image_DrawExRota3D(handle[0],0,9,0,0.1);
-}
+//void map::Draw(){
+//	for(int i=0;get_objnum()>i;i++)
+//		obj[i].Draw();
+//
+//	//フィールド内に3D画像表示
+//	//image_DrawExRota3D(handle[0],0,9,0,0.1);
+//}

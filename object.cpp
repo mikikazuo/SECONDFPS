@@ -7,22 +7,23 @@
 
 #include "object.h"
 #include "fps.h"
-#include "image.h"
-#include "main.h"
+
+
 #include "checkObjectHit.h"
-#include "Game.h"
+#include "server_main.h"
+#include "net_common.h"
 
-
-//ライトの位置
-static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0 }; /* 光源の位置 */
-static GLfloat lightDiffuse[3]  = { 1.0,  1.0, 1.0  }; //拡散光
-static GLfloat lightAmbient[3]  = { 1.0,  1.0, 1.0  }; //環境光
-static GLfloat lightSpecular[3] = { 1.0,  1.0, 1.0  }; //鏡面光
+////ライトの位置
+//static GLfloat lightpos[] 		 = {10.0, 10.0, 50,0 }; /* 光源の位置 */
+//static GLfloat lightDiffuse[3]  = { 1.0,  1.0, 1.0  }; //拡散光
+//static GLfloat lightAmbient[3]  = { 1.0,  1.0, 1.0  }; //環境光
+//static GLfloat lightSpecular[3] = { 1.0,  1.0, 1.0  }; //鏡面光
 
 double const texture_repos=0;
+checkObjectHit playerchecker;
 
 object::object() {
-
+	setobject(vec3(0, 0,0),vec3(4,4,0.5f),vec3(0, 0,0),vec4(0.5f,0.5f,0.5f,1));
 	this->imgno=-1;
 }
 
@@ -81,251 +82,265 @@ void object::set_imgno(int no,int imgsize){
 	this->imgresize=imgsize;
 }
 
-//直方体
-void object::make_cuboid(float width,float height,float depth)
-{
-
-
-	if(this->imgno!=-1){
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,get_sa(imgno).no);
-		glBegin(GL_QUADS);
-		//前
-
-		glNormal3f(0,0,1);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(width/2,height/2,depth/2+ texture_repos);
-		glTexCoord2d(0,0);
-		glVertex3f(-width/2,height/2,depth/2+ texture_repos);
-		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(-width/2,-height/2,depth/2+ texture_repos);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(width/2,-height/2,depth/2+ texture_repos);
-
-		//右
-		glNormal3f(1,0,0);
-		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(width/2+ texture_repos,height/2,-depth/2);
-		glTexCoord2d(0,0);
-		glVertex3f(width/2+ texture_repos,height/2,depth/2);
-		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(width/2+ texture_repos,-height/2,depth/2);
-		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(width/2+ texture_repos,-height/2,-depth/2);
-
-		//左
-		glNormal3f(-1,0,0);
-		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(-width/2- texture_repos,height/2,depth/2);
-		glTexCoord2d(0,0);
-		glVertex3f(-width/2- texture_repos,height/2,-depth/2);
-		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(-width/2- texture_repos,-height/2,-depth/2);
-		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(-width/2- texture_repos,-height/2,depth/2);
-
-		//後
-		glNormal3f(0,0,-1);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(-width/2,height/2,-depth/2- texture_repos);
-		glTexCoord2d(0,0);
-		glVertex3f(width/2,height/2,-depth/2- texture_repos);
-		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(width/2,-height/2,-depth/2- texture_repos);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(-width/2,-height/2,-depth/2- texture_repos);
-
-
-		//上
-		glNormal3f(0,1,0);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(width/2,height/2+ texture_repos,-depth/2);
-		glTexCoord2d(0,0);
-		glVertex3f(-width/2,height/2+ texture_repos,-depth/2);
-		glTexCoord2d(0,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(-width/2,height/2+ texture_repos,depth/2);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(width/2,height/2+ texture_repos,depth/2);
-
-
-		//下
-		glNormal3f(0,-1,0);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
-		glVertex3f(width/2,-height/2- texture_repos,depth/2);
-		glTexCoord2d(0,0);
-		glVertex3f(-width/2,-height/2- texture_repos,depth/2);
-		glTexCoord2d(0,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
-		glVertex3f(-width/2,-height/2- texture_repos,-depth/2);
-		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
-		glVertex3f(width/2,-height/2- texture_repos,-depth/2);
-
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-	}else{
-
-		// glColor3d(1.0, 0.0, 0.0);
-		glBegin(GL_QUADS);
-		//前
-		//法線も回転してる
-		glNormal3f(0,0,1);
-
-		glVertex3f(width/2,height/2,depth/2);
-		glVertex3f(-width/2,height/2,depth/2);
-		glVertex3f(-width/2,-height/2,depth/2);
-		glVertex3f(width/2,-height/2,depth/2);
-
-		//右
-		glNormal3f(1,0,0);
-		glVertex3f(width/2,height/2,-depth/2);
-		glVertex3f(width/2,height/2,depth/2);
-		glVertex3f(width/2,-height/2,depth/2);
-		glVertex3f(width/2,-height/2,-depth/2);
-
-
-
-
-		//左
-		glNormal3f(-1,0,0);
-		glVertex3f(-width/2,height/2,depth/2);
-		glVertex3f(-width/2,height/2,-depth/2);
-		glVertex3f(-width/2,-height/2,-depth/2);
-		glVertex3f(-width/2,-height/2,depth/2);
-
-
-
-
-		//後
-		glNormal3f(0,0,-1);
-		glVertex3f(-width/2,height/2,-depth/2);
-		glVertex3f(width/2,height/2,-depth/2);
-		glVertex3f(width/2,-height/2,-depth/2);
-		glVertex3f(-width/2,-height/2,-depth/2);
-
-
-
-
-		//上
-		glNormal3f(0,1,0);
-		glVertex3f(width/2,height/2,-depth/2);
-		glVertex3f(-width/2,height/2,-depth/2);
-		glVertex3f(-width/2,height/2,depth/2);
-		glVertex3f(width/2,height/2,depth/2);
-
-
-
-
-		//下
-		glNormal3f(0,-1,0);
-		glVertex3f(width/2,-height/2,depth/2);
-		glVertex3f(-width/2,-height/2,depth/2);
-		glVertex3f(-width/2,-height/2,-depth/2);
-		glVertex3f(width/2,-height/2,-depth/2);
-		glEnd();
-
-	}
-
-}
-
-void object::Draw(){
-
-
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
-
-
-
-
-
-	glPushMatrix();
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
-	glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
-
-	glPopMatrix();
-
-	glPushMatrix();
-	/* 図形の色 (赤)  */
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->color);
-
-	glTranslatef(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z);
-
-
-
-	glRotated(m_Rota.x,1,0,0);
-	glRotated(m_Rota.y,0,1,0);
-	glRotated(m_Rota.z,0,0,1);
-
-
-
-	make_cuboid(this->Radius.x,this->Radius.y,this->Radius.z);
-
-	glPopMatrix();
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);
-
-	int rate;
-
-	for(int i=0;i<3;i++){
-		switch(i){
-		case 0:
-			glColor3d(1.0, 0.0, 0.0);
-			rate=this->Radius.x;
-			break;
-		case 1:
-			glColor3d(0.0, 0.0, 1.0);
-			rate=this->Radius.y;
-			break;
-		case 2:
-			glColor3d(0.0, 1.0, 0.0);
-			rate=this->Radius.z;
-			break;
-		}
-
-		Line3D(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z,
-				this->m_Pos.x+rate*this->m_NormaDirect[i].x,this->m_Pos.y+rate*this->m_NormaDirect[i].y,this->m_Pos.z+rate*this->m_NormaDirect[i].z);
-
-	}
-	glColor3d(1.0, 1.0, 1.0);
-}
+////直方体
+//void object::make_cuboid(float width,float height,float depth)
+//{
+//
+//
+//	if(this->imgno!=-1){
+//		glEnable(GL_TEXTURE_2D);
+//		glBindTexture(GL_TEXTURE_2D,get_sa(imgno).no);
+//		glBegin(GL_QUADS);
+//		//前
+//
+//		glNormal3f(0,0,1);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(width/2,height/2,depth/2+ texture_repos);
+//		glTexCoord2d(0,0);
+//		glVertex3f(-width/2,height/2,depth/2+ texture_repos);
+//		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(-width/2,-height/2,depth/2+ texture_repos);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(width/2,-height/2,depth/2+ texture_repos);
+//
+//		//右
+//		glNormal3f(1,0,0);
+//		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(width/2+ texture_repos,height/2,-depth/2);
+//		glTexCoord2d(0,0);
+//		glVertex3f(width/2+ texture_repos,height/2,depth/2);
+//		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(width/2+ texture_repos,-height/2,depth/2);
+//		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(width/2+ texture_repos,-height/2,-depth/2);
+//
+//		//左
+//		glNormal3f(-1,0,0);
+//		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(-width/2- texture_repos,height/2,depth/2);
+//		glTexCoord2d(0,0);
+//		glVertex3f(-width/2- texture_repos,height/2,-depth/2);
+//		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(-width/2- texture_repos,-height/2,-depth/2);
+//		glTexCoord2d(depth*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(-width/2- texture_repos,-height/2,depth/2);
+//
+//		//後
+//		glNormal3f(0,0,-1);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(-width/2,height/2,-depth/2- texture_repos);
+//		glTexCoord2d(0,0);
+//		glVertex3f(width/2,height/2,-depth/2- texture_repos);
+//		glTexCoord2d(0,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(width/2,-height/2,-depth/2- texture_repos);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,height*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(-width/2,-height/2,-depth/2- texture_repos);
+//
+//
+//		//上
+//		glNormal3f(0,1,0);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(width/2,height/2+ texture_repos,-depth/2);
+//		glTexCoord2d(0,0);
+//		glVertex3f(-width/2,height/2+ texture_repos,-depth/2);
+//		glTexCoord2d(0,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(-width/2,height/2+ texture_repos,depth/2);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(width/2,height/2+ texture_repos,depth/2);
+//
+//
+//		//下
+//		glNormal3f(0,-1,0);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2],0);
+//		glVertex3f(width/2,-height/2- texture_repos,depth/2);
+//		glTexCoord2d(0,0);
+//		glVertex3f(-width/2,-height/2- texture_repos,depth/2);
+//		glTexCoord2d(0,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3]);
+//		glVertex3f(-width/2,-height/2- texture_repos,-depth/2);
+//		glTexCoord2d(width*imgresize/(GLfloat)get_sa(imgno).oriX / get_sa(imgno).color[2] ,depth*imgresize/(GLfloat)get_sa(imgno).oriY / get_sa(imgno).color[3] );
+//		glVertex3f(width/2,-height/2- texture_repos,-depth/2);
+//
+//		glEnd();
+//		glDisable(GL_TEXTURE_2D);
+//	}else{
+//
+//		// glColor3d(1.0, 0.0, 0.0);
+//		glBegin(GL_QUADS);
+//		//前
+//		//法線も回転してる
+//		glNormal3f(0,0,1);
+//
+//		glVertex3f(width/2,height/2,depth/2);
+//		glVertex3f(-width/2,height/2,depth/2);
+//		glVertex3f(-width/2,-height/2,depth/2);
+//		glVertex3f(width/2,-height/2,depth/2);
+//
+//		//右
+//		glNormal3f(1,0,0);
+//		glVertex3f(width/2,height/2,-depth/2);
+//		glVertex3f(width/2,height/2,depth/2);
+//		glVertex3f(width/2,-height/2,depth/2);
+//		glVertex3f(width/2,-height/2,-depth/2);
+//
+//
+//
+//
+//		//左
+//		glNormal3f(-1,0,0);
+//		glVertex3f(-width/2,height/2,depth/2);
+//		glVertex3f(-width/2,height/2,-depth/2);
+//		glVertex3f(-width/2,-height/2,-depth/2);
+//		glVertex3f(-width/2,-height/2,depth/2);
+//
+//
+//
+//
+//		//後
+//		glNormal3f(0,0,-1);
+//		glVertex3f(-width/2,height/2,-depth/2);
+//		glVertex3f(width/2,height/2,-depth/2);
+//		glVertex3f(width/2,-height/2,-depth/2);
+//		glVertex3f(-width/2,-height/2,-depth/2);
+//
+//
+//
+//
+//		//上
+//		glNormal3f(0,1,0);
+//		glVertex3f(width/2,height/2,-depth/2);
+//		glVertex3f(-width/2,height/2,-depth/2);
+//		glVertex3f(-width/2,height/2,depth/2);
+//		glVertex3f(width/2,height/2,depth/2);
+//
+//
+//
+//
+//		//下
+//		glNormal3f(0,-1,0);
+//		glVertex3f(width/2,-height/2,depth/2);
+//		glVertex3f(-width/2,-height/2,depth/2);
+//		glVertex3f(-width/2,-height/2,-depth/2);
+//		glVertex3f(width/2,-height/2,-depth/2);
+//		glEnd();
+//
+//	}
+//
+//}
+//
+//void object::Draw(){
+//
+//
+//	glEnable(GL_LIGHT0);
+//	glEnable(GL_LIGHTING);
+//
+//
+//
+//
+//
+//	glPushMatrix();
+//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+//	glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
+//	glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
+//	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+//
+//	glPopMatrix();
+//
+//	glPushMatrix();
+//	/* 図形の色 (赤)  */
+//	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->color);
+//
+//	glTranslatef(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z);
+//
+//
+//
+//	glRotated(m_Rota.x,1,0,0);
+//	glRotated(m_Rota.y,0,1,0);
+//	glRotated(m_Rota.z,0,0,1);
+//
+//
+//
+//	make_cuboid(this->Radius.x,this->Radius.y,this->Radius.z);
+//
+//	glPopMatrix();
+//	glDisable(GL_LIGHT0);
+//	glDisable(GL_LIGHTING);
+//
+//	int rate;
+//
+//	for(int i=0;i<3;i++){
+//		switch(i){
+//		case 0:
+//			glColor3d(1.0, 0.0, 0.0);
+//			rate=this->Radius.x;
+//			break;
+//		case 1:
+//			glColor3d(0.0, 0.0, 1.0);
+//			rate=this->Radius.y;
+//			break;
+//		case 2:
+//			glColor3d(0.0, 1.0, 0.0);
+//			rate=this->Radius.z;
+//			break;
+//		}
+//
+//		Line3D(this->m_Pos.x,this->m_Pos.y,this->m_Pos.z,
+//				this->m_Pos.x+rate*this->m_NormaDirect[i].x,this->m_Pos.y+rate*this->m_NormaDirect[i].y,this->m_Pos.z+rate*this->m_NormaDirect[i].z);
+//
+//	}
+//	glColor3d(1.0, 1.0, 1.0);
+//}
 
 //移動
 void object::move(float x,float y,float z){
-
+	if(get_movablecount()==false)
+		for(int i=0;i<20;i++){
+			if(get_movableno()[i]!=-1||get_movableno()[i]==this->myno)
+				continue;
+			get_movableno()[i]=this->myno;
+			break;
+		}
 	checkObjectHit player;
 
-	static int flag;
+	//	static int flag;
 	vec3 uppos=this->m_Pos;
 	uppos.y+=1;
 	object ownup(uppos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
-//	vec3 underpos=this->m_Pos;
-//	underpos.y-=1;
-//	object ownunder(underpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 rightpos=this->m_Pos;
-//	rightpos.x+=1;
-//	object ownright(rightpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 leftpos=this->m_Pos;
-//	leftpos.x-=1;
-//	object ownleft(leftpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 forwardpos=this->m_Pos;
-//	forwardpos.z+=1;
-//	object ownforward(forwardpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
-//
-//	vec3 backpos=this->m_Pos;
-//	forwardpos.z-=1;
-//	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//	vec3 underpos=this->m_Pos;
+	//	underpos.y-=1;
+	//	object ownunder(underpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 rightpos=this->m_Pos;
+	//	rightpos.x+=1;
+	//	object ownright(rightpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 leftpos=this->m_Pos;
+	//	leftpos.x-=1;
+	//	object ownleft(leftpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 forwardpos=this->m_Pos;
+	//	forwardpos.z+=1;
+	//	object ownforward(forwardpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
+	//
+	//	vec3 backpos=this->m_Pos;
+	//	forwardpos.z-=1;
+	//	object ownback(backpos,this->Radius,this->m_Rota,vec4(0.5f,0.5f,0.5f,0));
 
+	//TODO playerの慣性
 
-
-		if(player.LenOBBToPoint(ownup,get_player()->playerfoot_collider)<=1){
-			get_player()->position.x+=x*get_mainfps().fps_getDeltaTime();
-			get_player()->position.y+=y*get_mainfps().fps_getDeltaTime();
-			get_player()->position.z+=z*get_mainfps().fps_getDeltaTime();
+	this->m_Pos.x+=x*get_mainfps().fps_getDeltaTime();
+	this->m_Pos.y+=y*get_mainfps().fps_getDeltaTime();
+	this->m_Pos.z+=z*get_mainfps().fps_getDeltaTime();
+	for(int i=0;i<MAX_CLIENTS;i++){
+		vec3 foot=get_player()[i].position;
+		foot.y-=0.7f;
+		if(playerchecker.LenOBBToPoint(ownup,foot)<=0.5f){
+			get_player()[i].delmove.x+=x*get_mainfps().fps_getDeltaTime();
+			get_player()[i].delmove.y+=y*get_mainfps().fps_getDeltaTime();
+			get_player()[i].delmove.z+=z*get_mainfps().fps_getDeltaTime();
 		}
+	}
+
 
 
 
@@ -334,6 +349,14 @@ void object::move(float x,float y,float z){
 
 //回転
 void object::rotate(float x,float y,float z){
+
+	if(get_movablecount()==false)
+		for(int i=0;i<20;i++){
+			if(get_movableno()[i]!=-1)
+				continue;
+			get_movableno()[i]=this->myno;
+			break;
+		}
 
 	this->m_Rota.x+=x*get_mainfps().fps_getDeltaTime();
 	this->m_Rota.y+=y*get_mainfps().fps_getDeltaTime();
@@ -377,6 +400,7 @@ vec3 object::get_m_Rot(){
 //オブジェクトの回転を変更する関数
 void object::set_m_Rot(vec3 Rot){
 	this->m_Rota=Rot;
+	UpdateAxisAll();
 }
 
 //オブジェクトの各軸方向の長さを取得する関数
@@ -396,7 +420,7 @@ void object::x_side_move(float speed,float left,float right,int dir){
 
 	//進行方向方向を管理
 	if((x_dir == 1 && temp.x + rad.x/2 >= right) || (x_dir == -1 && temp.x + rad.x/2 <= left)){
-	//if((x_dir == 1 && rad.x/2 >= right) || (x_dir == -1 && rad.x/2 <= left)){
+		//if((x_dir == 1 && rad.x/2 >= right) || (x_dir == -1 && rad.x/2 <= left)){
 		x_dir *= -1;
 	}
 
@@ -419,7 +443,7 @@ void object::z_side_move(float speed,float left,float right,int dir){
 
 	//進行方向方向を管理
 	if((z_dir == 1 && temp.z + rad.z/2 >= right) || (z_dir == -1 && temp.z + rad.z/2 <= left)){
-	//if((z_dir == 1 && rad.z/2 >= right) || (z_dir == -1 && rad.z/2 <= left)){
+		//if((z_dir == 1 && rad.z/2 >= right) || (z_dir == -1 && rad.z/2 <= left)){
 		z_dir *= -1;
 	}
 
@@ -443,7 +467,7 @@ void object::y_ud_move(float speed,float down,float up,int dir){
 
 	//オブジェクトの上面で方向を管理
 	if((y_dir == 1 && temp.y + rad.y/2 >= up) || (y_dir == -1 && temp.y + rad.y/2 <= down)){
-			y_dir *= -1;
+		y_dir *= -1;
 	}
 
 	//オブジェクトの中心で方向を管理(不要)

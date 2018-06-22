@@ -17,7 +17,7 @@
 #define PORT	(u_short)65531	/* ポート番号 */
 #define MAX_CLIENTS	2	/* クライアント数の最大値 */
 #define MAX_LEN_NAME 20
-
+#define MOBNUM 10
 
 
 
@@ -27,6 +27,8 @@
 
 #define BROADCAST -1//全送信
 
+
+
 typedef struct{
 	float x;
 	float y;
@@ -35,9 +37,8 @@ typedef struct{
 
 typedef struct{
 	int count;
-	vec3 obj_pos;
-	vec3 obj_size;
-	vec3 obj_rot;
+	vec3 pos;
+	vec3 angles;
 }wall2;//Wall互換
 
 typedef struct{
@@ -49,10 +50,9 @@ typedef struct{
 }shot2;//Shot互換
 
 typedef struct{
-	shot2 mobbullet;
+	shot2 mobbullet[MOBMAXBULLET];
 	vec3 position;//位置
 	vec3 angles;//向き
-	int myno;//３次元定位オーディオ用の番付
 	float hp;
 	float maxhp;
 	float atk;
@@ -63,9 +63,7 @@ typedef struct{
 	vec3 position;//位置
 	vec3 rotation;//回転
 }Mapobj;
-typedef struct{
-	int basehp;
-}Basehp;
+
 typedef struct{
 	int cid;//ID
 	char name[MAX_LEN_NAME];//名前
@@ -76,22 +74,26 @@ typedef struct{
 
 
 typedef struct{
-	int hp;//HP
+	float hp;//HP
 	int atk;//攻撃力
-	v3 position;//位置
-	v3 angles;//向き
-	v3 lookat;//視点
-	v3 playerhead_collider;//プレイヤー頭当たり判定？
-	v3 player_colider;//プレイヤー当たり判定？
+	vec3 position;//位置
+	vec3 angles;//向き
+	vec3 lookat;//視点
 	wall2 mywall[WALLMAX];
+	Team myteam;
+	Role myrole;
+	vec3 delmove;//慣性による移動
 }PLAYER_DATA;
 
 typedef struct{
 	int shooter;
 	//int num;
-	shot2 bullet_info[300];
-	float minusmobhp[10];
+	shot2 bullet_info[MAXBULLET];
+	//TODO   要素数の設定
+	//弾によるhpマイナス値
+	float minusmobhp[MOBNUM];
 	float minusbasehp[2];
+	float minusplayerhp[MAX_CLIENTS];		//クライアント数-1の配列予定
 }BULLET_DATA;
 
 //サーバーからクライアントに送信されるデータ
@@ -99,17 +101,20 @@ typedef struct{
 	char command;//コマンド
 	PLAYER_DATA players[MAX_CLIENTS];
 	BULLET_DATA bullets[MAX_CLIENTS];
-	Mapobj movablemapobj[50];
-	mob2 mob[10];
-	Basehp hp[2];
+	wall2 walls[MAX_CLIENTS][WALLMAX];
+	Mapobj movablemapobj[MOVABLE];
+	mob2 mob[MOBNUM];
+	float basehp[2];
+	bool start[MAX_CLIENTS];
+	int countdowntime;   //制限時間
 }S_CONTAINER;
 
 //クライアントからサーバーに送信されるデータ
 typedef struct{
 	char command;//コマンド
+	bool start;  //decide team
 	PLAYER_DATA my_player;
 	BULLET_DATA my_bullet;
-	Basehp minusbasehp[2];
 }C_CONTAINER;
 
 #endif /* NET_COMMON_H_ */

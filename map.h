@@ -10,6 +10,7 @@
 
 #define BASENUM 6			//拠点の当たり判定の数
 #define BASEHP 100
+#define MOVABLE 20
 #include "object.h"
 
 //追加??
@@ -17,13 +18,13 @@
 #define MAP_ONESIDE 100
 //マップのx座標の長さ(縦)
 #define MAP_X_LENGTH 100
-//マップz座標の長さ(横)
+//マップz座標の長さ(横)S
 #define MAP_Z_LENGTH 100
 
 //壁の厚み
 #define WALL_THICKNESS 2
 //壁の高さ
-#define WALL_HEIGHT 30
+#define WALL_HEIGHT 2
 
 //拠点のx座標の長さ(縦)
 #define BASE_X_LENGTH 2
@@ -46,25 +47,25 @@ public:
 	float basemaxhp[NoneTeam];
 	int baseno[NoneTeam][BASENUM];			//object配列の何番目が拠点かどうかを保存
 
-	float serverminushp[2];          //sa-ba- red adn blue
+	float minushp[2];          //sa-ba-
+
 	map();
 	virtual ~map();
 	object *get_obj();
 	int get_objnum();
 
-	void set_Base(Team team,int objectno);
+	void set_Baseno(Team team,int objectno);
 	int *get_Base(Team enemyteam);
-	void minus_BaseHp(Team attacedteam,float atk);
-	void resetminushp();
+	void minus_BaseHp();
 	void Initialize();
 	void DrawInitialize();
 	void DrawFinalize();
+
 	void Update();
 	void Draw();
-
-
-
-
 };
+
+bool get_movablecount();
+int *get_movableno();
 
 #endif /* MAP_H_ */

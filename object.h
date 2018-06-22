@@ -22,6 +22,7 @@ class object: public OBB {
 private:
 
 public:
+	int myno; //配列時の添字をあらわす
 	object();
 	void setobject(vec3 position,vec3 size,vec3 rota,vec4 color);
 	object(vec3 position,vec3 size,vec3 rota,vec4 color);
@@ -54,7 +55,7 @@ public:
 	void y_one_way_move(float speed,float down,float up,int dir);
 
 	//各軸方向へ移動しているオブジェクトの進行方向,進行速度
-	//(負の値:負の方向 0:停止 正の値:正の方向 数値の絶対値:進行速度)
+	//(負の値:負の方向 0:停S止 正の値:正の方向 数値の絶対値:進行速度)
 	vec3 speed;
 
 	//移動後のオブジェクトの座標

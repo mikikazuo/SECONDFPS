@@ -9,7 +9,6 @@
 #define MOB_H_
 #include "glm.h"
 
-#include "player.h"
 #include "bullet.h"
 
 typedef enum{
@@ -21,36 +20,38 @@ typedef enum{
 
 typedef struct {
 	bool findplayer;
+	int playerid;
 	attackmode mobmode;
-	int dircount;
-	int dir;
+
 }vsplayer;
 
 int GetRandom(int min,int max);
 class mob {
 private:
-	bullet mobbullet;
+
 	float radi;
 	int myno;
 	float dx;
 	int movecount;
-	int flag;       //起動後なぜか先に動くのでそのための停止フラグ
+
 	float atkrange;
 	bool hitmap;
 	int atktime;
 	vsplayer vsinfo;
+	int dir;
+	int alivecount;
 
 public:
+	bullet mobbullet;
 	vec3 position;
 	vec3 angles;
 	vec3 lookat;
 	float hp;
 	float maxhp;
 	float atk;
+	float minushp;          //sa-ba-
 
-	float serverminushp;          //sa-ba-
-
-
+	bool get_movablecount();
 	mob();
 	virtual ~mob();
 	void Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setatktime,float setatkrange);
@@ -60,7 +61,7 @@ public:
 	void move();
 	void Draw();
 	void launchBullet();
-	void resetminushp();
+	void minushpfunc();
 };
 
 #endif /* MOB_H_ */

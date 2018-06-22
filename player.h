@@ -13,17 +13,7 @@
 
 #include "object.h"
 #include "map.h"
-
-
-class bullet;
-
 #define WALLMAX 3
-
-typedef struct {
-	int count;
-	object wall;
-
-}Wall;
 
 typedef enum{
 	Crossbow,
@@ -35,6 +25,19 @@ typedef enum{
 	Mob,
 	nonemode
 }Role;
+
+
+
+
+
+
+typedef struct {
+	int count;
+	object wall;
+
+}Wall;
+
+
 
 
 class player
@@ -56,7 +59,9 @@ public:
 	float dx,dy;
 	float atk;
 	int radi;
-
+	vec3 delmove;
+	float minushp;
+	bool start;
 	Team myteam;
 
 	//プレイヤーの頭のあたり判定
@@ -68,7 +73,7 @@ public:
 	Wall mywall[WALLMAX];
 
 	Wall *get_mywall();
-	player();
+	player(){};
 	void Initialize(vec3 pos,float ra,Role setrole,Team setteam);
 	void DrawInitialize();
 	void DrawFinalize();
@@ -83,9 +88,9 @@ public:
 	void Action();
 	void MakeCamAndLightMatrix();
 	void set_Pers(double next);
-	virtual ~player();
+	virtual ~player(){};
 
 };
-bullet get_playerbullet();
+
 
 #endif /* PLAYER_H_ */

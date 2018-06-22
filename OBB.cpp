@@ -69,6 +69,9 @@ vec3 OBB::GetPos_W(){
 	return m_Pos;
 }
 
+vec3 OBB::GetRot_W(){
+	return m_Rota;
+}
 //合成
 MATRIX2 OBB::Multiplication(MATRIX2 mat,MATRIX2 mat2)
 {

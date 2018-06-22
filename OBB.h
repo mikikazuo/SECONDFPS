@@ -50,6 +50,7 @@ public:
 	void crossFunc(vec3 *cross,vec3 *vec1,vec3 *vec2); //外積
 	float LenSegOnSeparateAxis( vec3 *Sep, vec3 *e1, vec3 *e2, vec3 *e3=0);
 	vec3 GetPos_W();    //位置の取得
+	vec3 GetRot_W();
 	float  Vec3Length(vec3 *vec);		//ベクトルの長さ（大きさ）
 	vec3 GetDirect( int elem );  		//指定軸番号の方向ベクトルを取得
 	float GetLen_W( int elem );       //指定軸方向の長さを取得

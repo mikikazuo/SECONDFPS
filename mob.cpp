@@ -8,22 +8,20 @@
 #include "mob.h"
 #include <math.h>
 #include "fps.h"
-#include "main.h"
+
 #include "GL/glut.h"
 #include <time.h>
+#include <stdio.h>
 
-#include "GLMetaseq.h"
 #include "map.h"
 
 #include "checkObjectHit.h"
-#include "Game.h"
 
-#include "mouse.h"
-#include "sound.h"
-
+#include "server_main.h"
+#include "net_common.h"
 checkObjectHit mobhitobj;
-MQO_MODEL mobmqo;
-MQO_MODEL pre_mobmqo[10];			//異なるモデルを保存する
+//MQO_MODEL mobmqo;
+//MQO_MODEL pre_mobmqo[10];			//異なるモデルを保存する
 
 
 
@@ -43,7 +41,6 @@ int GetRandom(int min,int max)
 mob::mob() {
 	// TODO 自動生成されたコンストラクター・スタブ
 
-	flag=0;
 
 }
 
@@ -56,9 +53,8 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	dx=GetRandom(1,100);
 	movecount=0;
 	myno=no;
-	flag=0;
+
 	position=pos;
-	mobbullet.bullet_Initialize(Mob);
 	radi=ra;
 	hp=maxhp=sethp;
 	atk=setatk;
@@ -66,36 +62,52 @@ void mob::Initialize(int no,vec3 pos,float ra,float sethp,float setatk,int setat
 	atktime=setatktime;
 	vsinfo.findplayer=false;
 	vsinfo.mobmode=noneaction;
-
+	minushp=0;
+	mobbullet.bullet_Initialize(Mob);
+	dir=GetRandom(0,1)==0?-1:1;
+	alivecount=0;
 }
 
-void mob::resetminushp(){
-	serverminushp=0;
-}
-void mob::DrawInitialize(char *filename){
-	static char *flname='\0';
-	static int mqonum;
-	if(flname!=filename){
-		flname=filename;
-		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
-		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
+void mob::minushpfunc(){
+	if(minushp>0){
+		hp-=minushp;
+		minushp=0;
 	}
 }
 
-void mob::DrawFinalize(){
-	for(int i=0;(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));i++)
-		if(pre_mobmqo[i]!=NULL){
-			mqoDeleteModel( pre_mobmqo[i]);
-			pre_mobmqo[i]=NULL;
-		}
-}
+
+//void mob::DrawInitialize(char *filename){
+//	static char *flname='\0';
+//	static int mqonum;
+//	if(flname!=filename){
+//		flname=filename;
+//		pre_mobmqo[mqonum] =mobmqo=mqoCreateModel(flname,0.0025);
+//		mqonum%=(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));
+//	}
+//}
+//
+//void mob::DrawFinalize(){
+//	for(int i=0;(int)(sizeof(pre_mobmqo)/sizeof(pre_mobmqo[0]));i++)
+//		if(pre_mobmqo[i]!=NULL){
+//			mqoDeleteModel( pre_mobmqo[i]);
+//			pre_mobmqo[i]=NULL;
+//		}
+//}
 void mob::Update(){
 	movecount++;
 	move();
-	launchBullet();
-	mobbullet.HitObj();
-	mobbullet.MobToPlayer(this->atk);
-
+	if(hp>0){
+		launchBullet();
+		mobbullet.HitObj();
+		mobbullet.MobToPlayer(this->atk);
+	}else{
+		alivecount++;
+		if(alivecount>60*10){
+			hp=maxhp;
+			alivecount=0;
+		}
+	}
+	mobbullet.Update();
 }
 void mob::move(){
 	const float mousespeed = 10;
@@ -103,17 +115,16 @@ void mob::move(){
 
 	vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 	vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
-	vec3 toplayer_dir = vec3((get_player()->position.x-position.x), (get_player()->position.y-position.y), (get_player()->position.z-position.z));
+	vec3 toplayer_dir = vec3((get_player()[vsinfo.playerid].position.x-position.x), (get_player()[vsinfo.playerid].position.y-position.y), (get_player()[vsinfo.playerid].position.z-position.z));
+	float toplayer_dir_big=sqrt(toplayer_dir.x*toplayer_dir.x+toplayer_dir.y*toplayer_dir.y+toplayer_dir.z*toplayer_dir.z);
+	toplayer_dir.x/=toplayer_dir_big;
+	toplayer_dir.y/=toplayer_dir_big;
+	toplayer_dir.z/=toplayer_dir_big;
 
+	vec3 sampposition=position;
 	if(!vsinfo.findplayer){
 		angles.y=0;
-		if(movecount%(60*1)==0)
-			dx=GetRandom(-10,10);
-
 		angles.x -= dx * mousespeed*get_mainfps().fps_getDeltaTime();
-
-
-
 		dx=0;
 		if(angles.x < -M_PI)
 			angles.x += M_PI * 2;
@@ -124,34 +135,26 @@ void mob::move(){
 
 
 
-		vec3 sampposition;
-		sampposition=position;
 
-
-		if(flag>10)
-			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
-		else{
-			sampposition += forward_dir * 0* get_mainfps().fps_getDeltaTime();
-			flag++;
-		}
+		sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 
 
 
+		//TODO 壁衝突時のmob
 		//マップに衝突時向きを反転
-		if(!this->hitmap&&(mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
-				mobhitobj.sethitcheck(WALLMAX,get_allplayerwall()[0],sampposition,radi))	){
+		if((mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+				mobhitobj.sethitcheck(WALLMAX,get_player(),sampposition,radi))	){
 			angles.x -= M_PI;
 			if(angles.x < -M_PI)
 				angles.x += M_PI * 2;
 			else if(angles.x > M_PI)
 				angles.x -= M_PI * 2;
 
-			vec3 forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
+			forward_dir = vec3(sinf(angles.x), 0, cosf(angles.x));
 			//vec3 right_dir = vec3(-forward_dir.z, 0, forward_dir.x);
 
 			this->hitmap=true;
 
-			vec3 sampposition;
 			sampposition=position;
 			sampposition += forward_dir * movespeed * get_mainfps().fps_getDeltaTime();
 
@@ -160,6 +163,8 @@ void mob::move(){
 
 		}
 
+		if(movecount%(60*1)==0)
+			dx=GetRandom(-10,10);
 
 		//	static float gravity;
 		//	gravity+=0.3f;
@@ -178,81 +183,116 @@ void mob::move(){
 		case sidestep:
 			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
 					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.x+=right_dir.x*dir*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.z+=right_dir.z*dir*movespeed * get_mainfps().fps_getDeltaTime();
+
+			if((mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+					mobhitobj.sethitcheck(WALLMAX,get_player(),sampposition,radi))	){
+				dir*=-1;
+			}else
+				position=sampposition;
+
 			break;
 		case sidestephard:
 			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
 					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-			position.x+=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z+=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.x+=right_dir.x*dir*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.z+=right_dir.z*dir*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.x+=toplayer_dir.x*movespeed * get_mainfps().fps_getDeltaTime()*0.5f;
+			sampposition.z+=toplayer_dir.z*movespeed * get_mainfps().fps_getDeltaTime()*0.5f;
+			if((mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+					mobhitobj.sethitcheck(WALLMAX,get_player(),sampposition,radi))	){
+				dir*=-1;
+			}else
+				position=sampposition;
 			break;
 		case runaway:
 			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
 					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
-
-			position.x-=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
-			position.z-=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.x+=right_dir.x*dir*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.z+=right_dir.z*dir*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.x-=forward_dir.x*movespeed * get_mainfps().fps_getDeltaTime();
+			sampposition.z-=forward_dir.z*movespeed * get_mainfps().fps_getDeltaTime();
+			if((mobhitobj.sethitcheck(get_mapobj()->get_objnum(),get_mapobj()->get_obj(),sampposition,radi)||
+					mobhitobj.sethitcheck(WALLMAX,get_player(),sampposition,radi))	){
+				dir*=-1;
+			}else
+				position=sampposition;
 			break;
 		case noneaction:
-
+			angles=vec3(atan2(toplayer_dir.x,toplayer_dir.z),
+					atan2(toplayer_dir.y,toplayer_dir.x*toplayer_dir.x+toplayer_dir.z*toplayer_dir.z), atan2(toplayer_dir.z,toplayer_dir.x));
 			break;
 		}
 
 
+
 	}
 }
 
-void mob::Draw(){
-	if(hp<=0)
-		return;
-	glMatrixMode(GL_MODELVIEW);
+//void mob::Draw(){
+//	if(hp<=0)
+//		return;
+//	glMatrixMode(GL_MODELVIEW);
+//
+//
+//	glPushMatrix();
+//	float x=position.x;
+//	float y=position.y;
+//	float z=position.z;
+//
+//	glTranslatef(x,y,z);
+//
+//	//glutSolidSphere( 1, 50, 50 );
+//
+//	glRotated(angles.x * 180 /M_PI ,0,1,0);
+//	glRotated(-angles.y * 180 /M_PI ,1,0,0);
+//	mqoCallModel(mobmqo);
+//
+//	glPopMatrix();
+//	mobbullet.Draw();
+//
+//}
 
-
-	glPushMatrix();
-	float x=position.x;
-	float y=position.y;
-	float z=position.z;
-
-	glTranslatef(x,y,z);
-
-	//glutSolidSphere( 1, 50, 50 );
-
-	glRotated(angles.x * 180 /M_PI ,0,1,0);
-	glRotated(-angles.y * 180 /M_PI ,1,0,0);
-	mqoCallModel(mobmqo);
-
-	glPopMatrix();
-	mobbullet.Draw();
-
-}
 
 void mob::launchBullet(){
-	float x=pow(position.x-get_player()->position.x,2);
-	float y=pow(position.y-get_player()->position.y,2);
-	float z=pow(position.z-get_player()->position.z,2);
-	float big=sqrt(x+y+z);
+	float big;
+	vec3  sa;
 	float radi=atkrange*atkrange;
-	if(hp>0){
-		if(radi>=x+y+z){
-			if(movecount%atktime==0){
-				//mobbullet.setInfo(position,vec3(0, 1, 0));
-				mobbullet.setInfo(position,vec3((get_player()->position.x-position.x)/big, (get_player()->position.y-position.y)/big, (get_player()->position.z-position.z)/big));
-				PlayMobMusic(myno);
+	if(!vsinfo.findplayer){
+		for(int i=0;i<MAX_CLIENTS;i++){
+			sa.x=pow(position.x-get_player()[i].position.x,2);
+			sa.y=pow(position.y-get_player()[i].position.y,2);
+			sa.z=pow(position.z-get_player()[i].position.z,2);
+			big=sqrt(sa.x+sa.y+sa.z);
 
-			}
-			if(!vsinfo.findplayer){
+			//プレイヤー
+			if(radi>=sa.x+sa.y+sa.z&&get_player()[i].hp>0){
 				vsinfo.findplayer=true;
-				vsinfo.mobmode=runaway;//(attackmode)GetRandom(0,2);
+				vsinfo.mobmode=(attackmode)GetRandom(0,2);
+				vsinfo.playerid=i;
+				break;
 			}
-		}else if(vsinfo.mobmode==runaway){
-			if(radi*2<=x+y+z)
+		}
+	}else{
+		sa.x=pow(position.x-get_player()[vsinfo.playerid].position.x,2);
+		sa.y=pow(position.y-get_player()[vsinfo.playerid].position.y,2);
+		sa.z=pow(position.z-get_player()[vsinfo.playerid].position.z,2);
+		big=sqrt(sa.x+sa.y+sa.z);
+		if(movecount%atktime==0)
+			mobbullet.setInfo(position,vec3((get_player()[vsinfo.playerid].position.x-position.x)/big, (get_player()[vsinfo.playerid].position.y-position.y)/big, (get_player()[vsinfo.playerid].position.z-position.z)/big));
+		//		PlayMobMusic(myno);
+		if(vsinfo.mobmode==runaway){
+			if(radi*1.3f<sa.x+sa.y+sa.z)
 				vsinfo.findplayer=false;
-		}else
+		}
+		else if(radi<sa.x+sa.y+sa.z||get_player()[vsinfo.playerid].hp<=0){
 			vsinfo.findplayer=false;
+		}
 
-		mobbullet.Update();
 	}
+
+
 }
 
 

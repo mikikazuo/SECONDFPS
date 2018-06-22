@@ -15,14 +15,11 @@
 #include "fps.h"
 #include "OBB.h"
 #include "map.h"
-#include "GLMetaseq.h"
-
-
-class player;
 #include "player.h"
 
-#define MAXBULLET 300
 
+#define MAXBULLET 50
+#define MOBMAXBULLET 3
 
 typedef struct {
 	int count;
@@ -33,9 +30,6 @@ typedef struct {
 
 
 
-
-class player;
-#include "player.h"
 
 class bullet : public OBB{
 private:
@@ -48,7 +42,7 @@ private:
 	Role mode;
 
 	float bulletradi;
-	MQO_MODEL bulletmodel;
+
 public:
 	Shot bullet_info[MAXBULLET];
 
@@ -57,6 +51,8 @@ public:
 	void bullet_DrawInitialize();
 	void HitObj();
 	void HitObj(Team enemyteam,float atk);
+	void EnemyPlayerToPlayer();
+	void PlayerToEnemy();
 	void PlayerToMob();
 	void MobToPlayer(int atk);
 	void reload();
